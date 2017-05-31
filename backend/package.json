@@ -1,0 +1,50 @@
+{
+  "name": "investorx-backend",
+  "private": false,
+  "version": "0.0.1",
+  "description": "InvestorX backend",
+  "main": "server.js",
+  "repository": "https://github.com/eFounders/investorx",
+  "author": "eFounders",
+  "license": "UNLICENSED",
+  "scripts": {
+    "setup-dev": "npm install --only=dev",
+    "eslint": "eslint .;exit 0",
+    "prettier": "prettier --print-width 100 --single-quote --trailing-comma es5 --write \"*.js\" \"{forest,graphql,models,routes,services}/**/*.js\"",
+    "dev": "NODE_ENV='development' nodemon",
+    "deploy": "now -E .env/production.env && now alias"
+  },
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "dataloader": "^1.3.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "forest-express-sequelize": "^1.1.4",
+    "global": "^4.3.2",
+    "graphql": "^0.10.1",
+    "graphql-server-express": "^0.8.0",
+    "graphql-tools": "^1.0.0",
+    "graphql-type-json": "^0.1.4",
+    "jsonwebtoken": "^7.4.1",
+    "node-gyp": "^3.6.1",
+    "node-mailjet": "^3.1.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "pg": "^6.2.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.0.0-2",
+    "shortid": "^2.2.8",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-config-prettier": "^2.1.1",
+    "eslint-plugin-import": "^2.3.0",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.3.1"
+  }
+}

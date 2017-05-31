@@ -1,0 +1,8 @@
+{
+  "name": "investorx-frontend",
+  "type": "npm",
+  "alias": ["investorx.efounders.co"],
+  "engines": {
+    "node": "7.10.0"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "investorx-frontend",
+  "private": false,
+  "version": "0.0.1",
+  "description": "InvestorX frontend",
+  "main": "server.js",
+  "repository": "https://github.com/eFounders/investorx",
+  "author": "eFounders",
+  "license": "UNLICENSED",
+  "scripts": {
+    "eslint": "eslint .;exit 0",
+    "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{components,lib,pages}/**/*.js\"",
+    "dev": "NODE_ENV='development' node server.js",
+    "build": "next build",
+    "start": "NODE_ENV='production' node server.js",
+    "deploy": "now && now alias"
+  },
+  "dependencies": {
+    "express": "^4.15.3",
+    "graphql-tag": "^2.2.1",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.4",
+    "next": "^2.4.0",
+    "path-match": "^1.2.4",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-apollo": "^1.2.0",
+    "react-cookie": "^2.0.7",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "redux-promise-middleware": "^4.3.0",
+    "semantic-ui-react": "^0.68.4",
+    "universal-cookie-express": "^2.0.5"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-config-prettier": "^2.1.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1",
+    "prettier": "^1.3.1"
+  }
+}
