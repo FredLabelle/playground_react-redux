@@ -33,15 +33,11 @@ class ForgotPasswordModal extends Component {
   };
   render() {
     return (
-      <Modal
-        open={this.props.open}
-        onClose={this.props.onClose}
-        size="small"
-      >
+      <Modal open={this.props.open} onClose={this.props.onClose} size="small">
         <Header icon="privacy" content="Forgot password?" />
         <Modal.Content>
           <p>
-            Please enter the email address you signed up with and we&apos;ll send you a link
+            Please enter the email address you signed up with and we'll send you a link
             to reset your password.
           </p>
           <Form id="forgot-password" onSubmit={this.onSubmit}>

@@ -33,11 +33,7 @@ class ResetPasswordModal extends Component {
   };
   render() {
     return (
-      <Modal
-        open={this.props.open}
-        onClose={this.props.onClose}
-        size="small"
-      >
+      <Modal open={this.props.open} onClose={this.props.onClose} size="small">
         <Header icon="privacy" content="Reset password" />
         <Modal.Content>
           <p>

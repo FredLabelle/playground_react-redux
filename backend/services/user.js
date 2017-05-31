@@ -57,8 +57,7 @@ const UserService = {
         vars: { firstName: user.firstName, link: url },
       });
       return true;
-    }
-    catch(error) {
+    } catch (error) {
       console.error(error);
       return false;
     }
@@ -72,8 +71,7 @@ const UserService = {
       const password = await bcrypt.hash(payload.password, 10);
       await user.update({ password, resetPasswordToken: null });
       return true;
-    }
-    catch(error) {
+    } catch (error) {
       console.error(error);
       return false;
     }
