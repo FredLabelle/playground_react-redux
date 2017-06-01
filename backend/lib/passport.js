@@ -1,9 +1,9 @@
 const passport = require('passport');
-const { Strategy: LocalStrategy } = require('passport-local');
+/* const { Strategy: LocalStrategy } = require('passport-local');
 const jwt = require('jsonwebtoken');
 
 const User = require('../services/user');
-const Organization = require('../services/organization');
+const Organization = require('../services/organization');*/
 
 /* passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -18,7 +18,7 @@ passport.deserializeUser(async (userId, done) => {
   }
 });*/
 
-const signupStrategy = new LocalStrategy({
+/* const signupStrategy = new LocalStrategy({
   usernameField : 'email',
   passReqToCallback: true,
 }, async (req, email, password, done) => {
@@ -60,6 +60,6 @@ const loginStrategy = new LocalStrategy({
   }
 });
 
-passport.use('local-login', loginStrategy);
+passport.use('local-login', loginStrategy);*/
 
 module.exports = passport;

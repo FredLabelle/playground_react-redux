@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const { stringify } = require('querystring');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -9,6 +10,8 @@ const OrganizationService = require('./organization');
 const { sendEmail } = require('../lib/mailjet');
 
 const loader = new DataLoader(ids => Promise.all(ids.map(id => User.findById(id))));
+
+const sign = promisify(jwt.sign);
 
 const UserService = {
   findById(id) {
@@ -38,7 +41,7 @@ const UserService = {
       const investor = Object.assign({ role: 'investor' }, input);
       const user = await organization.createUser(investor);
       await user.createInvestorProfile(investor);
-      const token = jwt.sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
+      const token = await sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
       return { success: true, token };
     } catch (error) {
       console.error(error);
@@ -56,7 +59,7 @@ const UserService = {
       if (!passwordsMatch) {
         return { success: false };
       }
-      const token = jwt.sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
+      const token = await sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
       return { success: true, token };
     } catch (error) {
       console.error(error);
@@ -101,7 +104,7 @@ const UserService = {
       }
       const password = await bcrypt.hash(input.password, 10);
       await user.update({ password, resetPasswordToken: null });
-      const token = jwt.sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
+      const token = await sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
       return { success: true, token };
     } catch (error) {
       console.error(error);
