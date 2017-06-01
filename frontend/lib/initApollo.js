@@ -1,12 +1,10 @@
 import { ApolloClient, createBatchingNetworkInterface } from 'react-apollo';
-import { Cookies } from 'react-cookie';
 
 import { BACKEND_URL } from './env';
 
 const create = cookies => {
   const networkInterface = createBatchingNetworkInterface({
     uri: `${BACKEND_URL}/graphql`,
-    // uri: `http://localhost:8080/graphql`,
     batchInterval: 10,
     // opts: { credentials: 'same-origin' },
     // opts: { credentials: 'include' },
@@ -38,7 +36,7 @@ const initApollo = cookies => {
     return create(cookies);
   }
   if (!apolloClient) {
-    apolloClient = create(new Cookies());
+    apolloClient = create(cookies);
   }
   return apolloClient;
 };

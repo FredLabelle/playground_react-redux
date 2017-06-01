@@ -39,31 +39,45 @@ type Query {
   me: User
 }
 
-input InvestorSignupPayload {
+input InvestorSignupInput {
   firstName: String!
   lastName: String!
   email: String!
   password: String!
-  dealCategories: JSON!
+  dealCategories: [String]!
   averageTicket: Int!
   averageTicketCurrency: String!
   investmentMechanism: String!
+  organizationShortId: String!
 }
 
-input ForgotPasswordPayload {
+input InvestorLoginInput {
+  email: String!
+  password: String!
+  organizationShortId: String!
+}
+
+type LoginResult {
+  success: Boolean!
+  token: String
+}
+
+input ForgotPasswordInput {
   email: String!
   organizationShortId: String!
 }
 
-input ResetPasswordPayload {
+input ResetPasswordInput {
   token: String!
   password: String!
 }
 
 type Mutation {
-  investorSignup(investor: InvestorSignupPayload!): User
-  forgotPassword(payload: ForgotPasswordPayload!): Boolean
-  resetPassword(payload: ResetPasswordPayload!): Boolean
+  investorSignup(input: InvestorSignupInput!): LoginResult!
+  investorLogin(input: InvestorLoginInput!): LoginResult!
+  logout: Boolean!
+  forgotPassword(input: ForgotPasswordInput!): Boolean!
+  resetPassword(input: ResetPasswordInput!): LoginResult!
 }
 
 schema {
@@ -84,14 +98,20 @@ const resolvers = {
     },
   },
   Mutation: {
-    investorSignup(root, { investor }, context) {
-      return context.User.signup(investor);
+    investorSignup(root, { input }, context) {
+      return context.User.signup(input);
     },
-    forgotPassword(root, { payload }, context) {
-      return context.User.forgotPassword(payload);
+    investorLogin(root, { input }, context) {
+      return context.User.login(input);
     },
-    resetPassword(root, { payload }, context) {
-      return context.User.resetPassword(payload);
+    logout(root, params, context) {
+      return context.User.logout();
+    },
+    forgotPassword(root, { input }, context) {
+      return context.User.forgotPassword(input);
+    },
+    resetPassword(root, { input }, context) {
+      return context.User.resetPassword(input);
     },
   },
 };

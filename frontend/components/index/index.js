@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 
-import { me as meQuery } from '../../lib/queries';
+import { meQuery } from '../../lib/queries';
 
 const Index = ({ me }) =>
   me &&
@@ -13,6 +13,7 @@ Index.propTypes = {
     firstName: PropTypes.string.isRequired,
   }),
 };
+Index.defaultProps = { me: null };
 
 export default graphql(meQuery, {
   props: ({ data }) => ({ me: data.me }),

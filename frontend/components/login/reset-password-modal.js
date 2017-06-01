@@ -1,32 +1,46 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { graphql } from 'react-apollo';
+import { withCookies, Cookies } from 'react-cookie';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
+import Router from 'next/router';
 
 import { resetPasswordMutation } from '../../lib/mutations';
+import { meQuery } from '../../lib/queries';
 
 class ResetPasswordModal extends Component {
   static propTypes = {
+    organizationShortId: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     token: PropTypes.string,
+    // eslint-disable-next-line react/no-unused-prop-types
     resetPassword: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
+    cookies: PropTypes.instanceOf(Cookies),
   };
-  static defaultProps = { token: '' };
+  static defaultProps = { token: '', email: '', cookies: null };
   state = {
     password: '',
     repeatPassword: '',
   };
   onSubmit = async event => {
     event.preventDefault();
-    this.props.onClose();
-    const payload = {
+    // this.props.onClose();
+    const { data: { resetPassword } } = await this.props.resetPassword({
       password: this.state.password,
       token: this.props.token,
-    };
-    const { data } = await this.props.resetPassword(payload);
-    console.info(data.resetPassword);
+    });
+    if (resetPassword.success) {
+      this.props.cookies.set('token', resetPassword.token, { path: '/' });
+      Router.push(
+        `/?shortId=${this.props.organizationShortId}`,
+        `/organization/${this.props.organizationShortId}`,
+      );
+    } else {
+      console.error('RESET PASSWORD ERROR');
+    }
   };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
@@ -70,8 +84,14 @@ class ResetPasswordModal extends Component {
   }
 }
 
+const ResetPasswordModalWithCookies = withCookies(ResetPasswordModal);
+
 export default graphql(resetPasswordMutation, {
   props: ({ mutate }) => ({
-    resetPassword: payload => mutate({ variables: { payload } }),
+    resetPassword: input =>
+      mutate({
+        variables: { input },
+        refetchQueries: [{ query: meQuery }],
+      }),
   }),
-})(ResetPasswordModal);
+})(ResetPasswordModalWithCookies);

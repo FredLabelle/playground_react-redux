@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
 import { Grid, Image, Segment, Header } from 'semantic-ui-react';
 
-import { organization as organizationQuery } from '../../lib/queries';
+import { organizationQuery } from '../../lib/queries';
 import Form from './form';
 
 const Login = ({ organization }) =>

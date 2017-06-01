@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
+import { graphql } from 'react-apollo';
+import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
-import { login } from '../../actions/auth';
+import { investorLoginMutation } from '../../lib/mutations';
+import { meQuery } from '../../lib/queries';
 import ForgotPasswordModal from './forgot-password-modal';
 import ResetPasswordModal from './reset-password-modal';
 
@@ -12,24 +15,37 @@ class LoginForm extends Component {
   static propTypes = {
     organizationShortId: PropTypes.string.isRequired,
     query: PropTypes.shape({
-      reset: PropTypes.string,
+      token: PropTypes.string,
     }).isRequired,
-    loading: PropTypes.bool.isRequired,
-    error: PropTypes.bool.isRequired,
+    cookies: PropTypes.instanceOf(Cookies),
     login: PropTypes.func.isRequired,
   };
+  static defaultProps = { cookies: null };
   state = {
     email: '',
     password: '',
     forgotPasswordModalOpen: false,
-    resetPasswordModalOpen: !!this.props.query.reset,
+    resetPasswordModalOpen: !!this.props.query.token,
+    loading: false,
+    error: false,
   };
-  onSubmit = event => {
+  onSubmit = async event => {
     event.preventDefault();
-    this.props.login({
-      ...this.state,
+    this.setState({ loading: true });
+    const { data: { investorLogin } } = await this.props.login({
+      email: this.state.email,
+      password: this.state.password,
       organizationShortId: this.props.organizationShortId,
     });
+    if (investorLogin.success) {
+      this.props.cookies.set('token', investorLogin.token, { path: '/' });
+      Router.push(
+        `/?shortId=${this.props.organizationShortId}`,
+        `/organization/${this.props.organizationShortId}`,
+      );
+    } else {
+      this.setState({ loading: false, error: true });
+    }
   };
   onForgotPasswordModalClose = () => {
     this.setState({ forgotPasswordModalOpen: false });
@@ -50,7 +66,7 @@ class LoginForm extends Component {
   };
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={this.props.error}>
+      <Form onSubmit={this.onSubmit} error={this.state.error}>
         <Form.Input
           name="email"
           value={this.state.email}
@@ -76,7 +92,7 @@ class LoginForm extends Component {
           content="Please make sure your email and password are correct."
         />
         <Segment basic textAlign="center">
-          <Button primary disabled={this.props.loading}>Login</Button>
+          <Button primary disabled={this.state.loading}>Login</Button>
         </Segment>
         <ForgotPasswordModal
           open={this.state.forgotPasswordModalOpen}
@@ -84,15 +100,28 @@ class LoginForm extends Component {
           email={this.state.email}
         />
         <ResetPasswordModal
+          organizationShortId={this.props.organizationShortId}
           open={this.state.resetPasswordModalOpen}
           onClose={this.onResetPasswordModalClose}
-          token={this.props.query.reset}
+          token={this.props.query.token}
         />
       </Form>
     );
   }
 }
 
-const mapStateToProps = ({ router, auth }) => ({ ...router, ...auth });
+const LoginFormWithCookies = withCookies(LoginForm);
 
-export default connect(mapStateToProps, { login })(LoginForm);
+const LoginFormWithGraphQL = graphql(investorLoginMutation, {
+  props: ({ mutate }) => ({
+    login: input =>
+      mutate({
+        variables: { input },
+        refetchQueries: [{ query: meQuery }],
+      }),
+  }),
+})(LoginFormWithCookies);
+
+const mapStateToProps = ({ router }) => router;
+
+export default connect(mapStateToProps)(LoginFormWithGraphQL);

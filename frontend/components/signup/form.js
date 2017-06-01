@@ -1,22 +1,24 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-// import { gql, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import { Cookies, withCookies } from 'react-cookie';
 import omit from 'lodash/omit';
 import without from 'lodash/without';
 import { Form, Header, Button, Segment, Checkbox, Message } from 'semantic-ui-react';
 import Router from 'next/router';
 
-import { signup } from '../../actions/auth';
+import { investorSignupMutation } from '../../lib/mutations';
+import { meQuery } from '../../lib/queries';
 
 class SignupForm extends Component {
   static propTypes = {
     organizationShortId: PropTypes.string.isRequired,
     dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
     defaultCurrency: PropTypes.string.isRequired,
-    loading: PropTypes.bool.isRequired,
     signup: PropTypes.func.isRequired,
+    cookies: PropTypes.instanceOf(Cookies),
   };
+  static defaultProps = { cookies: null };
   state = {
     firstName: '',
     lastName: '',
@@ -36,14 +38,23 @@ class SignupForm extends Component {
     if (passwordMismatch) {
       return;
     }
-    const { organizationShortId } = this.props;
-    const investor = {
+    this.setState({ loading: true });
+    const { data } = await this.props.signup({
       ...omit(this.state, 'repeatPassword', 'passwordMismatch'),
       averageTicket: parseInt(this.state.averageTicket, 10),
-      organizationShortId,
-      role: 'investor',
-    };
-    this.props.signup(investor);
+      organizationShortId: this.props.organizationShortId,
+    });
+    const { success, token } = data.investorSignup;
+    if (success) {
+      this.props.cookies.set('token', token, { path: '/' });
+      Router.push(
+        `/?shortId=${this.props.organizationShortId}`,
+        `/organization/${this.props.organizationShortId}`,
+      );
+    } else {
+      console.error('SIGNUP ERROR');
+      this.setState({ loading: false });
+    }
   };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
@@ -206,27 +217,21 @@ class SignupForm extends Component {
           />
         </Form.Group>
         <Segment basic textAlign="center">
-          <Button primary disabled={this.props.loading}>Create my account</Button>
+          <Button primary disabled={this.state.loading}>Create my account</Button>
         </Segment>
       </Form>
     );
   }
 }
 
-/* const investorSignupMutation = gql`
-mutation investorSignup($investor: InvestorSignupPayload!) {
-  investorSignup(investor: $investor) {
-    firstName
-  }
-}
-`;*/
+const SignupFormWithCookies = withCookies(SignupForm);
 
-/* const SignupFormWithGraphQL = graphql(investorSignupMutation, {
+export default graphql(investorSignupMutation, {
   props: ({ mutate }) => ({
-    signup: investor => mutate({ variables: { investor } }),
+    signup: input =>
+      mutate({
+        variables: { input },
+        refetchQueries: [{ query: meQuery }],
+      }),
   }),
-})(SignupForm);*/
-
-const mapStateToProps = ({ auth }) => ({ loading: auth.loading });
-
-export default connect(mapStateToProps, { signup })(SignupForm);
+})(SignupFormWithCookies);

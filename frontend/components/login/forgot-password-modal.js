@@ -21,12 +21,11 @@ class ForgotPasswordModal extends Component {
   onSubmit = async event => {
     event.preventDefault();
     this.props.onClose();
-    const payload = {
+    const { data: { forgotPassword } } = await this.props.forgotPassword({
       email: this.state.email,
       organizationShortId: this.props.organizationShortId,
-    };
-    const { data } = await this.props.forgotPassword(payload);
-    console.info(data.forgotPassword);
+    });
+    console.info(forgotPassword);
   };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
@@ -37,7 +36,7 @@ class ForgotPasswordModal extends Component {
         <Header icon="privacy" content="Forgot password?" />
         <Modal.Content>
           <p>
-            Please enter the email address you signed up with and we'll send you a link
+            Please enter the email address you signed up with and we{"'"}ll send you a link
             to reset your password.
           </p>
           <Form id="forgot-password" onSubmit={this.onSubmit}>
@@ -64,7 +63,7 @@ class ForgotPasswordModal extends Component {
 
 const ForgotPasswordModalWithGraphQL = graphql(forgotPasswordMutation, {
   props: ({ mutate }) => ({
-    forgotPassword: payload => mutate({ variables: { payload } }),
+    forgotPassword: input => mutate({ variables: { input } }),
   }),
 })(ForgotPasswordModal);
 

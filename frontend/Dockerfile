@@ -1,13 +1,19 @@
-FROM node:7.10.0-alpine
+FROM mhart/alpine-node:latest
 MAINTAINER Simon Arvaux <simon@e-founders.com>
 LABEL name="investorx-frontend"
 
+RUN mkdir -p /opt/app
 WORKDIR /opt/app
 
+# Install node-gyp dependencies
+RUN apk add --no-cache make gcc g++ python
+# Install node-gyp
+RUN yarn add global node-gyp
+
 # Install packages using yarn
-COPY package.json yarn.lock /tmp/
-RUN cd /tmp && yarn
-RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules
+COPY package.json yarn.lock /opt/
+RUN cd /opt && yarn
+ENV NODE_PATH=/opt/node_modules
 
 COPY . /opt/app
 

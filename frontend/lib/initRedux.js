@@ -1,10 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import promiseMiddleware from 'redux-promise-middleware';
+// import promiseMiddleware from 'redux-promise-middleware';
 import Router from 'next/router';
 
 import reducers from '../reducers';
-import tokenMiddleware from './tokenMiddleware';
 import { onRouteChangeStart } from '../actions/router';
 
 const devTools = process.browser && window.__REDUX_DEVTOOLS_EXTENSION__
@@ -12,7 +11,7 @@ const devTools = process.browser && window.__REDUX_DEVTOOLS_EXTENSION__
   : f => f;
 
 const create = (apollo, initialState = {}) => {
-  const middlewares = [apollo.middleware(), tokenMiddleware, promiseMiddleware()];
+  const middlewares = [apollo.middleware() /* , promiseMiddleware()*/];
   return createStore(
     combineReducers({
       ...reducers,

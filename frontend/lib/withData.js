@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
-import { CookiesProvider } from 'react-cookie';
+import { CookiesProvider, Cookies } from 'react-cookie';
 
 import initApollo from './initApollo';
 import initRedux from './initRedux';
@@ -30,11 +30,6 @@ export default ComposedComponent =>
             </ApolloProvider>
           </CookiesProvider>
         );
-        /* const app = (
-          <ApolloProvider client={apollo} store={redux}>
-            <ComposedComponent url={url} {...composedInitialProps} />
-          </ApolloProvider>
-        );*/
         await getDataFromTree(app);
         const state = redux.getState();
         serverState = {
@@ -51,17 +46,13 @@ export default ComposedComponent =>
     }
     constructor(props) {
       super(props);
-      this.apollo = initApollo();
+      this.cookies = process.browser && new Cookies();
+      this.apollo = initApollo(this.cookies);
       this.redux = initRedux(this.apollo, this.props.serverState);
     }
     render() {
-      /* return (
-        <ApolloProvider client={this.apollo} store={this.redux}>
-          <ComposedComponent {...this.props} />
-        </ApolloProvider>
-      );*/
       return (
-        <CookiesProvider>
+        <CookiesProvider cookies={this.cookies}>
           <ApolloProvider client={this.apollo} store={this.redux}>
             <ComposedComponent {...this.props} />
           </ApolloProvider>

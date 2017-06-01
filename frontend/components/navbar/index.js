@@ -7,11 +7,10 @@ import Link from 'next/link';
 import LoginMenuItem from './login-menu-item';
 import UserDropdownMenu from './user-dropdown-menu';
 
-import { organization as organizationQuery, me as meQuery } from '../../lib/queries';
+import { organizationQuery, meQuery } from '../../lib/queries';
 // import organization from '../../queries/organization.gql';
 
-const NavBar = ({ organizationShortId, organization, me }) =>
-  organization &&
+const NavBar = ({ organizationShortId, organization, me }) => (
   <Menu secondary>
     <Menu.Item className="horizontally fitted">
       <Link href={`/?shortId=${organizationShortId}`} as={`/organization/${organizationShortId}`}>
@@ -28,19 +27,20 @@ const NavBar = ({ organizationShortId, organization, me }) =>
         ? <UserDropdownMenu firstName={me.firstName} />
         : <LoginMenuItem organizationShortId={organizationShortId} />}
     </Menu>
-  </Menu>;
+  </Menu>
+);
 
 NavBar.propTypes = {
   organizationShortId: PropTypes.string.isRequired,
   organization: PropTypes.shape({
     name: PropTypes.string.isRequired,
     domain: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
   me: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
   }),
 };
-NavBar.defaultProps = { organization: null, me: null };
+NavBar.defaultProps = { me: null };
 
 const NavBarWithGraphQL = compose(
   graphql(organizationQuery, {

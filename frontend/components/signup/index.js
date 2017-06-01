@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
 
-import { organization } from '../../lib/queries';
+import { organizationQuery } from '../../lib/queries';
 import Form from './form';
 
 const Signup = ({ organizationShortId, dealCategories, defaultCurrency }) => (
@@ -18,7 +18,7 @@ Signup.propTypes = {
   defaultCurrency: PropTypes.string.isRequired,
 };
 
-const SignupWithGraphGL = graphql(organization, {
+const SignupWithGraphGL = graphql(organizationQuery, {
   options: ({ organizationShortId }) => ({
     variables: { shortId: organizationShortId },
   }),

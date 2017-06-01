@@ -1,4 +1,4 @@
-FROM node:7.10.0-alpine
+FROM mhart/alpine-node:latest
 MAINTAINER Simon Arvaux <simon@e-founders.com>
 LABEL name="investorx-backend"
 

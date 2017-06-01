@@ -1,13 +1,40 @@
 import { gql } from 'react-apollo';
 
+export const investorSignupMutation = gql`
+  mutation investorSignup($input: InvestorSignupInput!) {
+    investorSignup(input: $input) {
+      success
+      token
+    }
+  }
+`;
+
+export const investorLoginMutation = gql`
+  mutation investorLogin($input: InvestorLoginInput!) {
+    investorLogin(input: $input) {
+      success
+      token
+    }
+  }
+`;
+
+export const logoutMutation = gql`
+  mutation logout {
+    logout
+  }
+`;
+
 export const forgotPasswordMutation = gql`
-  mutation forgotPassword($payload: ForgotPasswordPayload!) {
-    forgotPassword(payload: $payload)
+  mutation forgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input)
   }
 `;
 
 export const resetPasswordMutation = gql`
-  mutation resetPassword($payload: ResetPasswordPayload!) {
-    resetPassword(payload: $payload)
+  mutation resetPassword($input: ResetPasswordInput!) {
+    resetPassword(input: $input) {
+      success
+      token
+    }
   }
 `;

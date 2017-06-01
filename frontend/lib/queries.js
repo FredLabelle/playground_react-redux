@@ -1,6 +1,6 @@
 import { gql } from 'react-apollo';
 
-export const organization = gql`
+export const organizationQuery = gql`
   query organization($shortId: String!) {
     organization(shortId: $shortId) {
       name
@@ -11,7 +11,7 @@ export const organization = gql`
   }
 `;
 
-export const me = gql`
+export const meQuery = gql`
   query {
     me {
       firstName
