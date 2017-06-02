@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { graphql, withApollo, ApolloClient } from 'react-apollo';
+import { compose, graphql, withApollo, ApolloClient } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
 import { Dropdown } from 'semantic-ui-react';
 import Link from 'next/link';
@@ -40,15 +40,15 @@ class UserDropdownMenu extends Component {
     return (
       <Dropdown item text={this.props.firstName}>
         <Dropdown.Menu>
-          <Dropdown.Item>
-            <Link
-              prefetch
-              href={`/account?shortId=${this.props.shortId}`}
-              as={`/organization/${this.props.shortId}/account`}
-            >
+          <Link
+            prefetch
+            href={`/account?shortId=${this.props.shortId}`}
+            as={`/organization/${this.props.shortId}/account`}
+          >
+            <Dropdown.Item>
               <a>My Account</a>
-            </Link>
-          </Dropdown.Item>
+            </Dropdown.Item>
+          </Link>
           <Dropdown.Item onClick={this.onClick}><a>Logout</a></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -56,15 +56,15 @@ class UserDropdownMenu extends Component {
   }
 }
 
-const UserDropdownMenuWithApollo = withApollo(UserDropdownMenu);
-
-const UserDropdownMenuWithCookies = withCookies(UserDropdownMenuWithApollo);
-
-export default graphql(logoutMutation, {
-  props: ({ mutate }) => ({
-    logout: () =>
-      mutate({
-        refetchQueries: [{ query: meQuery }],
-      }),
+export default compose(
+  withApollo,
+  withCookies,
+  graphql(logoutMutation, {
+    props: ({ mutate }) => ({
+      logout: () =>
+        mutate({
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
   }),
-})(UserDropdownMenuWithCookies);
+)(UserDropdownMenu);

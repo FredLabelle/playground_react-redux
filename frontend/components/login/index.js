@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { Grid, Image, Segment, Header } from 'semantic-ui-react';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
@@ -29,13 +29,12 @@ Login.propTypes = {
 };
 Login.defaultProps = { organization: null };
 
-const LoginWithGraphGL = graphql(organizationQuery, {
-  options: ({ router }) => ({
-    variables: { shortId: router.organizationShortId },
+export default compose(
+  connect(({ router }) => ({ router })),
+  graphql(organizationQuery, {
+    options: ({ router }) => ({
+      variables: { shortId: router.organizationShortId },
+    }),
+    props: ({ data: { organization } }) => ({ organization }),
   }),
-  props: ({ data: { organization } }) => ({ organization }),
-})(Login);
-
-const mapStateToProps = ({ router }) => ({ router });
-
-export default connect(mapStateToProps)(LoginWithGraphGL);
+)(Login);

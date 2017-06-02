@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import omit from 'lodash/omit';
 import without from 'lodash/without';
@@ -225,14 +225,15 @@ class SignupForm extends Component {
   }
 }
 
-const SignupFormWithCookies = withCookies(SignupForm);
-
-export default graphql(investorSignupMutation, {
-  props: ({ mutate }) => ({
-    signup: input =>
-      mutate({
-        variables: { input },
-        refetchQueries: [{ query: meQuery }],
-      }),
+export default compose(
+  withCookies,
+  graphql(investorSignupMutation, {
+    props: ({ mutate }) => ({
+      signup: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
   }),
-})(SignupFormWithCookies);
+)(SignupForm);

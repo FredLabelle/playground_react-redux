@@ -44,7 +44,8 @@ NavBar.propTypes = {
 };
 NavBar.defaultProps = { organization: null, me: null };
 
-const NavBarWithGraphQL = compose(
+export default compose(
+  connect(({ router }) => ({ router })),
   graphql(organizationQuery, {
     options: ({ router }) => ({
       variables: { shortId: router.organizationShortId },
@@ -55,7 +56,3 @@ const NavBarWithGraphQL = compose(
     props: ({ data: { me } }) => ({ me }),
   }),
 )(NavBar);
-
-const mapStateToProps = ({ router }) => ({ router });
-
-export default connect(mapStateToProps)(NavBarWithGraphQL);

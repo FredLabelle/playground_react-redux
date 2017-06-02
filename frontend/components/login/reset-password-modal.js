@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
 import Router from 'next/router';
@@ -75,14 +75,15 @@ class ResetPasswordModal extends Component {
   }
 }
 
-const ResetPasswordModalWithCookies = withCookies(ResetPasswordModal);
-
-export default graphql(resetPasswordMutation, {
-  props: ({ mutate }) => ({
-    resetPassword: input =>
-      mutate({
-        variables: { input },
-        refetchQueries: [{ query: meQuery }],
-      }),
+export default compose(
+  withCookies,
+  graphql(resetPasswordMutation, {
+    props: ({ mutate }) => ({
+      resetPassword: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
   }),
-})(ResetPasswordModalWithCookies);
+)(ResetPasswordModal);

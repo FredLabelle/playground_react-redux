@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
@@ -107,18 +107,16 @@ class LoginForm extends Component {
   }
 }
 
-const LoginFormWithCookies = withCookies(LoginForm);
-
-const LoginFormWithGraphQL = graphql(investorLoginMutation, {
-  props: ({ mutate }) => ({
-    login: input =>
-      mutate({
-        variables: { input },
-        refetchQueries: [{ query: meQuery }],
-      }),
+export default compose(
+  withCookies,
+  connect(({ router }) => ({ router })),
+  graphql(investorLoginMutation, {
+    props: ({ mutate }) => ({
+      login: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
   }),
-})(LoginFormWithCookies);
-
-const mapStateToProps = ({ router }) => ({ router });
-
-export default connect(mapStateToProps)(LoginFormWithGraphQL);
+)(LoginForm);

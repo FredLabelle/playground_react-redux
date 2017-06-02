@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
 
@@ -26,7 +25,11 @@ class ForgotPasswordModal extends Component {
       email: this.state.email,
       organizationId: this.props.organization.id,
     });
-    console.info(forgotPassword);
+    if (forgotPassword) {
+      //
+    } else {
+      console.error('FORGOT PASSWORD ERROR');
+    }
   };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
@@ -62,12 +65,8 @@ class ForgotPasswordModal extends Component {
   }
 }
 
-const ForgotPasswordModalWithGraphQL = graphql(forgotPasswordMutation, {
+export default graphql(forgotPasswordMutation, {
   props: ({ mutate }) => ({
     forgotPassword: input => mutate({ variables: { input } }),
   }),
 })(ForgotPasswordModal);
-
-const mapStateToProps = ({ router }) => router;
-
-export default connect(mapStateToProps)(ForgotPasswordModalWithGraphQL);

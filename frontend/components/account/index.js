@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
+import { compose, graphql } from 'react-apollo';
 import Link from 'next/link';
 import { Menu } from 'semantic-ui-react';
 
@@ -50,10 +50,9 @@ class Account extends Component {
   }
 }
 
-const AccountWithGraphQL = graphql(meQuery, {
-  props: ({ data: { me } }) => ({ me }),
-})(Account);
-
-const mapStateToProps = ({ router }) => ({ router });
-
-export default connect(mapStateToProps)(AccountWithGraphQL);
+export default compose(
+  connect(({ router }) => ({ router })),
+  graphql(meQuery, {
+    props: ({ data: { me } }) => ({ me }),
+  }),
+)(Account);
