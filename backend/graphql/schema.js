@@ -10,6 +10,16 @@ type User {
   firstName: String!
   lastName: String!
   email: String!
+  birthdate: String!
+  nationality: String!
+  address1: String!
+  address2: String!
+  city: String!
+  zipCode: String!
+  country: String!
+  state: String!
+  advisorFullName: String!
+  advisorEmail: String!
 }
 
 type Email {
@@ -72,12 +82,28 @@ input ResetPasswordInput {
   password: String!
 }
 
+input UpdateInvestorInput {
+  firstName: String
+  lastName: String
+  birthdate: String
+  nationality: String
+  address1: String
+  address2: String
+  city: String
+  zipCode: String
+  country: String
+  state: String
+  advisorFullName: String
+  advisorEmail: String
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): LoginResult!
   investorLogin(input: InvestorLoginInput!): LoginResult!
   logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): LoginResult!
+  updateInvestor(input: UpdateInvestorInput!): Boolean!
 }
 
 schema {
@@ -91,10 +117,13 @@ const resolvers = {
   JSON: GraphQLJSON,
   Query: {
     organization(root, { shortId }, context) {
-      return context.Organization.findByShortId(shortId);
+      return context.Organization.organization(shortId);
     },
     me(root, params, context) {
-      return context.user;
+      if (!context.user) {
+        return null;
+      }
+      return context.User.me(context.user);
     },
   },
   Mutation: {
@@ -112,6 +141,9 @@ const resolvers = {
     },
     resetPassword(root, { input }, context) {
       return context.User.resetPassword(input);
+    },
+    updateInvestor(root, { input }, context) {
+      return context.User.updateInvestor(context.user, input);
     },
   },
 };

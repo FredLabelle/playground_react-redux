@@ -10,7 +10,7 @@ import UserDropdownMenu from './user-dropdown-menu';
 import { organizationQuery, meQuery } from '../../lib/queries';
 // import organization from '../../queries/organization.gql';
 
-const NavBar = ({ organizationShortId, organization, me }) => (
+const NavBar = ({ organizationShortId, organization, me }) => organization && (
   <Menu secondary>
     <Menu.Item className="horizontally fitted">
       <Link href={`/?shortId=${organizationShortId}`} as={`/organization/${organizationShortId}`}>
@@ -35,12 +35,12 @@ NavBar.propTypes = {
   organization: PropTypes.shape({
     name: PropTypes.string.isRequired,
     domain: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   me: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
   }),
 };
-NavBar.defaultProps = { me: null };
+NavBar.defaultProps = { organization: null, me: null };
 
 const NavBarWithGraphQL = compose(
   graphql(organizationQuery, {

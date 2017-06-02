@@ -38,3 +38,9 @@ export const resetPasswordMutation = gql`
     }
   }
 `;
+
+export const updateInvestorMutation = gql`
+  mutation updateInvestor($input: UpdateInvestorInput!) {
+    updateInvestor(input: $input)
+  }
+`;

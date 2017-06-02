@@ -31,5 +31,9 @@ export default () => (
       rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/react-datepicker/0.46.0/react-datepicker.min.css"
+    />
   </Head>
 );

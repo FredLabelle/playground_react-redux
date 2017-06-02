@@ -31,6 +31,9 @@ class SignupForm extends Component {
     investmentMechanism: 'systematic',
     passwordMismatch: false,
   };
+  componentDidMount() {
+    Router.prefetch('/account');
+  }
   onSubmit = async event => {
     event.preventDefault();
     const passwordMismatch = this.state.password !== this.state.repeatPassword;
@@ -39,17 +42,16 @@ class SignupForm extends Component {
       return;
     }
     this.setState({ loading: true });
-    const { data } = await this.props.signup({
+    const { data: { investorSignup } } = await this.props.signup({
       ...omit(this.state, 'repeatPassword', 'passwordMismatch'),
       averageTicket: parseInt(this.state.averageTicket, 10),
       organizationShortId: this.props.organizationShortId,
     });
-    const { success, token } = data.investorSignup;
-    if (success) {
-      this.props.cookies.set('token', token, { path: '/' });
+    if (investorSignup.success) {
+      this.props.cookies.set('token', investorSignup.token, { path: '/' });
       Router.push(
-        `/?shortId=${this.props.organizationShortId}`,
-        `/organization/${this.props.organizationShortId}`,
+        `/account?shortId=${this.props.organizationShortId}&tab=administrative`,
+        `/organization/${this.props.organizationShortId}/account?tab=administrative`,
       );
     } else {
       console.error('SIGNUP ERROR');

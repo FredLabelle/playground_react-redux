@@ -6,8 +6,7 @@ import { Grid, Image, Segment, Header } from 'semantic-ui-react';
 import { organizationQuery } from '../../lib/queries';
 import Form from './form';
 
-const Login = ({ organization }) =>
-  organization &&
+const Login = ({ organization }) => organization && (
   <Grid columns="equal">
     <Grid.Column />
     <Grid.Column width={8}>
@@ -22,7 +21,8 @@ const Login = ({ organization }) =>
       </Segment>
     </Grid.Column>
     <Grid.Column />
-  </Grid>;
+  </Grid>
+);
 Login.propTypes = {
   organization: PropTypes.shape({
     name: PropTypes.string.isRequired,

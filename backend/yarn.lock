@@ -1272,19 +1272,19 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
-forest-express-sequelize@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/forest-express-sequelize/-/forest-express-sequelize-1.1.4.tgz#9803b063a5e5c20157804a4a884edd5006abdab0"
+forest-express-sequelize@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/forest-express-sequelize/-/forest-express-sequelize-1.1.5.tgz#3b0c7739d4632b8a0a3671ceaf53deaa9be34dbb"
   dependencies:
     bluebird "2.9.25"
-    forest-express "1.1.4"
+    forest-express "1.1.5"
     http-errors "1.6.1"
     lodash "3.9.3"
     moment "2.10.6"
 
-forest-express@1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/forest-express/-/forest-express-1.1.4.tgz#f22ac902ad35a0e5fab6cad015c4f9fbeff5b147"
+forest-express@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/forest-express/-/forest-express-1.1.5.tgz#f4a0894e1668bce4db5c55026de7f83337d41c2b"
   dependencies:
     bcryptjs "2.4.3"
     bluebird "3.3.4"
@@ -2190,7 +2190,7 @@ lodash@^3.9.3, lodash@~3.10.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.3.0:
+lodash@^4.0.0, lodash@^4.17.4, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -2309,7 +2309,7 @@ moment@2.x.x, "moment@>= 2.9.0", moment@^2.13.0:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
-ms@0.7.1:
+ms@0.7.1, ms@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
 
@@ -2320,10 +2320,6 @@ ms@0.7.2:
 ms@2.0.0, ms@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
-
-ms@^0.7.1:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
 
 mute-stream@0.0.5:
   version "0.0.5"

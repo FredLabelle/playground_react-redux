@@ -35,8 +35,8 @@ class ResetPasswordModal extends Component {
     if (resetPassword.success) {
       this.props.cookies.set('token', resetPassword.token, { path: '/' });
       Router.push(
-        `/?shortId=${this.props.organizationShortId}`,
-        `/organization/${this.props.organizationShortId}`,
+        `/account?shortId=${this.props.organizationShortId}`,
+        `/organization/${this.props.organizationShortId}/account`,
       );
     } else {
       console.error('RESET PASSWORD ERROR');

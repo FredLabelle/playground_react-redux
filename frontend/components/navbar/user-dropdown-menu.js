@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { graphql, withApollo, ApolloClient } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
 import { Dropdown } from 'semantic-ui-react';
+import Link from 'next/link';
 import Router from 'next/router';
 
 import { logoutMutation } from '../../lib/mutations';
@@ -38,8 +39,15 @@ class UserDropdownMenu extends Component {
     return (
       <Dropdown item text={this.props.firstName}>
         <Dropdown.Menu>
-          <Dropdown.Item>My Account</Dropdown.Item>
-          <Dropdown.Item onClick={this.onClick}>Logout</Dropdown.Item>
+          <Dropdown.Item>
+            <Link
+              href={`/account?shortId=${this.props.organizationShortId}`}
+              as={`/organization/${this.props.organizationShortId}/account`}
+            >
+              <a>My Account</a>
+            </Link>
+          </Dropdown.Item>
+          <Dropdown.Item onClick={this.onClick}><a>Logout</a></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );

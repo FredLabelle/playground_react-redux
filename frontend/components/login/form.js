@@ -29,6 +29,9 @@ class LoginForm extends Component {
     loading: false,
     error: false,
   };
+  componentDidMount() {
+    Router.prefetch('/account');
+  }
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ loading: true });
@@ -40,8 +43,8 @@ class LoginForm extends Component {
     if (investorLogin.success) {
       this.props.cookies.set('token', investorLogin.token, { path: '/' });
       Router.push(
-        `/?shortId=${this.props.organizationShortId}`,
-        `/organization/${this.props.organizationShortId}`,
+        `/account?shortId=${this.props.organizationShortId}`,
+        `/organization/${this.props.organizationShortId}/account`,
       );
     } else {
       this.setState({ loading: false, error: true });

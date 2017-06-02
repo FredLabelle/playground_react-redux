@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
+const shortid = require('shortid');
 
 const sequelize = require('./sequelize');
 
@@ -11,6 +12,10 @@ module.exports = sequelize.define(
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
       allowNull: false,
+    },
+    shortId: {
+      type: Sequelize.STRING,
+      unique: true,
     },
     firstName: {
       type: Sequelize.STRING,
@@ -43,9 +48,15 @@ module.exports = sequelize.define(
   {
     hooks: {
       async beforeCreate(user) {
+        // generate password on user creation
         if (user.role === 'investor') {
           const password = await bcrypt.hash(user.password, 10);
           Object.assign(user, { password });
+        }
+        // generate shortId on user creation
+        if (!user.shortId) {
+          const shortId = shortid.generate();
+          Object.assign(user, { shortId });
         }
       },
     },

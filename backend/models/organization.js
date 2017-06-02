@@ -13,14 +13,13 @@ const Organization = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
+    shortId: {
+      type: Sequelize.STRING,
+      unique: true,
+    },
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-    },
-    shortId: {
-      type: Sequelize.STRING,
-      // allowNull: false,
-      unique: true,
     },
     website: {
       type: Sequelize.STRING,

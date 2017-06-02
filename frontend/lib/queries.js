@@ -16,6 +16,17 @@ export const meQuery = gql`
     me {
       firstName
       lastName
+      email
+      birthdate
+      nationality
+      address1
+      address2
+      city
+      zipCode
+      country
+      state
+      advisorFullName
+      advisorEmail
     }
   }
 `;

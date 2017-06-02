@@ -11,9 +11,10 @@ app.prepare().then(() => {
   };
   const server = express();
   server.use(cookiesMiddleware());
+  server.get('/organization/:shortId', route('/'));
   server.get('/organization/:shortId/signup', route('/signup'));
   server.get('/organization/:shortId/login', route('/login'));
-  server.get('/organization/:shortId', route('/'));
+  server.get('/organization/:shortId/account', route('/account'));
   const handle = app.getRequestHandler();
   server.get('*', (req, res) => {
     handle(req, res, parse(req.url, true));

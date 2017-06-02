@@ -4,19 +4,21 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
+const pick = require('lodash/pick');
 
 const { User } = require('../models');
-const OrganizationService = require('./organization');
+const OrganizationService = require('../services/organization');
 const { sendEmail } = require('../lib/mailjet');
-
-const loader = new DataLoader(ids => Promise.all(ids.map(id => User.findById(id))));
 
 const sign = promisify(jwt.sign);
 
 const UserService = {
-  findById(id) {
-    return loader.load(id);
+  idLoader() {
+    return new DataLoader(ids => Promise.all(ids.map(id => User.findById(id))));
   },
+  /* findById(id) {
+    return this.loader.load(id);
+  },*/
   findByEmail(email, organizationId) {
     return User.findOne({
       where: { email, organizationId },
@@ -111,6 +113,32 @@ const UserService = {
       return { success: false };
     }
   },
-};
+  async me(user) {
+    try {
+      const result = Object.assign({}, user.toJSON());
+      if (user.role === 'admin') {
+        //
+      } else if (user.role === 'investor') {
+        const investorProfile = await user.getInvestorProfile();
+        Object.assign(result, investorProfile.toJSON());
+      }
+      return result;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async updateInvestor(user, input) {
+    try {
+      await user.update(input);
+      const investorProfile = await user.getInvestorProfile();
+      await investorProfile.update(input);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+}
 
 module.exports = UserService;

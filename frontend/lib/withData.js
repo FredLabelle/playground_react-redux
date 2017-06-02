@@ -11,20 +11,22 @@ export default ComposedComponent =>
   class WithData extends Component {
     static displayName = `WithData(${ComposedComponent.displayName})`;
     static propTypes = {
+      universalCookies: PropTypes.shape().isRequired,
       serverState: PropTypes.shape().isRequired,
     };
     static async getInitialProps(context) {
-      let serverState = {};
+      const universalCookies = process.browser ? new Cookies() : context.req.universalCookies;
+      const serverState = {};
       const composedInitialProps = ComposedComponent.getInitialProps
         ? await ComposedComponent.getInitialProps(context)
         : {};
       if (!process.browser) {
-        const apollo = initApollo(context.req.universalCookies);
+        const apollo = initApollo(universalCookies);
         const redux = initRedux(apollo);
         redux.dispatch(onRouteChangeStart(context.req.url));
         const url = { query: context.query, pathname: context.pathname };
         const app = (
-          <CookiesProvider cookies={context.req.universalCookies}>
+          <CookiesProvider cookies={universalCookies}>
             <ApolloProvider client={apollo} store={redux}>
               <ComposedComponent url={url} {...composedInitialProps} />
             </ApolloProvider>
@@ -32,23 +34,24 @@ export default ComposedComponent =>
         );
         await getDataFromTree(app);
         const state = redux.getState();
-        serverState = {
+        Object.assign(serverState, {
           apollo: {
             data: state.apollo.data,
           },
           router: state.router,
-        };
+        });
       }
       return {
+        universalCookies,
         serverState,
         ...composedInitialProps,
       };
     }
     constructor(props) {
       super(props);
-      this.cookies = process.browser && new Cookies();
+      this.cookies = process.browser ? new Cookies() : props.universalCookies;
       this.apollo = initApollo(this.cookies);
-      this.redux = initRedux(this.apollo, this.props.serverState);
+      this.redux = initRedux(this.apollo, props.serverState);
     }
     render() {
       return (
