@@ -1,6 +1,7 @@
 module.exports = {
   webpack(config) {
-    config.module.rules.push(/* {
+    config.module.rules.push(
+      /* {
       test: /\.css$/,
       loader: 'emit-file-loader',
       options: {
@@ -9,10 +10,11 @@ module.exports = {
     }, {
       test: /\.css$/,
       use: ['babel-loader', 'raw-loader']
-    }, */{
-      test: /\.gql$/,
-      loader: 'graphql-tag/loader',
-    });
+    }, */ {
+        test: /\.gql$/,
+        loader: 'graphql-tag/loader',
+      },
+    );
     return config;
   },
 };

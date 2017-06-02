@@ -8,7 +8,7 @@ module.exports.seedDatabase = async (req, res) => {
   }
   try {
     await sequelize.sync({ force: true });
-    await Organization.create({
+    const organization = await Organization.create({
       name: 'eClub',
       shortId: 'eclub',
       website: 'https://efounders.co',
@@ -29,7 +29,7 @@ module.exports.seedDatabase = async (req, res) => {
       email: 'simon@e-founders.com',
       password: 'password',
       averageTicket: 5000,
-      organizationShortId: 'eclub',
+      organizationId: organization.id,
     });
     return res.json({ success: 'Done!' });
   } catch (error) {

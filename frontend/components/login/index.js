@@ -1,12 +1,13 @@
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
 import { Grid, Image, Segment, Header } from 'semantic-ui-react';
 
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import Form from './form';
 
-const Login = ({ organization }) => organization && (
+const Login = ({ organization }) =>
+  organization &&
   <Grid columns="equal">
     <Grid.Column />
     <Grid.Column width={8}>
@@ -17,27 +18,24 @@ const Login = ({ organization }) => organization && (
       />
       <Segment>
         <Header as="h2" dividing>Welcome at {organization.name}</Header>
-        <Form />
+        <Form organization={organization} />
       </Segment>
     </Grid.Column>
     <Grid.Column />
-  </Grid>
-);
+  </Grid>;
 Login.propTypes = {
-  organization: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    domain: PropTypes.string.isRequired,
-  }),
+  router: RouterPropType.isRequired,
+  organization: OrganizationPropType,
 };
 Login.defaultProps = { organization: null };
 
 const LoginWithGraphGL = graphql(organizationQuery, {
-  options: ({ organizationShortId }) => ({
-    variables: { shortId: organizationShortId },
+  options: ({ router }) => ({
+    variables: { shortId: router.organizationShortId },
   }),
-  props: ({ data }) => ({ organization: data.organization }),
+  props: ({ data: { organization } }) => ({ organization }),
 })(Login);
 
-const mapStateToProps = ({ router }) => router;
+const mapStateToProps = ({ router }) => ({ router });
 
 export default connect(mapStateToProps)(LoginWithGraphGL);

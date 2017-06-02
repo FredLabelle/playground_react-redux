@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:latest
+FROM node:8.0.0-alpine
 MAINTAINER Simon Arvaux <simon@e-founders.com>
 LABEL name="investorx-backend"
 
@@ -8,7 +8,7 @@ WORKDIR /opt/app
 # Install node-gyp dependencies
 RUN apk add --no-cache make gcc g++ python
 # Install node-gyp
-RUN yarn add global node-gyp
+RUN yarn global add node-gyp
 
 # Install packages using yarn
 COPY package.json yarn.lock /opt/

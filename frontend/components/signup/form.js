@@ -7,18 +7,16 @@ import without from 'lodash/without';
 import { Form, Header, Button, Segment, Checkbox, Message } from 'semantic-ui-react';
 import Router from 'next/router';
 
+import { OrganizationPropType } from '../../lib/prop-types';
 import { investorSignupMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 
 class SignupForm extends Component {
   static propTypes = {
-    organizationShortId: PropTypes.string.isRequired,
-    dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-    defaultCurrency: PropTypes.string.isRequired,
+    organization: OrganizationPropType.isRequired,
     signup: PropTypes.func.isRequired,
-    cookies: PropTypes.instanceOf(Cookies),
+    cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
-  static defaultProps = { cookies: null };
   state = {
     firstName: '',
     lastName: '',
@@ -27,7 +25,7 @@ class SignupForm extends Component {
     repeatPassword: '',
     dealCategories: [],
     averageTicket: '',
-    averageTicketCurrency: this.props.defaultCurrency,
+    averageTicketCurrency: this.props.organization.defaultCurrency,
     investmentMechanism: 'systematic',
     passwordMismatch: false,
   };
@@ -45,13 +43,14 @@ class SignupForm extends Component {
     const { data: { investorSignup } } = await this.props.signup({
       ...omit(this.state, 'repeatPassword', 'passwordMismatch'),
       averageTicket: parseInt(this.state.averageTicket, 10),
-      organizationShortId: this.props.organizationShortId,
+      organizationId: this.props.organization.id,
     });
-    if (investorSignup.success) {
-      this.props.cookies.set('token', investorSignup.token, { path: '/' });
+    if (investorSignup) {
+      this.props.cookies.set('token', investorSignup, { path: '/' });
+      const { shortId } = this.props.organization;
       Router.push(
-        `/account?shortId=${this.props.organizationShortId}&tab=administrative`,
-        `/organization/${this.props.organizationShortId}/account?tab=administrative`,
+        `/account?shortId=${shortId}&tab=administrative`,
+        `/organization/${shortId}/account?tab=administrative`,
       );
     } else {
       console.error('SIGNUP ERROR');
@@ -148,7 +147,7 @@ class SignupForm extends Component {
         <Header as="h3" dividing>Investor profile</Header>
         <Form.Group grouped id="dealCategories">
           <label htmlFor="dealCategories">Deal categories interested in</label>
-          {this.props.dealCategories.map(category => (
+          {this.props.organization.dealCategories.map(category =>
             <Form.Field
               name={category}
               checked={this.state.dealCategories.includes(category)}
@@ -156,8 +155,8 @@ class SignupForm extends Component {
               key={category}
               label={category}
               control={Checkbox}
-            />
-          ))}
+            />,
+          )}
         </Form.Group>
         <Form.Group>
           <Form.Input

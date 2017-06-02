@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
-const pick = require('lodash/pick');
 
 const { User } = require('../models');
 const OrganizationService = require('../services/organization');
@@ -35,45 +34,42 @@ const UserService = {
   },
   async signup(input) {
     try {
-      const organization = await OrganizationService.findByShortId(input.organizationShortId);
+      const organization = await OrganizationService.findById(input.organizationId);
       const canSignup = await UserService.canSignup(input.email, organization.id);
       if (!canSignup) {
-        return { success: false };
+        return null;
       }
       const investor = Object.assign({ role: 'investor' }, input);
       const user = await organization.createUser(investor);
       await user.createInvestorProfile(investor);
-      const token = await sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
-      return { success: true, token };
+      return sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
-      return { success: false };
+      return null;
     }
   },
   passwordsMatch(plainTextPassword, hashedPassword) {
     return bcrypt.compare(plainTextPassword, hashedPassword);
   },
-  async login({ email, password, organizationShortId }) {
+  async login({ email, password, organizationId }) {
     try {
-      const organization = await OrganizationService.findByShortId(organizationShortId);
-      const user = await UserService.findByEmail(email, organization.id);
+      const user = await UserService.findByEmail(email, organizationId);
       const passwordsMatch = await UserService.passwordsMatch(password, user.password);
       if (!passwordsMatch) {
-        return { success: false };
+        return null;
       }
-      const token = await sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
-      return { success: true, token };
+      return sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
-      return { success: false };
+      return null;
     }
   },
   logout() {
     return true;
   },
-  async forgotPassword({ email, organizationShortId }) {
+  async forgotPassword({ email, organizationId }) {
     try {
-      const organization = await OrganizationService.findByShortId(organizationShortId);
+      const organization = await OrganizationService.findById(organizationId);
       const user = await UserService.findByEmail(email, organization.id);
       if (!user) {
         return false;
@@ -83,7 +79,7 @@ const UserService = {
       await user.update({ resetPasswordToken });
       const queryString = stringify({ token: resetPasswordToken });
       const frontendUrl = process.env.FRONTEND_URL;
-      const url = `${frontendUrl}/organization/${organizationShortId}/login?${queryString}`;
+      const url = `${frontendUrl}/organization/${organization.shortId}/login?${queryString}`;
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
@@ -102,15 +98,14 @@ const UserService = {
     try {
       const user = await UserService.findByResetPasswordToken(input.token);
       if (!user) {
-        return { success: false };
+        return null;
       }
       const password = await bcrypt.hash(input.password, 10);
       await user.update({ password, resetPasswordToken: null });
-      const token = await sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
-      return { success: true, token };
+      return sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
-      return { success: false };
+      return null;
     }
   },
   async me(user) {
@@ -139,6 +134,6 @@ const UserService = {
       return false;
     }
   },
-}
+};
 
 module.exports = UserService;

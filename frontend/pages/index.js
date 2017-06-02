@@ -4,11 +4,10 @@ import withData from '../lib/withData';
 import NavBar from '../components/navbar';
 import Index from '../components/index';
 
-const IndexPage = () => (
+const IndexPage = () =>
   <Container>
     <NavBar />
     <Index />
-  </Container>
-);
+  </Container>;
 
 export default withData(IndexPage);

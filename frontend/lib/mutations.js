@@ -2,19 +2,13 @@ import { gql } from 'react-apollo';
 
 export const investorSignupMutation = gql`
   mutation investorSignup($input: InvestorSignupInput!) {
-    investorSignup(input: $input) {
-      success
-      token
-    }
+    investorSignup(input: $input)
   }
 `;
 
 export const investorLoginMutation = gql`
   mutation investorLogin($input: InvestorLoginInput!) {
-    investorLogin(input: $input) {
-      success
-      token
-    }
+    investorLogin(input: $input)
   }
 `;
 
@@ -32,10 +26,7 @@ export const forgotPasswordMutation = gql`
 
 export const resetPasswordMutation = gql`
   mutation resetPassword($input: ResetPasswordInput!) {
-    resetPassword(input: $input) {
-      success
-      token
-    }
+    resetPassword(input: $input)
   }
 `;
 

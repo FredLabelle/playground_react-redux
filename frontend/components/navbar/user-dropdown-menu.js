@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { connect } from 'react-redux';
 import { graphql, withApollo, ApolloClient } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
 import { Dropdown } from 'semantic-ui-react';
@@ -12,24 +11,26 @@ import { meQuery } from '../../lib/queries';
 
 class UserDropdownMenu extends Component {
   static propTypes = {
-    organizationShortId: PropTypes.string.isRequired,
+    shortId: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     logout: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
-    cookies: PropTypes.instanceOf(Cookies),
+    cookies: PropTypes.instanceOf(Cookies).isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     client: PropTypes.instanceOf(ApolloClient).isRequired,
   };
-  static defaultProps = { cookies: null };
+  componentDidMount() {
+    Router.prefetch('/login');
+  }
   onClick = async () => {
     this.props.client.resetStore();
     const { data: { logout } } = await this.props.logout();
     if (logout) {
       this.props.cookies.remove('token', { path: '/' });
       Router.push(
-        `/login?shortId=${this.props.organizationShortId}`,
-        `/organization/${this.props.organizationShortId}/login`,
+        `/login?shortId=${this.props.shortId}`,
+        `/organization/${this.props.shortId}/login`,
       );
     } else {
       console.error('LOGOUT ERROR');
@@ -41,8 +42,9 @@ class UserDropdownMenu extends Component {
         <Dropdown.Menu>
           <Dropdown.Item>
             <Link
-              href={`/account?shortId=${this.props.organizationShortId}`}
-              as={`/organization/${this.props.organizationShortId}/account`}
+              prefetch
+              href={`/account?shortId=${this.props.shortId}`}
+              as={`/organization/${this.props.shortId}/account`}
             >
               <a>My Account</a>
             </Link>
@@ -58,7 +60,7 @@ const UserDropdownMenuWithApollo = withApollo(UserDropdownMenu);
 
 const UserDropdownMenuWithCookies = withCookies(UserDropdownMenuWithApollo);
 
-const UserDropdownMenuWithGraphQL = graphql(logoutMutation, {
+export default graphql(logoutMutation, {
   props: ({ mutate }) => ({
     logout: () =>
       mutate({
@@ -66,7 +68,3 @@ const UserDropdownMenuWithGraphQL = graphql(logoutMutation, {
       }),
   }),
 })(UserDropdownMenuWithCookies);
-
-const mapStateToProps = ({ router }) => router;
-
-export default connect(mapStateToProps)(UserDropdownMenuWithGraphQL);

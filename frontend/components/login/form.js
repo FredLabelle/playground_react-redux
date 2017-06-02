@@ -6,6 +6,7 @@ import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { investorLoginMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 import ForgotPasswordModal from './forgot-password-modal';
@@ -13,19 +14,16 @@ import ResetPasswordModal from './reset-password-modal';
 
 class LoginForm extends Component {
   static propTypes = {
-    organizationShortId: PropTypes.string.isRequired,
-    query: PropTypes.shape({
-      token: PropTypes.string,
-    }).isRequired,
-    cookies: PropTypes.instanceOf(Cookies),
+    router: RouterPropType.isRequired,
+    organization: OrganizationPropType.isRequired,
+    cookies: PropTypes.instanceOf(Cookies).isRequired,
     login: PropTypes.func.isRequired,
   };
-  static defaultProps = { cookies: null };
   state = {
     email: '',
     password: '',
     forgotPasswordModalOpen: false,
-    resetPasswordModalOpen: !!this.props.query.token,
+    resetPasswordModalOpen: !!this.props.router.query.token,
     loading: false,
     error: false,
   };
@@ -38,14 +36,12 @@ class LoginForm extends Component {
     const { data: { investorLogin } } = await this.props.login({
       email: this.state.email,
       password: this.state.password,
-      organizationShortId: this.props.organizationShortId,
+      organizationId: this.props.organization.id,
     });
-    if (investorLogin.success) {
-      this.props.cookies.set('token', investorLogin.token, { path: '/' });
-      Router.push(
-        `/account?shortId=${this.props.organizationShortId}`,
-        `/organization/${this.props.organizationShortId}/account`,
-      );
+    if (investorLogin) {
+      this.props.cookies.set('token', investorLogin, { path: '/' });
+      const { shortId } = this.props.organization;
+      Router.push(`/account?shortId=${shortId}`, `/organization/${shortId}/account`);
     } else {
       this.setState({ loading: false, error: true });
     }
@@ -55,10 +51,8 @@ class LoginForm extends Component {
   };
   onResetPasswordModalClose = () => {
     this.setState({ resetPasswordModalOpen: false });
-    Router.replace(
-      `/login?shortId=${this.props.organizationShortId}`,
-      `/organization/${this.props.organizationShortId}/login`,
-    );
+    const { shortId } = this.props.organization;
+    Router.replace(`/login?shortId=${shortId}`, `/organization/${shortId}/login`);
   };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
@@ -101,12 +95,12 @@ class LoginForm extends Component {
           open={this.state.forgotPasswordModalOpen}
           onClose={this.onForgotPasswordModalClose}
           email={this.state.email}
+          organization={this.props.organization}
         />
         <ResetPasswordModal
-          organizationShortId={this.props.organizationShortId}
           open={this.state.resetPasswordModalOpen}
           onClose={this.onResetPasswordModalClose}
-          token={this.props.query.token}
+          router={this.props.router}
         />
       </Form>
     );
@@ -125,6 +119,6 @@ const LoginFormWithGraphQL = graphql(investorLoginMutation, {
   }),
 })(LoginFormWithCookies);
 
-const mapStateToProps = ({ router }) => router;
+const mapStateToProps = ({ router }) => ({ router });
 
 export default connect(mapStateToProps)(LoginFormWithGraphQL);

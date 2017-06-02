@@ -5,39 +5,32 @@ import { withCookies, Cookies } from 'react-cookie';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
 import Router from 'next/router';
 
+import { RouterPropType } from '../../lib/prop-types';
 import { resetPasswordMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 
 class ResetPasswordModal extends Component {
   static propTypes = {
-    organizationShortId: PropTypes.string.isRequired,
+    router: RouterPropType.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
-    token: PropTypes.string,
-    // eslint-disable-next-line react/no-unused-prop-types
     resetPassword: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
-    cookies: PropTypes.instanceOf(Cookies),
+    cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
-  static defaultProps = { token: '', email: '', cookies: null };
-  state = {
-    password: '',
-    repeatPassword: '',
-  };
+  state = { password: '', repeatPassword: '' };
   onSubmit = async event => {
     event.preventDefault();
     // this.props.onClose();
     const { data: { resetPassword } } = await this.props.resetPassword({
       password: this.state.password,
-      token: this.props.token,
+      token: this.props.router.query.token,
     });
-    if (resetPassword.success) {
-      this.props.cookies.set('token', resetPassword.token, { path: '/' });
-      Router.push(
-        `/account?shortId=${this.props.organizationShortId}`,
-        `/organization/${this.props.organizationShortId}/account`,
-      );
+    if (resetPassword) {
+      this.props.cookies.set('token', resetPassword, { path: '/' });
+      const shortId = this.props.router.organizationShortId;
+      Router.push(`/account?shortId=${shortId}`, `/organization/${shortId}/account`);
     } else {
       console.error('RESET PASSWORD ERROR');
     }
@@ -50,9 +43,7 @@ class ResetPasswordModal extends Component {
       <Modal open={this.props.open} onClose={this.props.onClose} size="small">
         <Header icon="privacy" content="Reset password" />
         <Modal.Content>
-          <p>
-            Reset your password by typing it twice.
-          </p>
+          <p>Reset your password by typing it twice.</p>
           <Form id="reset-password" onSubmit={this.onSubmit}>
             <Form.Input
               name="password"

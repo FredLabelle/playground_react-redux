@@ -7,26 +7,14 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
+import { MePropType } from '../../lib/prop-types';
 import { updateInvestorMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 
 class AdministrativeTab extends Component {
   static propTypes = {
-    me: PropTypes.shape({
-      firstName: PropTypes.string.isRequired,
-      lastName: PropTypes.string.isRequired,
-      birthdate: PropTypes.string,
-      nationality: PropTypes.string,
-      address1: PropTypes.string,
-      address2: PropTypes.string,
-      city: PropTypes.string,
-      zipCode: PropTypes.string,
-      country: PropTypes.string,
-      state: PropTypes.string,
-      advisorFullName: PropTypes.string,
-      advisorEmail: PropTypes.string,
-    }).isRequired,
-    active: PropTypes.string.isRequired,
+    me: MePropType.isRequired,
+    active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
   };
   state = {
@@ -46,7 +34,7 @@ class AdministrativeTab extends Component {
   };
   componentDidMount() {
     const selects = [...document.getElementsByClassName('country-state-select')];
-    selects.forEach((select) => {
+    selects.forEach(select => {
       const { style } = select;
       style.height = '37px';
     });
@@ -84,7 +72,7 @@ class AdministrativeTab extends Component {
   };
   render() {
     return (
-      <div className={`ui bottom attached tab segment ${this.props.active}`}>
+      <Segment attached="bottom" className={`tab ${this.props.active && 'active'}`}>
         <Form onSubmit={this.onSubmit}>
           <Header as="h3" dividing>Individual information</Header>
           <Form.Group>
@@ -199,7 +187,7 @@ class AdministrativeTab extends Component {
             <Button primary disabled={this.state.loading}>Save administrative settings</Button>
           </Segment>
         </Form>
-      </div>
+      </Segment>
     );
   }
 }

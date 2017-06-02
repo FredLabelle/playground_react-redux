@@ -4,11 +4,10 @@ import withData from '../lib/withData';
 import NavBar from '../components/navbar';
 import Signup from '../components/signup';
 
-const SignupPage = () => (
+const SignupPage = () =>
   <Container>
     <NavBar />
     <Signup />
-  </Container>
-);
+  </Container>;
 
 export default withData(SignupPage);

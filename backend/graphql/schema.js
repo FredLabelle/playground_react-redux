@@ -1,12 +1,14 @@
 const { makeExecutableSchema } = require('graphql-tools');
 const GraphQLJSON = require('graphql-type-json');
 
-const schema = `
+const { schema: mutationsSchema, resolvers: mutationsResolvers } = require('./mutations');
 
+const schema = `
 scalar JSON
 
 type User {
-  id: String!
+  id: ID!
+  shortId: ID!
   firstName: String!
   lastName: String!
   email: String!
@@ -33,9 +35,9 @@ type InvestmentMechanism {
 }
 
 type Organization {
-  id: String!
+  id: ID!
+  shortId: ID!
   name: String!
-  shortId: String!
   website: String!
   domain: String!
   dealCategories: [String]!
@@ -45,72 +47,14 @@ type Organization {
 }
 
 type Query {
-  organization(shortId: String!): Organization
+  organization(shortId: ID!): Organization
   me: User
-}
-
-input InvestorSignupInput {
-  firstName: String!
-  lastName: String!
-  email: String!
-  password: String!
-  dealCategories: [String]!
-  averageTicket: Int!
-  averageTicketCurrency: String!
-  investmentMechanism: String!
-  organizationShortId: String!
-}
-
-input InvestorLoginInput {
-  email: String!
-  password: String!
-  organizationShortId: String!
-}
-
-type LoginResult {
-  success: Boolean!
-  token: String
-}
-
-input ForgotPasswordInput {
-  email: String!
-  organizationShortId: String!
-}
-
-input ResetPasswordInput {
-  token: String!
-  password: String!
-}
-
-input UpdateInvestorInput {
-  firstName: String
-  lastName: String
-  birthdate: String
-  nationality: String
-  address1: String
-  address2: String
-  city: String
-  zipCode: String
-  country: String
-  state: String
-  advisorFullName: String
-  advisorEmail: String
-}
-
-type Mutation {
-  investorSignup(input: InvestorSignupInput!): LoginResult!
-  investorLogin(input: InvestorLoginInput!): LoginResult!
-  logout: Boolean!
-  forgotPassword(input: ForgotPasswordInput!): Boolean!
-  resetPassword(input: ResetPasswordInput!): LoginResult!
-  updateInvestor(input: UpdateInvestorInput!): Boolean!
 }
 
 schema {
   query: Query
   mutation: Mutation
 }
-
 `;
 
 const resolvers = {
@@ -126,31 +70,11 @@ const resolvers = {
       return context.User.me(context.user);
     },
   },
-  Mutation: {
-    investorSignup(root, { input }, context) {
-      return context.User.signup(input);
-    },
-    investorLogin(root, { input }, context) {
-      return context.User.login(input);
-    },
-    logout(root, params, context) {
-      return context.User.logout();
-    },
-    forgotPassword(root, { input }, context) {
-      return context.User.forgotPassword(input);
-    },
-    resetPassword(root, { input }, context) {
-      return context.User.resetPassword(input);
-    },
-    updateInvestor(root, { input }, context) {
-      return context.User.updateInvestor(context.user, input);
-    },
-  },
 };
 
 const executableSchema = makeExecutableSchema({
-  typeDefs: schema,
-  resolvers,
+  typeDefs: [mutationsSchema, schema],
+  resolvers: Object.assign(mutationsResolvers, resolvers),
 });
 
 module.exports = executableSchema;

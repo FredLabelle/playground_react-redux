@@ -1,8 +1,10 @@
 import { gql } from 'react-apollo';
 
 export const organizationQuery = gql`
-  query organization($shortId: String!) {
+  query organization($shortId: ID!) {
     organization(shortId: $shortId) {
+      id
+      shortId
       name
       domain
       dealCategories

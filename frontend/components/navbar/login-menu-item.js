@@ -2,16 +2,12 @@ import PropTypes from 'prop-types';
 import { Menu } from 'semantic-ui-react';
 import Link from 'next/link';
 
-const LoginMenuItem = ({ organizationShortId }) => (
+const LoginMenuItem = ({ shortId }) =>
   <Menu.Item>
-    <Link
-      href={`/login?shortId=${organizationShortId}`}
-      as={`/organization/${organizationShortId}/login`}
-    >
+    <Link prefetch href={`/login?shortId=${shortId}`} as={`/organization/${shortId}/login`}>
       <a>Login</a>
     </Link>
-  </Menu.Item>
-);
-LoginMenuItem.propTypes = { organizationShortId: PropTypes.string.isRequired };
+  </Menu.Item>;
+LoginMenuItem.propTypes = { shortId: PropTypes.string.isRequired };
 
 export default LoginMenuItem;

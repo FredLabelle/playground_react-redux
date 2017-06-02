@@ -6,7 +6,7 @@ const title = 'InvestorX';
 const description = 'InvestorX description';
 // const socialUrl = `${FRONTEND_URL}/img/social.jpg`;
 
-export default () => (
+export default () =>
   <Head>
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -35,5 +35,4 @@ export default () => (
       rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/react-datepicker/0.46.0/react-datepicker.min.css"
     />
-  </Head>
-);
+  </Head>;

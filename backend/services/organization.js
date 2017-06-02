@@ -14,6 +14,9 @@ const OrganizationService = {
       )
     );
   },
+  findById(id) {
+    return Organization.findById(id);
+  },
   findByShortId(shortId) {
     return Organization.findOne({
       where: { shortId },
@@ -23,6 +26,6 @@ const OrganizationService = {
     const organization = await OrganizationService.findByShortId(shortId);
     return organization.toJSON();
   },
-}
+};
 
 module.exports = OrganizationService;

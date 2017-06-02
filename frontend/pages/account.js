@@ -4,11 +4,10 @@ import withData from '../lib/withData';
 import NavBar from '../components/navbar';
 import Account from '../components/account';
 
-const AccountPage = () => (
+const AccountPage = () =>
   <Container>
     <NavBar />
     <Account />
-  </Container>
-);
+  </Container>;
 
 export default withData(AccountPage);

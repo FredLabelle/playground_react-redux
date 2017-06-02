@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
 
+import { OrganizationPropType } from '../../lib/prop-types';
 import { forgotPasswordMutation } from '../../lib/mutations';
 
 class ForgotPasswordModal extends Component {
@@ -11,7 +12,7 @@ class ForgotPasswordModal extends Component {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     email: PropTypes.string.isRequired,
-    organizationShortId: PropTypes.string.isRequired,
+    organization: OrganizationPropType.isRequired,
     forgotPassword: PropTypes.func.isRequired,
   };
   state = { email: '' };
@@ -23,7 +24,7 @@ class ForgotPasswordModal extends Component {
     this.props.onClose();
     const { data: { forgotPassword } } = await this.props.forgotPassword({
       email: this.state.email,
-      organizationShortId: this.props.organizationShortId,
+      organizationId: this.props.organization.id,
     });
     console.info(forgotPassword);
   };

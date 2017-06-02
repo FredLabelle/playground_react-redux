@@ -1,30 +1,29 @@
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
+import { Segment } from 'semantic-ui-react';
 
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import Form from './form';
 
-const Signup = ({ organizationShortId, dealCategories, defaultCurrency }) => (
-  <Form
-    organizationShortId={organizationShortId}
-    dealCategories={dealCategories}
-    defaultCurrency={defaultCurrency}
-  />
-);
+const Signup = ({ organization }) =>
+  organization &&
+  <Segment>
+    <Form organization={organization} />
+  </Segment>;
 Signup.propTypes = {
-  organizationShortId: PropTypes.string.isRequired,
-  dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-  defaultCurrency: PropTypes.string.isRequired,
+  router: RouterPropType.isRequired,
+  organization: OrganizationPropType,
 };
+Signup.defaultProps = { organization: null };
 
 const SignupWithGraphGL = graphql(organizationQuery, {
-  options: ({ organizationShortId }) => ({
-    variables: { shortId: organizationShortId },
+  options: ({ router }) => ({
+    variables: { shortId: router.organizationShortId },
   }),
-  props: ({ data }) => data.organization,
+  props: ({ data: { organization } }) => ({ organization }),
 })(Signup);
 
-const mapStateToProps = ({ router }) => router;
+const mapStateToProps = ({ router }) => ({ router });
 
 export default connect(mapStateToProps)(SignupWithGraphGL);
