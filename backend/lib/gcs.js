@@ -13,7 +13,6 @@ const uploadImageFromUrl = (url, name) =>
       const contentType = response.headers['content-type'];
       const file = bucket.file(name);
       const writeStream = file.createWriteStream({
-        public: true,
         metadata: { contentType },
       });
       response
