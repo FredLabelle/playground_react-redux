@@ -38,6 +38,11 @@ module.exports = sequelize.define('InvestorProfile', {
     defaultValue: '',
     allowNull: false,
   },
+  idDocument: {
+    type: Sequelize.STRING(1023),
+    defaultValue: '',
+    allowNull: false,
+  },
   address1: {
     type: Sequelize.STRING,
     defaultValue: '',

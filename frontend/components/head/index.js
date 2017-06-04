@@ -1,6 +1,7 @@
 import { Head } from 'next/document';
 
-import { FRONTEND_URL } from '../lib/env';
+import { FRONTEND_URL } from '../../lib/env';
+import UploadcareScript from './uploadcare-script';
 
 const title = 'InvestorX';
 const description = 'InvestorX description';
@@ -35,4 +36,5 @@ export default () =>
       rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/react-datepicker/0.46.0/react-datepicker.min.css"
     />
+    <UploadcareScript />
   </Head>;

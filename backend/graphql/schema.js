@@ -14,6 +14,7 @@ type User {
   email: String!
   birthdate: String!
   nationality: String!
+  idDocument: String!
   address1: String!
   address2: String!
   city: String!

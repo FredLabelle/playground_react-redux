@@ -8,7 +8,7 @@ class AccountTab extends Component {
   };
   render() {
     return (
-      <Segment attached="bottom" className={`tab ${this.props.active && 'active'}`}>
+      <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
         Account
       </Segment>
     );

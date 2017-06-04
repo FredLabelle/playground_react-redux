@@ -9,7 +9,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "eslint": "eslint .;exit 0",
-    "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{components,lib,pages}/**/*.js\"",
+    "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{actions,components,lib,pages,reducers}/**/*.js\"",
     "dev": "NODE_ENV='development' node server.js",
     "build": "next build",
     "start": "NODE_ENV='production' node server.js",
@@ -28,7 +28,7 @@
     "prop-types": "^15.5.10",
     "raw-loader": "^0.5.1",
     "react": "^15.5.4",
-    "react-apollo": "^1.4.0",
+    "react-apollo": "^1.4.2",
     "react-cookie": "^2.0.7",
     "react-country-region-selector": "^1.1.0",
     "react-datepicker": "^0.46.0",
@@ -36,7 +36,8 @@
     "react-redux": "^5.0.5",
     "redux": "^3.6.0",
     "semantic-ui-react": "^0.68.5",
-    "universal-cookie-express": "^2.0.5"
+    "universal-cookie-express": "^2.0.5",
+    "uploadcare-widget": "^2.10.3"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -47,6 +48,6 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
-    "prettier": "^1.4.0"
+    "prettier": "^1.4.2"
   }
 }

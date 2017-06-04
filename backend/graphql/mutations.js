@@ -49,6 +49,7 @@ type Mutation {
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ID
   updateInvestor(input: UpdateInvestorInput!): Boolean!
+  uploadInvestorIdDocument(input: String!): Boolean!
 }
 `;
 
@@ -71,6 +72,9 @@ exports.resolvers = {
     },
     updateInvestor(root, { input }, context) {
       return context.User.updateInvestor(context.user, input);
+    },
+    uploadInvestorIdDocument(root, { input }, context) {
+      return context.User.uploadInvestorIdDocument(context.user, input);
     },
   },
 };

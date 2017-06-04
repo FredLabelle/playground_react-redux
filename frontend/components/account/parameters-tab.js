@@ -8,7 +8,7 @@ class ParametersTab extends Component {
   };
   render() {
     return (
-      <Segment attached="bottom" className={`tab ${this.props.active && 'active'}`}>
+      <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
         Parameters
       </Segment>
     );

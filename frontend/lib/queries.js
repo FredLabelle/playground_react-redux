@@ -21,6 +21,7 @@ export const meQuery = gql`
       email
       birthdate
       nationality
+      idDocument
       address1
       address2
       city

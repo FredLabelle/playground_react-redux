@@ -8,6 +8,7 @@ const uuid = require('uuid/v4');
 const { User } = require('../models');
 const OrganizationService = require('../services/organization');
 const { sendEmail } = require('../lib/mailjet');
+const { uploadImageFromUrl } = require('../lib/gcs');
 
 const sign = promisify(jwt.sign);
 
@@ -128,6 +129,19 @@ const UserService = {
       await user.update(input);
       const investorProfile = await user.getInvestorProfile();
       await investorProfile.update(input);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async uploadInvestorIdDocument(user, cdnUrl) {
+    try {
+      const env = process.env.NODE_ENV !== 'production' && `-${process.env.NODE_ENV}`;
+      const name = `idDocuments${env}/${user.shortId}`;
+      const idDocument = await uploadImageFromUrl(cdnUrl, name);
+      const investorProfile = await user.getInvestorProfile();
+      await investorProfile.update({ idDocument });
       return true;
     } catch (error) {
       console.error(error);

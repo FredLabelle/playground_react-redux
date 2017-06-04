@@ -24,6 +24,7 @@ export const MePropType = PropTypes.shape({
   email: PropTypes.string.isRequired,
   birthdate: PropTypes.string.isRequired,
   nationality: PropTypes.string.isRequired,
+  idDocument: PropTypes.string.isRequired,
   address1: PropTypes.string.isRequired,
   address2: PropTypes.string.isRequired,
   city: PropTypes.string.isRequired,
