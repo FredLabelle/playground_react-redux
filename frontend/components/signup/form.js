@@ -3,13 +3,17 @@ import PropTypes from 'prop-types';
 import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import omit from 'lodash/omit';
-import without from 'lodash/without';
-import { Form, Header, Button, Segment, Checkbox, Message } from 'semantic-ui-react';
+import set from 'lodash/set';
+import { Form, Header, Button, Segment, Message } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { OrganizationPropType } from '../../lib/prop-types';
 import { investorSignupMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
+import NameField from '../fields/name-field';
+import CheckboxesField from '../fields/checkboxes-field';
+import TicketField from '../fields/ticket-field';
+import RadioField from '../fields/radio-field';
 
 class SignupForm extends Component {
   static propTypes = {
@@ -18,15 +22,21 @@ class SignupForm extends Component {
     cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
   state = {
-    firstName: '',
-    lastName: '',
+    name: {
+      firstName: '',
+      lastName: '',
+    },
     email: '',
     password: '',
     repeatPassword: '',
-    dealCategories: [],
-    averageTicket: '',
-    averageTicketCurrency: this.props.organization.defaultCurrency,
-    investmentMechanism: 'systematic',
+    investmentSettings: {
+      dealCategories: [],
+      averageTicket: {
+        amount: '',
+        currency: this.props.organization.investmentSettings.defaultCurrency,
+      },
+      mechanism: 'systematic',
+    },
     passwordMismatch: false,
   };
   componentDidMount() {
@@ -34,6 +44,7 @@ class SignupForm extends Component {
   }
   onSubmit = async event => {
     event.preventDefault();
+    //
     const passwordMismatch = this.state.password !== this.state.repeatPassword;
     this.setState({ passwordMismatch });
     if (passwordMismatch) {
@@ -42,7 +53,6 @@ class SignupForm extends Component {
     this.setState({ loading: true });
     const { data: { investorSignup } } = await this.props.signup({
       ...omit(this.state, 'repeatPassword', 'passwordMismatch'),
-      averageTicket: parseInt(this.state.averageTicket, 10),
       organizationId: this.props.organization.id,
     });
     if (investorSignup) {
@@ -58,56 +68,52 @@ class SignupForm extends Component {
     }
   };
   handleChange = (event, { name, value }) => {
-    this.setState({ [name]: value });
-  };
-  handleDealCategoriesChange = (event, { name }) => {
-    const checked = this.state.dealCategories.includes(name);
-    if (checked) {
-      this.setState({ dealCategories: without(this.state.dealCategories, name) });
+    const [field, ...path] = name.split('.');
+    if (path.length) {
+      const newState = { ...this.state[field] };
+      this.setState({ [field]: set(newState, path, value) });
     } else {
-      this.setState({ dealCategories: [...this.state.dealCategories, name] });
+      this.setState({ [name]: value });
     }
   };
-  handleInvestmentMechanismChange = (event, { name }) => {
-    this.setState({ investmentMechanism: name });
-  };
   render() {
-    const options = [
+    const radio = [
       {
-        key: '$',
-        text: 'USD',
-        value: 'usd',
+        value: 'systematic',
+        label: {
+          children: (
+            <div>
+              <p>Systematic with opt-out</p>
+              <em>
+                You invest a systematic amount in every deal.
+                This guarantees your allocation in the deal.
+                You can opt-out if you feel not attracted by the deal.
+              </em>
+            </div>
+          ),
+        },
       },
       {
-        key: '€',
-        text: 'EUR',
-        value: 'eur',
+        value: 'dealByDeal',
+        label: {
+          children: (
+            <div>
+              <p>Deal-by-Deal</p>
+              <em>
+                You will be presented the deal, and decide to invest on a case-by-case basis.
+                Your allocation in the deal cannot be guaranteed
+                but is based on first come first serve.
+              </em>
+            </div>
+          ),
+        },
       },
     ];
     return (
       <Form onSubmit={this.onSubmit} error={this.state.passwordMismatch}>
         <Header as="h2" dividing>Create your Investor account</Header>
         <Header as="h3" dividing>Investor identity</Header>
-        <Form.Group>
-          <Form.Input
-            name="firstName"
-            value={this.state.firstName}
-            onChange={this.handleChange}
-            label="First name"
-            placeholder="First Name"
-            required
-            width={8}
-          />
-          <Form.Input
-            name="lastName"
-            value={this.state.lastName}
-            onChange={this.handleChange}
-            label="Last Name"
-            placeholder="Last Name"
-            required
-            width={8}
-          />
-        </Form.Group>
+        <NameField name="name" value={this.state.name} onChange={this.handleChange} required />
         <Form.Input
           name="email"
           value={this.state.email}
@@ -145,78 +151,27 @@ class SignupForm extends Component {
           content="Please double-check the passwords are matching."
         />
         <Header as="h3" dividing>Investor profile</Header>
-        <Form.Group grouped id="dealCategories">
-          <label htmlFor="dealCategories">Deal categories interested in</label>
-          {this.props.organization.dealCategories.map(category =>
-            <Form.Field
-              name={category}
-              checked={this.state.dealCategories.includes(category)}
-              onChange={this.handleDealCategoriesChange}
-              key={category}
-              label={category}
-              control={Checkbox}
-            />,
-          )}
-        </Form.Group>
-        <Form.Group>
-          <Form.Input
-            name="averageTicket"
-            value={this.state.averageTicket}
-            onChange={this.handleChange}
-            label="Average ticket"
-            type="number"
-            required
-            width={12}
-          />
-          <Form.Select
-            name="averageTicketCurrency"
-            value={this.state.averageTicketCurrency}
-            onChange={this.handleChange}
-            label="Currency"
-            options={options}
-            placeholder="Currency"
-            width={4}
-          />
-        </Form.Group>
-        <Form.Group grouped id="investmentMechanism">
-          <label htmlFor="investmentMechanism">Investment mechanism interested in</label>
-          <Form.Radio
-            name="systematic"
-            value="systematic"
-            checked={this.state.investmentMechanism === 'systematic'}
-            onChange={this.handleInvestmentMechanismChange}
-            label={{
-              children: (
-                <div>
-                  <p>Systematic with opt-out</p>
-                  <em>
-                    You invest a systematic amount in every deal.
-                    This guarantees your allocation in the deal.
-                    You can opt-out if you feel not attracted by the deal.
-                  </em>
-                </div>
-              ),
-            }}
-          />
-          <Form.Radio
-            name="dealByDeal"
-            value="dealByDeal"
-            checked={this.state.investmentMechanism === 'dealByDeal'}
-            onChange={this.handleInvestmentMechanismChange}
-            label={{
-              children: (
-                <div>
-                  <p>Deal-by-Deal</p>
-                  <em>
-                    You will be presented the deal, and decide to invest on a case-by-case basis.
-                    Your allocation in the deal cannot be guaranteed
-                    but is based on first come first serve.
-                  </em>
-                </div>
-              ),
-            }}
-          />
-        </Form.Group>
+        <CheckboxesField
+          name="investmentSettings.dealCategories"
+          value={this.state.investmentSettings.dealCategories}
+          onChange={this.handleChange}
+          checkboxes={this.props.organization.investmentSettings.dealCategories}
+          label="Deal categories interested in"
+        />
+        <TicketField
+          name="investmentSettings.averageTicket"
+          value={this.state.investmentSettings.averageTicket}
+          onChange={this.handleChange}
+          label="Average ticket"
+          required
+        />
+        <RadioField
+          name="investmentSettings.mechanism"
+          value={this.state.investmentSettings.mechanism}
+          onChange={this.handleChange}
+          radio={radio}
+          label="Investment mechanism interested in"
+        />
         <Segment basic textAlign="center">
           <Button primary disabled={this.state.loading}>Create my account</Button>
         </Segment>

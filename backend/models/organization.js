@@ -24,25 +24,26 @@ const Organization = sequelize.define(
     website: {
       type: Sequelize.STRING,
     },
-    dealCategories: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-      defaultValue: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
+    investmentSettings: {
+      type: Sequelize.JSONB,
+      defaultValue: {
+        dealCategories: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
+        defaultCurrency: 'usd',
+      },
       allowNull: false,
     },
     invitationEmail: {
       type: Sequelize.JSONB,
-    },
-    investmentMechanism: {
-      type: Sequelize.JSONB,
       defaultValue: {
-        systematic: true,
-        dealByDeal: true,
+        subject: 'Welcome to {{organization}}',
+        body: [
+          'Dear {{firstName}},',
+          '',
+          'Here is the link to signup to the club: {{signupLink}}',
+          '',
+          'Best,',
+        ].join('\n'),
       },
-      allowNull: false,
-    },
-    defaultCurrency: {
-      type: Sequelize.STRING,
-      defaultValue: 'usd',
       allowNull: false,
     },
   },

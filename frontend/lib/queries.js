@@ -7,8 +7,10 @@ export const organizationQuery = gql`
       shortId
       name
       domain
-      dealCategories
-      defaultCurrency
+      investmentSettings {
+        dealCategories
+        defaultCurrency
+      }
     }
   }
 `;
@@ -16,20 +18,60 @@ export const organizationQuery = gql`
 export const meQuery = gql`
   query {
     me {
-      firstName
-      lastName
+      name {
+        firstName
+        lastName
+      }
       email
-      birthdate
-      nationality
-      idDocument
-      address1
-      address2
-      city
-      zipCode
-      country
-      state
-      advisorFullName
-      advisorEmail
+      investmentSettings {
+        dealCategories
+        averageTicket {
+          amount
+          currency
+        }
+        mechanism
+      }
+      type
+      individualSettings {
+        birthdate
+        nationality
+        idDocument {
+          name
+          url
+          image
+        }
+        fiscalAddress {
+          address1
+          address2
+          city
+          zipCode
+          country
+          state
+        }
+      }
+      corporationSettings {
+        position
+        companyAddress {
+          address1
+          address2
+          city
+          zipCode
+          country
+          state
+        }
+        incProof {
+          name
+          url
+          image
+        }
+      }
+      advisor {
+        name {
+          firstName
+          lastName
+        }
+        email
+      }
     }
   }
 `;

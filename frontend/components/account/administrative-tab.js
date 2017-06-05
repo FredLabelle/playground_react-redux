@@ -1,249 +1,154 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
-import { Form, Image, Progress, Header, Segment, Button } from 'semantic-ui-react';
+import { Form, Header, Segment, Button } from 'semantic-ui-react';
 import omit from 'lodash/omit';
-import DatePicker from 'react-datepicker';
+import set from 'lodash/set';
 import moment from 'moment';
-import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
-import uploadcare from 'uploadcare-widget';
 
 import { MePropType } from '../../lib/prop-types';
-import { updateInvestorMutation, uploadInvestorIdDocumentMutation } from '../../lib/mutations';
+import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
+import IndividualSettings from './individual-settings';
+import CorporationSettings from './corporation-settings';
+import NameField from '../fields/name-field';
+
+const propsToState = ({ me }) => ({
+  name: me.name,
+  type: me.type,
+  individualSettings: {
+    ...me.individualSettings,
+    birthdate: moment(me.individualSettings.birthdate, 'DD-MM-YYYY'),
+  },
+  corporationSettings: me.corporationSettings,
+  advisor: me.advisor,
+});
 
 class AdministrativeTab extends Component {
   static propTypes = {
     me: MePropType.isRequired,
     active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
-    uploadInvestorIdDocument: PropTypes.func.isRequired,
+    updateInvestorFile: PropTypes.func.isRequired,
   };
   state = {
-    firstName: this.props.me.firstName,
-    lastName: this.props.me.lastName,
-    birthdate: moment(this.props.me.birthdate, 'DD-MM-YYYY'),
-    nationality: this.props.me.nationality,
-    idDocument: this.props.me.idDocument,
-    address1: this.props.me.address1,
-    address2: this.props.me.address2,
-    city: this.props.me.city,
-    zipCode: this.props.me.zipCode,
-    country: this.props.me.country,
-    state: this.props.me.state,
-    advisorFullName: this.props.me.advisorFullName,
-    advisorEmail: this.props.me.advisorEmail,
-    progress: 1,
-    loading: false,
+    ...propsToState({ me: this.props.me }),
+    saving: false,
   };
-  componentDidMount() {
-    // TODO fix this with css
-    const selects = [...document.querySelectorAll('.country-state-select')];
-    selects.forEach(select => {
-      const { style } = select;
-      style.height = '37px';
-    });
-    const inputContainer = document.querySelector('.react-datepicker__input-container');
-    inputContainer.style.width = '100%';
+  componentWillReceiveProps(props) {
+    this.setState(propsToState(props));
   }
-  onUploadClick = event => {
-    event.preventDefault();
-    const dialog = uploadcare.openDialog(null, {
-      imagesOnly: true,
-      tabs: ['file', 'gdrive', 'dropbox', 'url'],
-    });
-    dialog.done(file => {
-      file.progress(({ progress }) => {
-        // console.log(progress, uploadProgress);
-        this.setState({ progress });
-      });
-      file.done(async ({ cdnUrl }) => {
-        this.setState({ idDocument: cdnUrl });
-        const { data: { uploadInvestorIdDocument } } = await this.props.uploadInvestorIdDocument(
-          cdnUrl,
-        );
-        if (uploadInvestorIdDocument) {
-          // console.info('DONE');
-        } else {
-          console.error('UPLOAD INVESTOR ID DOCUMENT ERROR');
-        }
-      });
-      file.fail(() => {
-        this.setState({ progress: 1 });
-      });
-    });
-  };
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ loading: true });
+    this.setState({ saving: true });
     const { data: { updateInvestor } } = await this.props.updateInvestor({
-      ...omit(this.state, 'idDocument', 'progress', 'loading'),
-      birthdate: this.state.birthdate.format('DD-MM-YYYY'),
+      ...omit(this.state, 'saving'),
+      name: omit(this.state.name, '__typename'),
+      individualSettings: {
+        ...omit(this.state.individualSettings, 'idDocument', '__typename'),
+        fiscalAddress: omit(this.state.individualSettings.fiscalAddress, '__typename'),
+        birthdate: this.state.individualSettings.birthdate.format('DD-MM-YYYY'),
+      },
+      corporationSettings: {
+        ...omit(this.state.corporationSettings, 'incProof', '__typename'),
+        companyAddress: omit(this.state.corporationSettings.companyAddress, '__typename'),
+      },
+      advisor: {
+        ...omit(this.state.advisor, '__typename'),
+        name: omit(this.state.advisor.name, '__typename'),
+      },
     });
-    this.setState({ loading: false });
+    this.setState({ saving: false });
     if (updateInvestor) {
-      //
+      console.info('UPDATE INVESTOR SUCCESS');
     } else {
       console.error('UPDATE INVESTOR ERROR');
     }
   };
-  handleChange = (event, { name, value }) => {
-    this.setState({ [name]: value });
+  handleTypeChange = (event, { name }) => {
+    this.setState({ type: name });
   };
-  handleBirthdateChange = birthdate => {
-    this.setState({ birthdate });
+  handleChange = (event, { name, value }) => {
+    const [field, ...path] = name.split('.');
+    if (path.length) {
+      const newState = { ...this.state[field] };
+      this.setState({ [field]: set(newState, path, value) });
+    } else {
+      this.setState({ [name]: value });
+    }
   };
   handleNationalityChange = nationality => {
-    this.setState({ nationality });
+    const newState = { ...this.state.individualSettings };
+    newState.nationality = nationality;
+    this.setState({ individualSettings: newState });
   };
-  handleCountryChange = country => {
-    this.setState({ country });
+  handleBirthdateChange = birthdate => {
+    const newState = { ...this.state.individualSettings };
+    newState.birthdate = birthdate;
+    this.setState({ individualSettings: newState });
   };
-  handleStateChange = state => {
-    this.setState({ state });
-  };
-  uploading = () => this.state.progress < 1;
   render() {
     return (
       <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
         <Form onSubmit={this.onSubmit}>
-          <Header as="h3" dividing>Individual information</Header>
-          <Form.Group>
-            <Form.Input
-              name="firstName"
-              value={this.state.firstName}
-              onChange={this.handleChange}
-              label="First name"
-              placeholder="First Name"
-              width={8}
+          <Form.Group grouped id="type">
+            <label htmlFor="type">Type of Investor</label>
+            <Form.Radio
+              name="individual"
+              value="individual"
+              checked={this.state.type === 'individual'}
+              onChange={this.handleTypeChange}
+              label="Individual"
             />
-            <Form.Input
-              name="lastName"
-              value={this.state.lastName}
-              onChange={this.handleChange}
-              label="Last Name"
-              placeholder="Last Name"
-              width={8}
+            <Form.Radio
+              name="corporation"
+              value="corporation"
+              checked={this.state.type === 'corporation'}
+              onChange={this.handleTypeChange}
+              label="Corporation"
             />
           </Form.Group>
-          <div className="fields">
-            <div className="eight wide field">
-              <label htmlFor="nationality">Nationality</label>
-              <CountryDropdown
-                value={this.state.nationality}
-                onChange={this.handleNationalityChange}
-                classes="country-state-select"
+          {this.state.type === 'individual'
+            ? <IndividualSettings
+                me={omit(this.state, 'saving')}
+                handleChange={this.handleChange}
+                handleNationalityChange={this.handleNationalityChange}
+                handleBirthdateChange={this.handleBirthdateChange}
+                updateInvestorFile={this.props.updateInvestorFile}
               />
-            </div>
-            <div className="eight wide field">
-              <label htmlFor="birthdate">Birthdate</label>
-              <DatePicker
-                dateFormat="DD-MM-YYYY"
-                showMonthDropdown
-                showYearDropdown
-                selected={this.state.birthdate}
-                onChange={this.handleBirthdateChange}
-              />
-            </div>
-          </div>
-          <div className="fields">
-            <div className="field" style={{ width: '100%' }}>
-              <label htmlFor="idDocument">ID Document</label>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  primary
-                  disabled={this.uploading()}
-                  content={this.uploading() ? 'Uploading…' : 'Upload'}
-                  icon={`${this.uploading() ? 'cloud ' : ''}upload`}
-                  labelPosition="left"
-                  onClick={this.onUploadClick}
-                />
-              </div>
-            </div>
-          </div>
-          {this.uploading()
-            ? <Progress percent={this.state.progress * 100} indicating />
-            : <Image src={this.state.idDocument} alt="ID Document" size="medium" centered />}
-          <Header as="h3" dividing>Fiscal Address</Header>
-          <Form.Input
-            name="address1"
-            value={this.state.address1}
-            onChange={this.handleChange}
-            label="Address 1"
-            placeholder="9 rue Ambroise Thomas"
-          />
-          <Form.Input
-            name="address2"
-            value={this.state.address2}
-            onChange={this.handleChange}
-            label="Address 2"
-          />
-          <Form.Group>
-            <Form.Input
-              name="city"
-              value={this.state.city}
-              onChange={this.handleChange}
-              label="City"
-              placeholder="Paris"
-              width={8}
-            />
-            <Form.Input
-              name="zipCode"
-              value={this.state.zipCode}
-              onChange={this.handleChange}
-              label="Zip Code"
-              placeholder="75009"
-              width={8}
-            />
-          </Form.Group>
-          <div className="fields">
-            <div className="eight wide field">
-              <label htmlFor="country">Country</label>
-              <CountryDropdown
-                value={this.state.country}
-                onChange={this.handleCountryChange}
-                classes="country-state-select"
-              />
-            </div>
-            <div className="eight wide field">
-              <label htmlFor="state">State</label>
-              <RegionDropdown
-                country={this.state.country}
-                value={this.state.state}
-                onChange={this.handleStateChange}
-                classes="country-state-select"
-              />
-            </div>
-          </div>
+            : <CorporationSettings
+                me={omit(this.state, 'saving')}
+                handleChange={this.handleChange}
+                updateInvestorFile={this.props.updateInvestorFile}
+              />}
           <Header as="h3" dividing>Advisor</Header>
           <p>
             You can mention the information of an advisor
             that will be in copy of every correspondence.
           </p>
-          <Form.Input
-            name="advisorFullName"
-            value={this.state.advisorFullName}
+          <NameField
+            name="advisor.name"
+            value={this.state.advisor.name}
             onChange={this.handleChange}
-            label="Advisor Full Name"
-            placeholder="Advisor Full Name"
           />
           <Form.Input
-            name="advisorEmail"
-            value={this.state.advisorEmail}
+            name="advisor.email"
+            value={this.state.advisor.email}
             onChange={this.handleChange}
-            label="Advisor Email"
-            placeholder="Advisor Email"
+            label="Email"
+            placeholder="Email"
+            type="email"
           />
           <Segment basic textAlign="center">
-            <Button primary disabled={this.state.loading}>Save administrative settings</Button>
+            <Button
+              primary
+              disabled={this.state.saving}
+              content={this.state.saving ? 'Saving…' : 'Save'}
+              icon="save"
+              labelPosition="left"
+            />
           </Segment>
         </Form>
-        <style jsx>{`
-          .uploadcare-widget-button {
-            line-height: 2 !important;
-            height: 40px;
-          }
-        `}</style>
       </Segment>
     );
   }
@@ -259,9 +164,9 @@ export default compose(
         }),
     }),
   }),
-  graphql(uploadInvestorIdDocumentMutation, {
+  graphql(updateInvestorFileMutation, {
     props: ({ mutate }) => ({
-      uploadInvestorIdDocument: input =>
+      updateInvestorFile: input =>
         mutate({
           variables: { input },
           refetchQueries: [{ query: meQuery }],

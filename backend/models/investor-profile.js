@@ -9,78 +9,63 @@ module.exports = sequelize.define('InvestorProfile', {
     primaryKey: true,
     allowNull: false,
   },
-  dealCategories: {
-    type: Sequelize.ARRAY(Sequelize.STRING),
-    defaultValue: [],
+  investmentSettings: {
+    type: Sequelize.JSONB,
     allowNull: false,
   },
-  averageTicket: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  averageTicketCurrency: {
+  type: {
     type: Sequelize.STRING,
-    defaultValue: 'usd',
+    defaultValue: 'individual',
+  },
+  individualSettings: {
+    type: Sequelize.JSONB,
+    defaultValue: {
+      birthdate: '01-01-1970',
+      nationality: '',
+      idDocument: {
+        name: '',
+        url: '',
+        image: false,
+      },
+      fiscalAddress: {
+        address1: '',
+        address2: '',
+        city: '',
+        zipCode: '',
+        country: '',
+        state: '',
+      },
+    },
     allowNull: false,
   },
-  investmentMechanism: {
-    type: Sequelize.STRING,
-    defaultValue: 'dealByDeal',
-    allowNull: false,
+  corporationSettings: {
+    type: Sequelize.JSONB,
+    defaultValue: {
+      position: '',
+      companyAddress: {
+        address1: '',
+        address2: '',
+        city: '',
+        zipCode: '',
+        country: '',
+        state: '',
+      },
+      incProof: {
+        name: '',
+        url: '',
+        image: false,
+      },
+    },
   },
-  birthdate: {
-    type: Sequelize.STRING,
-    defaultValue: '01-01-1970',
-    allowNull: false,
-  },
-  nationality: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  idDocument: {
-    type: Sequelize.STRING(1023),
-    defaultValue: '',
-    allowNull: false,
-  },
-  address1: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  address2: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  city: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  zipCode: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  country: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  state: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  advisorFullName: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-    allowNull: false,
-  },
-  advisorEmail: {
-    type: Sequelize.STRING,
-    defaultValue: '',
+  advisor: {
+    type: Sequelize.JSONB,
+    defaultValue: {
+      name: {
+        firstName: '',
+        lastName: '',
+      },
+      email: '',
+    },
     allowNull: false,
   },
 });

@@ -4,8 +4,8 @@ import { compose, graphql } from 'react-apollo';
 import Link from 'next/link';
 import { Menu } from 'semantic-ui-react';
 
-import { RouterPropType, MePropType } from '../../lib/prop-types';
-import { meQuery } from '../../lib/queries';
+import { RouterPropType, OrganizationPropType, MePropType } from '../../lib/prop-types';
+import { organizationQuery, meQuery } from '../../lib/queries';
 import AccountTab from './account-tab';
 import AdministrativeTab from './administrative-tab';
 import ParametersTab from './parameters-tab';
@@ -13,9 +13,10 @@ import ParametersTab from './parameters-tab';
 class Account extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
+    organization: OrganizationPropType,
     me: MePropType,
   };
-  static defaultProps = { me: null };
+  static defaultProps = { organization: null, me: null };
   state = { tab: this.props.router.query.tab };
   render() {
     const shortId = this.props.router.organizationShortId;
@@ -42,7 +43,11 @@ class Account extends Component {
             </Menu.Item>
           </Link>
         </Menu>
-        <AccountTab active={active('account')} />
+        <AccountTab
+          me={this.props.me}
+          organization={this.props.organization}
+          active={active('account')}
+        />
         <AdministrativeTab me={this.props.me} active={active('administrative')} />
         <ParametersTab active={active('parameters')} />
       </div>
@@ -52,6 +57,12 @@ class Account extends Component {
 
 export default compose(
   connect(({ router }) => ({ router })),
+  graphql(organizationQuery, {
+    options: ({ router }) => ({
+      variables: { shortId: router.organizationShortId },
+    }),
+    props: ({ data: { organization } }) => ({ organization }),
+  }),
   graphql(meQuery, {
     props: ({ data: { me } }) => ({ me }),
   }),

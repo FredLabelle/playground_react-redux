@@ -17,12 +17,12 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       unique: true,
     },
-    firstName: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    lastName: {
-      type: Sequelize.STRING,
+    name: {
+      type: Sequelize.JSONB,
+      defaultValue: {
+        firstName: '',
+        lastName: '',
+      },
       allowNull: false,
     },
     email: {

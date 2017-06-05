@@ -1,6 +1,11 @@
-const Index = () =>
-  <div>
-    <h1>Welcome to InvestorX</h1>
-  </div>;
+import { connect } from 'react-redux';
 
-export default Index;
+import { RouterPropType } from '../../lib/prop-types';
+import OrganizationIndex from './organization-index';
+import Home from './home';
+
+const Index = ({ router }) =>
+  router.organizationShortId ? <OrganizationIndex router={router} /> : <Home />;
+Index.propTypes = { router: RouterPropType.isRequired };
+
+export default connect(({ router }) => ({ router }))(Index);

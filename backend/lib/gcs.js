@@ -7,7 +7,7 @@ const gcs = storage({ credentials });
 
 const bucket = gcs.bucket(credentials.project_id);
 
-const uploadImageFromUrl = (url, name) =>
+const uploadFileFromUrl = (url, name) =>
   new Promise((resolve, reject) => {
     request(url).on('response', response => {
       const contentType = response.headers['content-type'];
@@ -17,16 +17,22 @@ const uploadImageFromUrl = (url, name) =>
       });
       response
         .pipe(writeStream)
-        .on('finish', () => {
-          const options = {
-            action: 'read',
-            // in 10 years
-            expires: Date.now() + 315360000 * 1000,
-          };
-          file.getSignedUrl(options, (error, signedUrl) => resolve(signedUrl));
+        .on('finish', async () => {
+          try {
+            const signedUrl = await file.getSignedUrl({
+              action: 'read',
+              // in 10 years
+              expires: Date.now() + 315360000 * 1000,
+            });
+            resolve(signedUrl);
+          } catch (error) {
+            reject(error);
+          }
         })
         .on('error', reject);
     });
   });
 
-module.exports = { uploadImageFromUrl };
+const deleteFile = name => bucket.file(name).delete();
+
+module.exports = { uploadFileFromUrl, deleteFile };

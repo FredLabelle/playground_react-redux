@@ -36,8 +36,8 @@ export const updateInvestorMutation = gql`
   }
 `;
 
-export const uploadInvestorIdDocumentMutation = gql`
-  mutation uploadInvestorIdDocument($input: String!) {
-    uploadInvestorIdDocument(input: $input)
+export const updateInvestorFileMutation = gql`
+  mutation updateInvestorFile($input: UpdateInvestorFileInput!) {
+    updateInvestorFile(input: $input)
   }
 `;

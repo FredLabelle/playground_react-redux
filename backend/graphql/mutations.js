@@ -1,13 +1,25 @@
 exports.schema = `
-input InvestorSignupInput {
+input NameInput {
   firstName: String!
   lastName: String!
+}
+
+input AverageTicketInput {
+  amount: String!
+  currency: String!
+}
+
+input InvestmentSettingsInput {
+  dealCategories: [String]!
+  averageTicket: AverageTicketInput!
+  mechanism: String!
+}
+
+input InvestorSignupInput {
+  name: NameInput!
   email: String!
   password: String!
-  dealCategories: [String]!
-  averageTicket: Int!
-  averageTicketCurrency: String!
-  investmentMechanism: String!
+  investmentSettings: InvestmentSettingsInput!
   organizationId: String!
 }
 
@@ -27,19 +39,49 @@ input ResetPasswordInput {
   password: String!
 }
 
+input AddressInput {
+  address1: String!
+  address2: String!
+  city: String!
+  zipCode: String!
+  country: String!
+  state: String!
+}
+
+input IndividualSettingsInput {
+  birthdate: String!
+  nationality: String!
+  fiscalAddress: AddressInput!
+}
+
+input CorporationSettingsInput {
+  position: String!
+  companyAddress: AddressInput!
+}
+
+input AdvisorInput {
+  name: NameInput!
+  email: String!
+}
+
 input UpdateInvestorInput {
-  firstName: String
-  lastName: String
-  birthdate: String
-  nationality: String
-  address1: String
-  address2: String
-  city: String
-  zipCode: String
-  country: String
-  state: String
-  advisorFullName: String
-  advisorEmail: String
+  name: NameInput!
+  type: String
+  investmentSettings: InvestmentSettingsInput
+  individualSettings: IndividualSettingsInput
+  corporationSettings: CorporationSettingsInput
+  advisor: AdvisorInput
+}
+
+input FileInput {
+  name: String!
+  url: String!
+  image: Boolean!
+}
+
+input UpdateInvestorFileInput {
+  field: String!
+  file: FileInput!
 }
 
 type Mutation {
@@ -49,7 +91,7 @@ type Mutation {
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ID
   updateInvestor(input: UpdateInvestorInput!): Boolean!
-  uploadInvestorIdDocument(input: String!): Boolean!
+  updateInvestorFile(input: UpdateInvestorFileInput!): Boolean!
 }
 `;
 
@@ -73,8 +115,8 @@ exports.resolvers = {
     updateInvestor(root, { input }, context) {
       return context.User.updateInvestor(context.user, input);
     },
-    uploadInvestorIdDocument(root, { input }, context) {
-      return context.User.uploadInvestorIdDocument(context.user, input);
+    updateInvestorFile(root, { input }, context) {
+      return context.User.updateInvestorFile(context.user, input);
     },
   },
 };

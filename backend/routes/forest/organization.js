@@ -12,23 +12,22 @@ module.exports.seedDatabase = async (req, res) => {
       name: 'eClub',
       shortId: 'eclub',
       website: 'https://efounders.co',
-      invitationEmail: {
-        subject: 'Welcome to {{organization}}',
-        body: [
-          'Dear {{firstName}},',
-          '',
-          'Here is the link to signup to the club: {{signupLink}}',
-          '',
-          'Thibaud',
-        ].join('\n'),
-      },
     });
     await UserService.signup({
-      firstName: 'Simon',
-      lastName: 'Arvaux',
+      name: {
+        firstName: 'Simon',
+        lastName: 'Arvaux',
+      },
       email: 'simon@e-founders.com',
       password: 'password',
-      averageTicket: 5000,
+      investmentSettings: {
+        dealCategories: [],
+        averageTicket: {
+          amount: '5000',
+          currency: 'usd',
+        },
+        mechanism: 'dealByDeal',
+      },
       organizationId: organization.id,
     });
     return res.json({ success: 'Done!' });

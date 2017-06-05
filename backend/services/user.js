@@ -4,11 +4,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
+const defaultsDeep = require('lodash/defaultsDeep');
 
 const { User } = require('../models');
 const OrganizationService = require('../services/organization');
 const { sendEmail } = require('../lib/mailjet');
-const { uploadImageFromUrl } = require('../lib/gcs');
+const { uploadFileFromUrl, deleteFile } = require('../lib/gcs');
 
 const sign = promisify(jwt.sign);
 
@@ -43,7 +44,7 @@ const UserService = {
       const investor = Object.assign({ role: 'investor' }, input);
       const user = await organization.createUser(investor);
       await user.createInvestorProfile(investor);
-      return sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
+      return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
       return null;
@@ -59,7 +60,7 @@ const UserService = {
       if (!passwordsMatch) {
         return null;
       }
-      return sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
+      return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
       return null;
@@ -103,7 +104,7 @@ const UserService = {
       }
       const password = await bcrypt.hash(input.password, 10);
       await user.update({ password, resetPasswordToken: null });
-      return sign({ userId: user.id }, process.env.FOREST_ENV_SECRET);
+      return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
       return null;
@@ -128,20 +129,29 @@ const UserService = {
     try {
       await user.update(input);
       const investorProfile = await user.getInvestorProfile();
-      await investorProfile.update(input);
+      const { individualSettings, corporationSettings } = investorProfile.toJSON();
+      const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
+      await investorProfile.update(update);
       return true;
     } catch (error) {
       console.error(error);
       return false;
     }
   },
-  async uploadInvestorIdDocument(user, cdnUrl) {
+  async updateInvestorFile(user, { field, file }) {
     try {
+      const folderName = field.split('.').pop();
       const env = process.env.NODE_ENV !== 'production' && `-${process.env.NODE_ENV}`;
-      const name = `idDocuments${env}/${user.shortId}`;
-      const idDocument = await uploadImageFromUrl(cdnUrl, name);
+      const name = `${folderName}s${env}/${user.shortId}`;
+      const newFile = Object.assign({}, file);
+      if (file.url) {
+        newFile.url = await uploadFileFromUrl(file.url, name);
+      } else {
+        await deleteFile(name);
+      }
       const investorProfile = await user.getInvestorProfile();
-      await investorProfile.update({ idDocument });
+      investorProfile.set(field, newFile);
+      await investorProfile.save();
       return true;
     } catch (error) {
       console.error(error);

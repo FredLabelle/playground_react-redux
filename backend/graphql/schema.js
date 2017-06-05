@@ -6,33 +6,75 @@ const { schema: mutationsSchema, resolvers: mutationsResolvers } = require('./mu
 const schema = `
 scalar JSON
 
-type User {
-  id: ID!
-  shortId: ID!
+type Name {
   firstName: String!
   lastName: String!
-  email: String!
-  birthdate: String!
-  nationality: String!
-  idDocument: String!
+}
+
+type File {
+  name: String!
+  url: String!
+  image: Boolean!
+}
+
+type Address {
   address1: String!
   address2: String!
   city: String!
   zipCode: String!
   country: String!
   state: String!
-  advisorFullName: String!
-  advisorEmail: String!
+}
+
+type AverageTicket {
+  amount: String!
+  currency: String!
+}
+
+type InvestmentSettings {
+  dealCategories: [String]!
+  averageTicket: AverageTicket!
+  mechanism: String!
+}
+
+type IndividualSettings {
+  birthdate: String!
+  nationality: String!
+  idDocument: File!
+  fiscalAddress: Address!
+}
+
+type CorporationSettings {
+  position: String!
+  companyAddress: Address!
+  incProof: File!
+}
+
+type Advisor {
+  name: Name!
+  email: String!
+}
+
+type User {
+  id: ID!
+  shortId: ID!
+  name: Name!
+  email: String!
+  investmentSettings: InvestmentSettings!
+  type: String!
+  individualSettings: IndividualSettings!
+  corporationSettings: CorporationSettings!
+  advisor: Advisor!
+}
+
+type OrganizationInvestmentSettings {
+  dealCategories: [String]!
+  defaultCurrency: String!
 }
 
 type Email {
   subject: String!
   body: String!
-}
-
-type InvestmentMechanism {
-  systematic: Boolean
-  dealByDeal: Boolean
 }
 
 type Organization {
@@ -41,10 +83,8 @@ type Organization {
   name: String!
   website: String!
   domain: String!
-  dealCategories: [String]!
-  invitationEmail: JSON!
-  investmentMechanism: JSON!
-  defaultCurrency: String!
+  investmentSettings: OrganizationInvestmentSettings!
+  invitationEmail: Email!
 }
 
 type Query {
