@@ -23,6 +23,9 @@ export const meQuery = gql`
         lastName
       }
       email
+      picture {
+        url
+      }
       investmentSettings {
         dealCategories
         averageTicket {

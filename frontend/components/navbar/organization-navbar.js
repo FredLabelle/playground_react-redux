@@ -1,5 +1,5 @@
 import { graphql, compose } from 'react-apollo';
-import { Menu } from 'semantic-ui-react';
+import { Menu, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 
 import { RouterPropType, OrganizationPropType, MePropType } from '../../lib/prop-types';
@@ -16,7 +16,7 @@ const OrganizationNavBar = ({ organization, me }) =>
         href={`/?shortId=${organization.shortId}`}
         as={`/organization/${organization.shortId}`}
       >
-        <a><img src={`//logo.clearbit.com/${organization.domain}?size=35`} alt="logo" /></a>
+        <a><Image src={`//logo.clearbit.com/${organization.domain}?size=35`} alt="logo" /></a>
       </Link>
     </Menu.Item>
     <Menu.Item className="horizontally fitted">
@@ -30,7 +30,11 @@ const OrganizationNavBar = ({ organization, me }) =>
     </Menu.Item>
     <Menu className="right" secondary>
       {me
-        ? <UserDropdownMenu shortId={organization.shortId} firstName={me.name.firstName} />
+        ? <UserDropdownMenu
+            shortId={organization.shortId}
+            firstName={me.name.firstName}
+            pictureUrl={me.picture.url}
+          />
         : <LoginMenuItem shortId={organization.shortId} />}
     </Menu>
   </Menu>;

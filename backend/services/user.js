@@ -45,7 +45,7 @@ const UserService = {
       const hash = createHash('md5').digest('hex');
       const picture = {
         name: '',
-        url: `https://www.gravatar.com/avatar/${hash}`,
+        url: `https://www.gravatar.com/avatar/${hash}?d=retro`,
         image: true,
       };
       const investor = Object.assign({ role: 'investor', picture }, input);

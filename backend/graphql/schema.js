@@ -61,6 +61,7 @@ type User {
   shortId: ID!
   name: Name!
   email: String!
+  picture: File
   investmentSettings: InvestmentSettings!
   type: String!
   individualSettings: IndividualSettings!

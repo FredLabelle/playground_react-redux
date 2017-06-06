@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql, withApollo, ApolloClient } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import Router from 'next/router';
 
@@ -13,6 +13,7 @@ class UserDropdownMenu extends Component {
   static propTypes = {
     shortId: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
+    pictureUrl: PropTypes.string.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     logout: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
@@ -37,8 +38,13 @@ class UserDropdownMenu extends Component {
     }
   };
   render() {
+    const trigger = (
+      <span>
+        <Image avatar src={this.props.pictureUrl} /> {this.props.firstName}
+      </span>
+    );
     return (
-      <Dropdown item text={this.props.firstName}>
+      <Dropdown item trigger={trigger}>
         <Dropdown.Menu>
           <Link
             prefetch
