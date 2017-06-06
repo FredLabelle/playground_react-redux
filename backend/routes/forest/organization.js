@@ -9,8 +9,9 @@ module.exports.seedDatabase = async (req, res) => {
   try {
     await sequelize.sync({ force: true });
     const organization = await Organization.create({
-      name: 'eClub',
       shortId: 'eclub',
+      name: 'eClub',
+      emailDomain: 'hivyapp.com',
       website: 'https://efounders.co',
     });
     await UserService.signup({

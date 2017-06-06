@@ -22,6 +22,11 @@ const OrganizationService = {
       where: { shortId },
     });
   },
+  findByEmailDomain(emailDomain) {
+    return Organization.findOne({
+      where: { emailDomain },
+    });
+  },
   async organization(shortId) {
     const organization = await OrganizationService.findByShortId(shortId);
     return organization.toJSON();

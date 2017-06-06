@@ -1,5 +1,6 @@
 const { promisify } = require('util');
 const { stringify } = require('querystring');
+const { createHash } = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
@@ -41,7 +42,13 @@ const UserService = {
       if (!canSignup) {
         return null;
       }
-      const investor = Object.assign({ role: 'investor' }, input);
+      const hash = createHash('md5').digest('hex');
+      const picture = {
+        name: '',
+        url: `https://www.gravatar.com/avatar/${hash}`,
+        image: true,
+      };
+      const investor = Object.assign({ role: 'investor', picture }, input);
       const user = await organization.createUser(investor);
       await user.createInvestorProfile(investor);
       return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
@@ -56,6 +63,9 @@ const UserService = {
   async login({ email, password, organizationId }) {
     try {
       const user = await UserService.findByEmail(email, organizationId);
+      if (!user) {
+        return null;
+      }
       const passwordsMatch = await UserService.passwordsMatch(password, user.password);
       if (!passwordsMatch) {
         return null;
@@ -81,14 +91,15 @@ const UserService = {
       await user.update({ resetPasswordToken });
       const queryString = stringify({ token: resetPasswordToken });
       const frontendUrl = process.env.FRONTEND_URL;
-      const url = `${frontendUrl}/organization/${organization.shortId}/login?${queryString}`;
+      const { shortId } = organization;
+      const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: email,
         subject: 'Reset your password on InvestorX',
         templateId: 161024,
-        vars: { firstName: user.firstName, link: url },
+        vars: { firstName: user.name.firstName, link: url },
       });
       return true;
     } catch (error) {
@@ -157,6 +168,14 @@ const UserService = {
       console.error(error);
       return false;
     }
+  },
+  async adminLogin(input, organization) {
+    const user = await UserService.findByEmail(input.email, organization.id);
+    if (!user) {
+      const newUser = await organization.createUser(input);
+      return sign({ userId: newUser.id, role: newUser.role }, process.env.FOREST_ENV_SECRET);
+    }
+    return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
   },
 };
 

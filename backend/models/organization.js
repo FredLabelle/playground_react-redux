@@ -21,6 +21,10 @@ const Organization = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    emailDomain: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     website: {
       type: Sequelize.STRING,
     },

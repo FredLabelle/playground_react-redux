@@ -44,6 +44,15 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    picture: {
+      type: Sequelize.JSONB,
+      defaultValue: {
+        name: '',
+        url: '',
+        image: false,
+      },
+      allowNull: false,
+    },
   },
   {
     hooks: {
