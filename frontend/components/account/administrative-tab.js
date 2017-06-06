@@ -9,13 +9,14 @@ import moment from 'moment';
 import { MePropType } from '../../lib/prop-types';
 import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
+import RadioField from '../fields/radio-field';
 import IndividualSettings from './individual-settings';
 import CorporationSettings from './corporation-settings';
 import NameField from '../fields/name-field';
 
-const propsToState = ({ me }) => ({
+const propsToState = ({ me }, state) => ({
   name: me.name,
-  type: me.type,
+  type: state ? state.type : me.type,
   individualSettings: {
     ...me.individualSettings,
     birthdate: moment(me.individualSettings.birthdate, 'DD-MM-YYYY'),
@@ -36,7 +37,7 @@ class AdministrativeTab extends Component {
     saving: false,
   };
   componentWillReceiveProps(props) {
-    this.setState(propsToState(props));
+    this.setState(propsToState(props, this.state));
   }
   onSubmit = async event => {
     event.preventDefault();
@@ -65,9 +66,6 @@ class AdministrativeTab extends Component {
       console.error('UPDATE INVESTOR ERROR');
     }
   };
-  handleTypeChange = (event, { name }) => {
-    this.setState({ type: name });
-  };
   handleChange = (event, { name, value }) => {
     const [field, ...path] = name.split('.');
     if (path.length) {
@@ -91,23 +89,16 @@ class AdministrativeTab extends Component {
     return (
       <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
         <Form onSubmit={this.onSubmit}>
-          <Form.Group grouped id="type">
-            <label htmlFor="type">Type of Investor</label>
-            <Form.Radio
-              name="individual"
-              value="individual"
-              checked={this.state.type === 'individual'}
-              onChange={this.handleTypeChange}
-              label="Individual"
-            />
-            <Form.Radio
-              name="corporation"
-              value="corporation"
-              checked={this.state.type === 'corporation'}
-              onChange={this.handleTypeChange}
-              label="Corporation"
-            />
-          </Form.Group>
+          <RadioField
+            name="type"
+            value={this.state.type}
+            onChange={this.handleChange}
+            radio={[
+              { value: 'individual', label: 'Individual' },
+              { value: 'corporation', label: 'Corporation' },
+            ]}
+            label="Type of Investor"
+          />
           {this.state.type === 'individual'
             ? <IndividualSettings
                 me={omit(this.state, 'saving')}

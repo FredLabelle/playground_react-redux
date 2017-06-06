@@ -13,7 +13,7 @@ import { meQuery } from '../../lib/queries';
 import NameField from '../fields/name-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import TicketField from '../fields/ticket-field';
-import RadioField from '../fields/radio-field';
+import MechanismField from '../fields/mechanism-field';
 
 class SignupForm extends Component {
   static propTypes = {
@@ -77,38 +77,6 @@ class SignupForm extends Component {
     }
   };
   render() {
-    const radio = [
-      {
-        value: 'systematic',
-        label: {
-          children: (
-            <div>
-              <p>Systematic with opt-out</p>
-              <em>
-                You invest a systematic amount in every deal.
-                This guarantees your allocation in the deal.
-                You can opt-out if you feel not attracted by the deal.
-              </em>
-            </div>
-          ),
-        },
-      },
-      {
-        value: 'dealByDeal',
-        label: {
-          children: (
-            <div>
-              <p>Deal-by-Deal</p>
-              <em>
-                You will be presented the deal, and decide to invest on a case-by-case basis.
-                Your allocation in the deal cannot be guaranteed
-                but is based on first come first serve.
-              </em>
-            </div>
-          ),
-        },
-      },
-    ];
     return (
       <Form onSubmit={this.onSubmit} error={this.state.passwordMismatch}>
         <Header as="h2" dividing>Create your Investor account</Header>
@@ -165,11 +133,10 @@ class SignupForm extends Component {
           label="Average ticket"
           required
         />
-        <RadioField
+        <MechanismField
           name="investmentSettings.mechanism"
           value={this.state.investmentSettings.mechanism}
           onChange={this.handleChange}
-          radio={radio}
           label="Investment mechanism interested in"
         />
         <Segment basic textAlign="center">

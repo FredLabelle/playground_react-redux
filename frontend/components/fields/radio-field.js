@@ -2,17 +2,19 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Form } from 'semantic-ui-react';
 
+const RadioPropType = PropTypes.arrayOf(
+  PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  }),
+);
+
 export default class extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    radio: PropTypes.arrayOf(
-      PropTypes.shape({
-        value: PropTypes.string.isRequired,
-        label: PropTypes.object.isRequired,
-      }),
-    ).isRequired,
+    radio: RadioPropType.isRequired,
     label: PropTypes.string.isRequired,
   };
   handleChange = (event, { value }) => {

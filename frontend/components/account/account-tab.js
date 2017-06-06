@@ -11,6 +11,7 @@ import { updateInvestorMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import TicketField from '../fields/ticket-field';
+import MechanismField from '../fields/mechanism-field';
 
 class AccountTab extends Component {
   static propTypes = {
@@ -70,7 +71,12 @@ class AccountTab extends Component {
             value={this.state.investmentSettings.averageTicket}
             onChange={this.handleChange}
             label="Average ticket"
-            required
+          />
+          <MechanismField
+            name="investmentSettings.mechanism"
+            value={this.state.investmentSettings.mechanism}
+            onChange={this.handleChange}
+            label="Investment mechanism interested in"
           />
           <Segment basic textAlign="center">
             <Button
