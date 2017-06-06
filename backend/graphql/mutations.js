@@ -56,6 +56,7 @@ input IndividualSettingsInput {
 
 input CorporationSettingsInput {
   position: String!
+  companyName: String!
   companyAddress: AddressInput!
 }
 

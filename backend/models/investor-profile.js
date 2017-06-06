@@ -42,6 +42,7 @@ module.exports = sequelize.define('InvestorProfile', {
     type: Sequelize.JSONB,
     defaultValue: {
       position: '',
+      companyName: '',
       companyAddress: {
         address1: '',
         address2: '',

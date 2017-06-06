@@ -51,6 +51,7 @@ export const meQuery = gql`
       }
       corporationSettings {
         position
+        companyName
         companyAddress {
           address1
           address2

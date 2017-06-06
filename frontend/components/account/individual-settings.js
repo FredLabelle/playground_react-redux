@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { Header } from 'semantic-ui-react';
+import { Header, Form } from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import { CountryDropdown } from 'react-country-region-selector';
 
@@ -32,27 +32,27 @@ export default class extends Component {
       <div>
         <Header as="h3" dividing>Individual information</Header>
         <NameField name="name" value={this.props.me.name} onChange={this.props.handleChange} />
-        <div className="fields">
-          <div className="eight wide field">
-            <label htmlFor="nationality">Nationality</label>
-            <CountryDropdown
-              value={this.props.me.individualSettings.nationality}
-              onChange={this.props.handleNationalityChange}
-            />
-          </div>
-          <div className="eight wide field">
-            <label htmlFor="birthdate">Birthdate</label>
-            <DatePicker
-              dateFormat="DD-MM-YYYY"
-              showMonthDropdown
-              showYearDropdown
-              selected={this.props.me.individualSettings.birthdate}
-              onChange={this.props.handleBirthdateChange}
-            />
-          </div>
-        </div>
+        <Form.Group>
+          <Form.Field
+            label="Nationality"
+            width={8}
+            control={CountryDropdown}
+            value={this.props.me.individualSettings.nationality}
+            onChange={this.props.handleNationalityChange}
+          />
+          <Form.Field
+            label="Birthdate"
+            width={8}
+            control={DatePicker}
+            dateFormat="DD-MM-YYYY"
+            showMonthDropdown
+            showYearDropdown
+            selected={this.props.me.individualSettings.birthdate}
+            onChange={this.props.handleBirthdateChange}
+          />
+        </Form.Group>
         <FileField
-          imagesOnly
+          // imagesOnly
           field="individualSettings.idDocument"
           label="ID Document"
           file={this.props.me.individualSettings.idDocument}

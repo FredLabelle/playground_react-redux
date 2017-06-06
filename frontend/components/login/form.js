@@ -54,6 +54,13 @@ class LoginForm extends Component {
     const { shortId } = this.props.organization;
     Router.replace(`/login?shortId=${shortId}`, `/organization/${shortId}/login`);
   };
+  onKeyPress = event => {
+    if (event.which === 13) {
+      event.preventDefault();
+      const submit = document.querySelector('.js-login-submit');
+      submit.click();
+    }
+  };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
   };
@@ -71,6 +78,7 @@ class LoginForm extends Component {
           label="Email"
           placeholder="Email"
           type="email"
+          onKeyPress={this.onKeyPress}
           required
         />
         <Form.Input
@@ -81,6 +89,7 @@ class LoginForm extends Component {
           placeholder="Password"
           type="password"
           action={{ content: 'Forgot it?', onClick: this.forgotPassword }}
+          onKeyPress={this.onKeyPress}
           required
         />
         <Message
@@ -89,7 +98,12 @@ class LoginForm extends Component {
           content="Please make sure your email and password are correct."
         />
         <Segment basic textAlign="center">
-          <Button primary disabled={this.state.loading}>Login</Button>
+          <Button
+            primary
+            disabled={this.state.loading}
+            content="Login"
+            className="js-login-submit"
+          />
         </Segment>
         <ForgotPasswordModal
           open={this.state.forgotPasswordModalOpen}

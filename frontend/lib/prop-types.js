@@ -62,6 +62,7 @@ export const MePropType = PropTypes.shape({
   }).isRequired,
   corporationSettings: PropTypes.shape({
     position: PropTypes.string.isRequired,
+    companyName: PropTypes.string.isRequired,
     companyAddress: AddressPropType.isRequired,
     incProof: FilePropType.isRequired,
   }).isRequired,

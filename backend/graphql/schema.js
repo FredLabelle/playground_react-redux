@@ -46,6 +46,7 @@ type IndividualSettings {
 
 type CorporationSettings {
   position: String!
+  companyName: String
   companyAddress: Address!
   incProof: File!
 }

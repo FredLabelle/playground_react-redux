@@ -14,17 +14,6 @@ import IndividualSettings from './individual-settings';
 import CorporationSettings from './corporation-settings';
 import NameField from '../fields/name-field';
 
-const propsToState = ({ me }, state) => ({
-  name: me.name,
-  type: state ? state.type : me.type,
-  individualSettings: {
-    ...me.individualSettings,
-    birthdate: moment(me.individualSettings.birthdate, 'DD-MM-YYYY'),
-  },
-  corporationSettings: me.corporationSettings,
-  advisor: me.advisor,
-});
-
 class AdministrativeTab extends Component {
   static propTypes = {
     me: MePropType.isRequired,
@@ -33,11 +22,27 @@ class AdministrativeTab extends Component {
     updateInvestorFile: PropTypes.func.isRequired,
   };
   state = {
-    ...propsToState({ me: this.props.me }),
+    name: this.props.me.name,
+    type: this.props.me.type,
+    individualSettings: {
+      ...this.props.me.individualSettings,
+      birthdate: moment(this.props.me.individualSettings.birthdate, 'DD-MM-YYYY'),
+    },
+    corporationSettings: this.props.me.corporationSettings,
+    advisor: this.props.me.advisor,
     saving: false,
   };
   componentWillReceiveProps(props) {
-    this.setState(propsToState(props, this.state));
+    this.setState({
+      individualSettings: {
+        ...this.state.individualSettings,
+        idDocument: props.me.individualSettings.idDocument,
+      },
+      corporationSettings: {
+        ...this.state.corporationSettings,
+        incProof: props.me.corporationSettings.incProof,
+      },
+    });
   }
   onSubmit = async event => {
     event.preventDefault();

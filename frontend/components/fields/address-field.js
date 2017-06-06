@@ -67,23 +67,23 @@ export default class extends Component {
             width={8}
           />
         </Form.Group>
-        <div className="fields">
-          <div className="eight wide field">
-            <label htmlFor="country">Country</label>
-            <CountryDropdown
-              value={this.props.value.country}
-              onChange={this.handleCountryRegionChange('country')}
-            />
-          </div>
-          <div className="eight wide field">
-            <label htmlFor="state">State</label>
-            <RegionDropdown
-              country={this.props.value.country}
-              value={this.props.value.state}
-              onChange={this.handleCountryRegionChange('state')}
-            />
-          </div>
-        </div>
+        <Form.Group>
+          <Form.Field
+            label="Country"
+            width={8}
+            control={CountryDropdown}
+            value={this.props.value.country}
+            onChange={this.handleCountryRegionChange('country')}
+          />
+          <Form.Field
+            label="State"
+            width={8}
+            control={RegionDropdown}
+            country={this.props.value.country}
+            value={this.props.value.state}
+            onChange={this.handleCountryRegionChange('state')}
+          />
+        </Form.Group>
       </div>
     );
   }

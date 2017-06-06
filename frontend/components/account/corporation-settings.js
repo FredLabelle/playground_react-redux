@@ -18,6 +18,13 @@ const CorporationSettings = ({ me, handleChange, updateInvestorFile }) =>
       placeholder="Position"
     />
     <Header as="h3" dividing>Company information</Header>
+    <Form.Input
+      name="corporationSettings.companyName"
+      value={me.corporationSettings.companyName}
+      onChange={handleChange}
+      label="Name"
+      placeholder="Name"
+    />
     <AddressField
       name="corporationSettings.companyAddress"
       value={me.corporationSettings.companyAddress}
