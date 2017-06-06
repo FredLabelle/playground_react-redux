@@ -107,7 +107,7 @@ export default class extends Component {
               />
               <Button
                 color="red"
-                disabled={this.state.file.url === ''}
+                disabled={this.uploading() || this.state.file.url === ''}
                 content="Delete"
                 icon="trash"
                 labelPosition="left"

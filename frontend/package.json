@@ -24,7 +24,6 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "next": "^2.4.1",
-    "path-match": "^1.2.4",
     "prop-types": "^15.5.10",
     "raw-loader": "^0.5.1",
     "react": "^15.5.4",

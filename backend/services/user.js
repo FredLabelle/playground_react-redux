@@ -141,7 +141,7 @@ const UserService = {
   async updateInvestorFile(user, { field, file }) {
     try {
       const folderName = field.split('.').pop();
-      const env = process.env.NODE_ENV !== 'production' && `-${process.env.NODE_ENV}`;
+      const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
       const name = `${folderName}s${env}/${user.shortId}`;
       const newFile = Object.assign({}, file);
       if (file.url) {
