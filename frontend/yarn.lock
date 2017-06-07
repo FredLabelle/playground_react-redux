@@ -2146,9 +2146,9 @@ graphql-anywhere@^3.0.0, graphql-anywhere@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/graphql-anywhere/-/graphql-anywhere-3.1.0.tgz#3ea0d8e8646b5cee68035016a9a7557c15c21e96"
 
-graphql-tag@^2.0.0, graphql-tag@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.2.1.tgz#1da61feb6c6fc119ee8c579c4de424d389bee0c2"
+graphql-tag@^2.0.0, graphql-tag@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.2.2.tgz#2b16175a4d0b3ed43ae8d53d94b9b6e01bbb4905"
 
 graphql@^0.10.0:
   version "0.10.1"
@@ -2892,9 +2892,9 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-next@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/next/-/next-2.4.2.tgz#b8dcd577f6dae5d5b0c3c81cf9f6e5ae4bece341"
+next@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/next/-/next-2.4.3.tgz#8d84a3a4552e584a1d7930817f3408de494e974c"
   dependencies:
     ansi-html "0.0.7"
     babel-core "6.24.0"
@@ -2946,6 +2946,7 @@ next@^2.4.2:
     webpack-dev-middleware "1.10.2"
     webpack-hot-middleware "2.18.0"
     write-file-webpack-plugin "4.0.2"
+    xss-filters "1.2.7"
 
 node-fetch@^1.0.1:
   version "1.7.1"
@@ -3419,9 +3420,9 @@ react-country-region-selector@^1.1.0:
     react-dom "^15.5.4"
     reactify "^1.1.1"
 
-react-datepicker@^0.46.0:
-  version "0.46.0"
-  resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-0.46.0.tgz#dd0c58efde9931964a248854e073151374fc937f"
+react-datepicker@^0.47.0:
+  version "0.47.0"
+  resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-0.47.0.tgz#bb002929e870e6bd7c9a92f95d5cd7c95051f629"
   dependencies:
     classnames "^2.2.5"
     moment "^2.17.1"
@@ -4396,6 +4397,10 @@ write@^0.2.1:
   resolved "https://registry.yarnpkg.com/write/-/write-0.2.1.tgz#5fc03828e264cea3fe91455476f7a3c566cb0757"
   dependencies:
     mkdirp "^0.5.1"
+
+xss-filters@1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/xss-filters/-/xss-filters-1.2.7.tgz#59fa1de201f36f2f3470dcac5f58ccc2830b0a9a"
 
 xtend@^4.0.0:
   version "4.0.1"

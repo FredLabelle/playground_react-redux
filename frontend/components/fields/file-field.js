@@ -98,6 +98,7 @@ export default class extends Component {
             <label htmlFor="image">{this.props.label}</label>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button
+                type="button"
                 primary
                 disabled={this.uploading()}
                 content={this.uploading() ? 'Uploading…' : 'Upload'}
@@ -106,6 +107,7 @@ export default class extends Component {
                 onClick={this.onUploadClick}
               />
               <Button
+                type="button"
                 color="red"
                 disabled={this.uploading() || this.state.file.url === ''}
                 content="Delete"

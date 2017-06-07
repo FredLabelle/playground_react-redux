@@ -1,33 +1,66 @@
+import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Grid, Image, Segment, Header } from 'semantic-ui-react';
+import Router from 'next/router';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
+import Login from '../common/login';
 import Form from './form';
+import ForgotPasswordModal from './forgot-password-modal';
+import ResetPasswordModal from './reset-password-modal';
 
-const Login = ({ organization }) =>
-  organization &&
-  <Grid columns="equal">
-    <Grid.Column />
-    <Grid.Column width={8}>
-      <Image
-        src={`//logo.clearbit.com/${organization.domain}?size=192`}
-        shape="circular"
-        centered
-      />
-      <Segment>
-        <Header as="h2" dividing>Welcome at {organization.name}</Header>
-        <Form organization={organization} />
-      </Segment>
-    </Grid.Column>
-    <Grid.Column />
-  </Grid>;
-Login.propTypes = {
-  router: RouterPropType.isRequired,
-  organization: OrganizationPropType,
-};
-Login.defaultProps = { organization: null };
+class UserLogin extends Component {
+  static propTypes = {
+    router: RouterPropType.isRequired,
+    organization: OrganizationPropType,
+  };
+  static defaultProps = { organization: null };
+  state = {
+    email: '',
+    forgotPasswordModalOpen: false,
+    resetPasswordModalOpen: !!this.props.router.query.token,
+  };
+  onEmailChange = email => {
+    this.setState({ email });
+  };
+  onForgotPasswordModalClose = () => {
+    this.setState({ forgotPasswordModalOpen: false });
+  };
+  onResetPasswordModalClose = () => {
+    this.setState({ resetPasswordModalOpen: false });
+    const { shortId } = this.props.organization;
+    Router.replace(`/login?shortId=${shortId}`, `/organization/${shortId}/login`);
+  };
+  forgotPassword = event => {
+    event.preventDefault();
+    this.setState({ forgotPasswordModalOpen: true });
+  };
+  render() {
+    return (
+      <Login organization={this.props.organization}>
+        <div>
+          <Form
+            organization={this.props.organization}
+            forgotPassword={this.forgotPassword}
+            onEmailChange={this.onEmailChange}
+          />
+          <ForgotPasswordModal
+            open={this.state.forgotPasswordModalOpen}
+            onClose={this.onForgotPasswordModalClose}
+            email={this.state.email}
+            organization={this.props.organization}
+          />
+          <ResetPasswordModal
+            open={this.state.resetPasswordModalOpen}
+            onClose={this.onResetPasswordModalClose}
+            router={this.props.router}
+          />
+        </div>
+      </Login>
+    );
+  }
+}
 
 export default compose(
   connect(({ router }) => ({ router })),
@@ -37,4 +70,4 @@ export default compose(
     }),
     props: ({ data: { organization } }) => ({ organization }),
   }),
-)(Login);
+)(UserLogin);

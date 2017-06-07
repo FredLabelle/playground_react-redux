@@ -22,24 +22,27 @@ module.exports = async (req, res) => {
     if (!organization) {
       // create?
     }
-    const token = await UserService.adminLogin({
-      name: { firstName: profile.given_name, lastName: profile.family_name },
-      email: profile.email,
-      role: 'admin',
-      picture: {
-        name: '',
-        url: profile.picture,
-        image: true,
+    const token = await UserService.adminLogin(
+      {
+        name: { firstName: profile.given_name, lastName: profile.family_name },
+        email: profile.email,
+        role: 'admin',
+        picture: {
+          name: '',
+          url: profile.picture,
+          image: true,
+        },
+        emailDomain: profile.hd,
       },
-      emailDomain: profile.hd,
-    }, organization);
+      organization
+    );
     const frontendUrl = process.env.FRONTEND_URL;
     const shortId = organization.shortId;
     const queryString = stringify({ token });
     const url = `${frontendUrl}/admin/organization/${shortId}/login?${queryString}`;
     res.redirect(url);
     // res.redirect(`${process.env.FRONTEND_URL}/admin/organization/${shortId}/account`);
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.redirect(process.env.FRONTEND_URL);
   }

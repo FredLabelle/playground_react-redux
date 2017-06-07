@@ -140,11 +140,7 @@ class SignupForm extends Component {
           label="Investment mechanism interested in"
         />
         <Segment basic textAlign="center">
-          <Button
-            primary
-            disabled={this.state.loading}
-            label="Create my account"
-          />
+          <Button type="submit" primary disabled={this.state.loading} label="Create my account" />
         </Segment>
       </Form>
     );

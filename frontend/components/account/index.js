@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import Link from 'next/link';
 import { Menu } from 'semantic-ui-react';
+import Router from 'next/router';
 
 import { RouterPropType, OrganizationPropType, MePropType } from '../../lib/prop-types';
 import { organizationQuery, meQuery } from '../../lib/queries';
@@ -17,38 +17,66 @@ class Account extends Component {
     me: MePropType,
   };
   static defaultProps = { organization: null, me: null };
-  state = { tab: this.props.router.query.tab };
-  render() {
+  state = {
+    tab: this.props.router.query.tab,
+    unsavedChanges: false,
+  };
+  onUnsavedChangesChange = unsavedChanges => {
+    this.setState({ unsavedChanges });
+  };
+  onClick = event => {
+    event.preventDefault();
     const shortId = this.props.router.organizationShortId;
-    const href = tab => `/account?shortId=${shortId}&tab=${tab}`;
-    const as = tab => `/organization/${shortId}/account?tab=${tab}`;
+    const { tab } = event.target.dataset;
+    if (this.state.unsavedChanges) {
+      const message = [
+        'You have unsaved changes!',
+        '',
+        'Are you sure you want to leave this page?',
+      ].join('\n');
+      const confirm = window.confirm(message); // eslint-disable-line no-alert
+      if (confirm) {
+        this.setState({ unsavedChanges: false });
+      } else {
+        return;
+      }
+    }
+    Router.replace(
+      `/account?shortId=${shortId}&tab=${tab}`,
+      `/organization/${shortId}/account?tab=${tab}`,
+    );
+  };
+  render() {
     const active = tab => tab === (this.props.router.query.tab || 'account');
     return (
       this.props.me &&
       <div>
         <Menu attached="top" tabular widths={3}>
-          <Link href={href('account')} as={as('account')}>
-            <Menu.Item active={active('account')}>
-              Account
-            </Menu.Item>
-          </Link>
-          <Link href={href('administrative')} as={as('administrative')}>
-            <Menu.Item active={active('administrative')}>
-              Administrative
-            </Menu.Item>
-          </Link>
-          <Link href={href('parameters')} as={as('parameters')}>
-            <Menu.Item active={active('parameters')}>
-              Parameters
-            </Menu.Item>
-          </Link>
+          <Menu.Item active={active('account')} data-tab="account" onClick={this.onClick}>
+            Account
+          </Menu.Item>
+          <Menu.Item
+            active={active('administrative')}
+            data-tab="administrative"
+            onClick={this.onClick}
+          >
+            Administrative
+          </Menu.Item>
+          <Menu.Item active={active('parameters')} data-tab="parameters" onClick={this.onClick}>
+            Parameters
+          </Menu.Item>
         </Menu>
         <AccountTab
+          active={active('account')}
           me={this.props.me}
           organization={this.props.organization}
-          active={active('account')}
+          onUnsavedChangesChange={this.onUnsavedChangesChange}
         />
-        <AdministrativeTab me={this.props.me} active={active('administrative')} />
+        <AdministrativeTab
+          active={active('administrative')}
+          me={this.props.me}
+          onUnsavedChangesChange={this.onUnsavedChangesChange}
+        />
         <ParametersTab active={active('parameters')} />
       </div>
     );

@@ -66,7 +66,7 @@ class ResetPasswordModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color="green" form="reset-password">
+          <Button type="submit" color="green" form="reset-password">
             <Icon name="checkmark" /> Reset password
           </Button>
         </Modal.Actions>

@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
-import { Form, Header, Segment, Button } from 'semantic-ui-react';
+import { Form, Header, Segment, Button, Message } from 'semantic-ui-react';
 import omit from 'lodash/omit';
-import set from 'lodash/set';
+import pick from 'lodash/pick';
+import isEqual from 'lodash/isEqual';
 import moment from 'moment';
 
+import { omitDeep, handleChange } from '../../lib/util';
 import { MePropType } from '../../lib/prop-types';
 import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
@@ -20,6 +22,7 @@ class AdministrativeTab extends Component {
     active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
     updateInvestorFile: PropTypes.func.isRequired,
+    onUnsavedChangesChange: PropTypes.func.isRequired,
   };
   state = {
     name: this.props.me.name,
@@ -31,6 +34,7 @@ class AdministrativeTab extends Component {
     corporationSettings: this.props.me.corporationSettings,
     advisor: this.props.me.advisor,
     saving: false,
+    success: false,
   };
   componentWillReceiveProps(props) {
     this.setState({
@@ -47,39 +51,30 @@ class AdministrativeTab extends Component {
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ saving: true });
-    const { data: { updateInvestor } } = await this.props.updateInvestor({
-      ...omit(this.state, 'saving'),
-      name: omit(this.state.name, '__typename'),
-      individualSettings: {
-        ...omit(this.state.individualSettings, 'idDocument', '__typename'),
-        fiscalAddress: omit(this.state.individualSettings.fiscalAddress, '__typename'),
-        birthdate: this.state.individualSettings.birthdate.format('DD-MM-YYYY'),
-      },
-      corporationSettings: {
-        ...omit(this.state.corporationSettings, 'incProof', '__typename'),
-        companyAddress: omit(this.state.corporationSettings.companyAddress, '__typename'),
-      },
-      advisor: {
-        ...omit(this.state.advisor, '__typename'),
-        name: omit(this.state.advisor.name, '__typename'),
-      },
-    });
+    const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
     this.setState({ saving: false });
     if (updateInvestor) {
       console.info('UPDATE INVESTOR SUCCESS');
+      this.setState({ success: true });
+      setTimeout(() => {
+        this.setState({ success: false });
+      }, 2000);
     } else {
       console.error('UPDATE INVESTOR ERROR');
     }
   };
-  handleChange = (event, { name, value }) => {
-    const [field, ...path] = name.split('.');
-    if (path.length) {
-      const newState = { ...this.state[field] };
-      this.setState({ [field]: set(newState, path, value) });
-    } else {
-      this.setState({ [name]: value });
-    }
-  };
+  handleChange = handleChange(() => {
+    const me = pick(this.props.me, [
+      'name',
+      'type',
+      'individualSettings',
+      'corporationSettings',
+      'advisor',
+    ]);
+    const meOmitted = omitDeep(me, 'idDocument', 'incProof', '__typename');
+    const unsavedChanges = !isEqual(this.update(), meOmitted);
+    this.props.onUnsavedChangesChange(unsavedChanges);
+  }).bind(this);
   handleNationalityChange = nationality => {
     const newState = { ...this.state.individualSettings };
     newState.nationality = nationality;
@@ -90,10 +85,17 @@ class AdministrativeTab extends Component {
     newState.birthdate = birthdate;
     this.setState({ individualSettings: newState });
   };
+  me = () => omit(this.state, 'saving', 'success');
+  update = () => {
+    const update = omitDeep(this.me(), 'idDocument', 'incProof', '__typename');
+    const birthdate = this.state.individualSettings.birthdate.format('DD-MM-YYYY');
+    update.individualSettings.birthdate = birthdate;
+    return update;
+  };
   render() {
     return (
       <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
-        <Form onSubmit={this.onSubmit}>
+        <Form onSubmit={this.onSubmit} success={this.state.success}>
           <RadioField
             name="type"
             value={this.state.type}
@@ -106,14 +108,14 @@ class AdministrativeTab extends Component {
           />
           {this.state.type === 'individual'
             ? <IndividualSettings
-                me={omit(this.state, 'saving')}
+                me={this.me()}
                 handleChange={this.handleChange}
                 handleNationalityChange={this.handleNationalityChange}
                 handleBirthdateChange={this.handleBirthdateChange}
                 updateInvestorFile={this.props.updateInvestorFile}
               />
             : <CorporationSettings
-                me={omit(this.state, 'saving')}
+                me={this.me()}
                 handleChange={this.handleChange}
                 updateInvestorFile={this.props.updateInvestorFile}
               />}
@@ -135,8 +137,10 @@ class AdministrativeTab extends Component {
             placeholder="Email"
             type="email"
           />
+          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
+              type="submit"
               primary
               disabled={this.state.saving}
               content={this.state.saving ? 'Saving…' : 'Save'}

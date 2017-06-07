@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Segment, Form, Header, Button } from 'semantic-ui-react';
+import { Segment, Form, Header, Button, Message } from 'semantic-ui-react';
 import omit from 'lodash/omit';
-import set from 'lodash/set';
+import pick from 'lodash/pick';
+import isEqual from 'lodash/isEqual';
 
+import { omitDeep, handleChange } from '../../lib/util';
 import { OrganizationPropType, MePropType } from '../../lib/prop-types';
 import { meQuery } from '../../lib/queries';
 import { updateInvestorMutation } from '../../lib/mutations';
@@ -19,43 +21,41 @@ class AccountTab extends Component {
     me: MePropType.isRequired,
     active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
+    onUnsavedChangesChange: PropTypes.func.isRequired,
   };
   state = {
     name: this.props.me.name,
     investmentSettings: this.props.me.investmentSettings,
     saving: false,
+    saved: false,
   };
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ saving: true });
-    const { data: { updateInvestor } } = await this.props.updateInvestor({
-      ...omit(this.state, 'saving'),
-      name: omit(this.state.name, '__typename'),
-      investmentSettings: {
-        ...omit(this.state.investmentSettings, '__typename'),
-        averageTicket: omit(this.state.investmentSettings.averageTicket, '__typename'),
-      },
-    });
+    const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
     this.setState({ saving: false });
     if (updateInvestor) {
       console.info('UPDATE INVESTOR SUCCESS');
+      this.setState({ success: true });
+      setTimeout(() => {
+        this.setState({ success: false });
+      }, 2000);
     } else {
       console.error('UPDATE INVESTOR ERROR');
     }
   };
-  handleChange = (event, { name, value }) => {
-    const [field, ...path] = name.split('.');
-    if (path.length) {
-      const newState = { ...this.state[field] };
-      this.setState({ [field]: set(newState, path, value) });
-    } else {
-      this.setState({ [name]: value });
-    }
-  };
+  handleChange = handleChange(() => {
+    const me = pick(this.props.me, 'name', 'investmentSettings');
+    const meOmitted = omitDeep(me, '__typename');
+    const unsavedChanges = !isEqual(this.update(), meOmitted);
+    this.props.onUnsavedChangesChange(unsavedChanges);
+  }).bind(this);
+  me = () => omit(this.state, 'saving', 'saved');
+  update = () => omitDeep(this.me(), '__typename');
   render() {
     return (
       <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
-        <Form onSubmit={this.onSubmit}>
+        <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Header as="h3" dividing>Investor identity</Header>
           <NameField name="name" value={this.state.name} onChange={this.handleChange} />
           <Header as="h3" dividing>Investor profile</Header>
@@ -78,8 +78,10 @@ class AccountTab extends Component {
             onChange={this.handleChange}
             label="Investment mechanism interested in"
           />
+          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
+              type="submit"
               primary
               disabled={this.state.saving}
               content={this.state.saving ? 'Saving…' : 'Save'}

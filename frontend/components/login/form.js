@@ -6,24 +6,23 @@ import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
-import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
+import { OrganizationPropType } from '../../lib/prop-types';
 import { investorLoginMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
-import ForgotPasswordModal from './forgot-password-modal';
-import ResetPasswordModal from './reset-password-modal';
 
 class LoginForm extends Component {
   static propTypes = {
-    router: RouterPropType.isRequired,
     organization: OrganizationPropType.isRequired,
+    forgotPassword: PropTypes.func.isRequired,
+    onEmailChange: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     cookies: PropTypes.instanceOf(Cookies).isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     login: PropTypes.func.isRequired,
   };
   state = {
     email: '',
     password: '',
-    forgotPasswordModalOpen: false,
-    resetPasswordModalOpen: !!this.props.router.query.token,
     loading: false,
     error: false,
   };
@@ -46,27 +45,11 @@ class LoginForm extends Component {
       this.setState({ loading: false, error: true });
     }
   };
-  onForgotPasswordModalClose = () => {
-    this.setState({ forgotPasswordModalOpen: false });
-  };
-  onResetPasswordModalClose = () => {
-    this.setState({ resetPasswordModalOpen: false });
-    const { shortId } = this.props.organization;
-    Router.replace(`/login?shortId=${shortId}`, `/organization/${shortId}/login`);
-  };
-  onKeyPress = event => {
-    if (event.which === 13) {
-      event.preventDefault();
-      const submit = document.querySelector('.js-login-submit');
-      submit.click();
-    }
-  };
   handleChange = (event, { name, value }) => {
     this.setState({ [name]: value });
-  };
-  forgotPassword = event => {
-    event.preventDefault();
-    this.setState({ forgotPasswordModalOpen: true });
+    if (name === 'email') {
+      this.props.onEmailChange(value);
+    }
   };
   render() {
     return (
@@ -78,7 +61,6 @@ class LoginForm extends Component {
           label="Email"
           placeholder="Email"
           type="email"
-          onKeyPress={this.onKeyPress}
           required
         />
         <Form.Input
@@ -88,8 +70,7 @@ class LoginForm extends Component {
           label="Password"
           placeholder="Password"
           type="password"
-          action={{ content: 'Forgot it?', onClick: this.forgotPassword }}
-          onKeyPress={this.onKeyPress}
+          action={{ type: 'button', content: 'Forgot it?', onClick: this.props.forgotPassword }}
           required
         />
         <Message
@@ -99,23 +80,13 @@ class LoginForm extends Component {
         />
         <Segment basic textAlign="center">
           <Button
+            type="submit"
             primary
             disabled={this.state.loading}
             content="Login"
             className="js-login-submit"
           />
         </Segment>
-        <ForgotPasswordModal
-          open={this.state.forgotPasswordModalOpen}
-          onClose={this.onForgotPasswordModalClose}
-          email={this.state.email}
-          organization={this.props.organization}
-        />
-        <ResetPasswordModal
-          open={this.state.resetPasswordModalOpen}
-          onClose={this.onResetPasswordModalClose}
-          router={this.props.router}
-        />
       </Form>
     );
   }
