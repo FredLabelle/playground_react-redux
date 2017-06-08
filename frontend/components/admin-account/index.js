@@ -1,59 +1,85 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
+import { Cookies, withCookies } from 'react-cookie';
 import { Menu } from 'semantic-ui-react';
-import Link from 'next/link';
+import Router from 'next/router';
 
-import { RouterPropType, OrganizationPropType, MePropType } from '../../lib/prop-types';
+import { RouterPropType, OrganizationPropType /* , MePropType*/ } from '../../lib/prop-types';
 import { organizationQuery, meQuery } from '../../lib/queries';
+import { adminLoginAckMutation } from '../../lib/mutations';
+import { linkHref, linkAs } from '../../lib/url';
 import GeneralTab from './general-tab';
+import UsersTab from './users-tab';
+import ParametersTab from './parameters-tab';
 
 class AdminAccount extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
     organization: OrganizationPropType,
-    me: MePropType,
+    // me: MePropType,
+    cookies: PropTypes.instanceOf(Cookies).isRequired,
+    adminLoginAck: PropTypes.func.isRequired,
   };
   static defaultProps = { organization: null, me: null };
-  state = { tab: this.props.router.query.tab };
+  state = {
+    tab: this.props.router.query.tab,
+    unsavedChanges: false,
+  };
   componentDidMount() {
     const { token } = this.props.router.query;
     if (token) {
-      //
+      this.props.cookies.set('token', token, { path: '/' });
+      this.props.adminLoginAck();
+      Router.replace(
+        linkHref('/account', this.props.router),
+        linkAs('/account', this.props.router),
+      );
     }
   }
-  render() {
+  onUnsavedChangesChange = unsavedChanges => {
+    this.setState({ unsavedChanges });
+  };
+  onClick = event => {
+    event.preventDefault();
     const shortId = this.props.router.organizationShortId;
-    const href = tab => `/admin-account?shortId=${shortId}&tab=${tab}`;
-    const as = tab => `/admin/organization/${shortId}/account?tab=${tab}`;
+    const { tab } = event.target.dataset;
+    Router.replace(
+      `/admin/account?shortId=${shortId}&tab=${tab}`,
+      `/admin/organization/${shortId}/account?tab=${tab}`,
+    );
+  };
+  render() {
     const active = tab => tab === (this.props.router.query.tab || 'general');
     return (
-      this.props.me &&
+      this.props.organization &&
       <div>
         <Menu attached="top" tabular widths={3}>
-          <Link href={href('general')} as={as('general')}>
-            <Menu.Item active={active('general')}>
-              Account
-            </Menu.Item>
-          </Link>
-          <Link href={href('users')} as={as('users')}>
-            <Menu.Item active={active('users')}>
-              Administrative
-            </Menu.Item>
-          </Link>
-          <Link href={href('parameters')} as={as('parameters')}>
-            <Menu.Item active={active('parameters')}>
-              Parameters
-            </Menu.Item>
-          </Link>
+          <Menu.Item active={active('general')} data-tab="general" onClick={this.onClick}>
+            Account
+          </Menu.Item>
+          <Menu.Item active={active('users')} data-tab="users" onClick={this.onClick}>
+            Users
+          </Menu.Item>
+          <Menu.Item active={active('parameters')} data-tab="parameters" onClick={this.onClick}>
+            Parameters
+          </Menu.Item>
         </Menu>
-        <GeneralTab organization={this.props.organization} active={active('general')} />
+        <GeneralTab
+          active={active('general')}
+          organization={this.props.organization}
+          onUnsavedChangesChange={this.onUnsavedChangesChange}
+        />
+        <UsersTab active={active('users')} />
+        <ParametersTab active={active('parameters')} />
       </div>
     );
   }
 }
 
 export default compose(
+  withCookies,
   connect(({ router }) => ({ router })),
   graphql(organizationQuery, {
     options: ({ router }) => ({
@@ -61,7 +87,15 @@ export default compose(
     }),
     props: ({ data: { organization } }) => ({ organization }),
   }),
-  graphql(meQuery, {
+  /* graphql(meQuery, {
     props: ({ data: { me } }) => ({ me }),
+  }),*/
+  graphql(adminLoginAckMutation, {
+    props: ({ mutate }) => ({
+      adminLoginAck: () =>
+        mutate({
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
   }),
 )(AdminAccount);

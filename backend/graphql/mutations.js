@@ -10,6 +10,7 @@ input AverageTicketInput {
 }
 
 input InvestmentSettingsInput {
+  type: String!
   dealCategories: [String]!
   averageTicket: AverageTicketInput!
   mechanism: String!
@@ -67,7 +68,6 @@ input AdvisorInput {
 
 input UpdateInvestorInput {
   name: NameInput!
-  type: String
   investmentSettings: InvestmentSettingsInput
   individualSettings: IndividualSettingsInput
   corporationSettings: CorporationSettingsInput
@@ -85,6 +85,33 @@ input UpdateInvestorFileInput {
   file: FileInput!
 }
 
+input GeneralSettingsInput {
+  name: String!
+  website: String!
+  description: String!
+  emailDomains: [String]!
+}
+
+input OrganizationInvestmentSettingsInput {
+  dealCategories: [String]!
+  defaultCurrency: String!
+}
+
+input EmailInput {
+  subject: String!
+  body: String!
+}
+
+input ParametersSettingsInput {
+  investment: OrganizationInvestmentSettingsInput!
+  invitationEmail: EmailInput!
+}
+
+input UpdateOrganizationInput {
+  generalSettings: GeneralSettingsInput
+  parametersSettings: ParametersSettingsInput
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -93,6 +120,8 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): ID
   updateInvestor(input: UpdateInvestorInput!): Boolean!
   updateInvestorFile(input: UpdateInvestorFileInput!): Boolean!
+  adminLoginAck: Boolean!
+  updateOrganization(input: UpdateOrganizationInput!): Boolean!
 }
 `;
 
@@ -118,6 +147,12 @@ exports.resolvers = {
     },
     updateInvestorFile(root, { input }, context) {
       return context.User.updateInvestorFile(context.user, input);
+    },
+    adminLoginAck() {
+      return true;
+    },
+    updateOrganization(root, { input }, context) {
+      return context.Organization.update(context.user, input);
     },
   },
 };

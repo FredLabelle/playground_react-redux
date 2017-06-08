@@ -9,11 +9,14 @@ const Login = ({ organization, children }) =>
     <Grid.Column width={8}>
       <Image
         src={`//logo.clearbit.com/${organization.domain}?size=192`}
+        alt={`${organization.generalSettings.name} logo`}
         shape="circular"
         centered
       />
       <Segment>
-        <Header as="h2" dividing textAlign="center">Welcome at {organization.name}</Header>
+        <Header as="h2" dividing textAlign="center">
+          Welcome at {organization.generalSettings.name}
+        </Header>
         {children}
       </Segment>
     </Grid.Column>

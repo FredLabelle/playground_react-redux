@@ -5,12 +5,23 @@ export const organizationQuery = gql`
     organization(shortId: $shortId) {
       id
       shortId
-      name
-      domain
-      investmentSettings {
-        dealCategories
-        defaultCurrency
+      generalSettings {
+        name
+        website
+        description
+        emailDomains
       }
+      parametersSettings {
+        investment {
+          dealCategories
+          defaultCurrency
+        }
+        invitationEmail {
+          subject
+          body
+        }
+      }
+      domain
     }
   }
 `;
@@ -26,7 +37,9 @@ export const meQuery = gql`
       picture {
         url
       }
+      role
       investmentSettings {
+        type
         dealCategories
         averageTicket {
           amount
@@ -34,7 +47,6 @@ export const meQuery = gql`
         }
         mechanism
       }
-      type
       individualSettings {
         birthdate
         nationality

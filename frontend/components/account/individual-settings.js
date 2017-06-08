@@ -31,7 +31,7 @@ export default class extends Component {
     return (
       <div>
         <Header as="h3" dividing>Individual information</Header>
-        <NameField name="name" value={this.props.me.name} onChange={this.props.handleChange} />
+        <NameField name="me.name" value={this.props.me.name} onChange={this.props.handleChange} />
         <Form.Group>
           <Form.Field
             label="Nationality"
@@ -61,7 +61,7 @@ export default class extends Component {
         />
         <Header as="h3" dividing>Fiscal Address</Header>
         <AddressField
-          name="individualSettings.fiscalAddress"
+          name="me.individualSettings.fiscalAddress"
           value={this.props.me.individualSettings.fiscalAddress}
           onChange={this.props.handleChange}
         />

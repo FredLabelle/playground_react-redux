@@ -2,11 +2,10 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
-import omit from 'lodash/omit';
-import set from 'lodash/set';
 import { Form, Header, Button, Segment, Message } from 'semantic-ui-react';
 import Router from 'next/router';
 
+import { handleChange } from '../../lib/util';
 import { OrganizationPropType } from '../../lib/prop-types';
 import { investorSignupMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
@@ -22,21 +21,24 @@ class SignupForm extends Component {
     cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
   state = {
-    name: {
-      firstName: '',
-      lastName: '',
-    },
-    email: '',
-    password: '',
-    repeatPassword: '',
-    investmentSettings: {
-      dealCategories: [],
-      averageTicket: {
-        amount: '',
-        currency: this.props.organization.investmentSettings.defaultCurrency,
+    investor: {
+      name: {
+        firstName: '',
+        lastName: '',
       },
-      mechanism: 'systematic',
+      email: '',
+      password: '',
+      investmentSettings: {
+        type: 'individual',
+        dealCategories: [],
+        averageTicket: {
+          amount: '',
+          currency: this.props.organization.parametersSettings.investment.defaultCurrency,
+        },
+        mechanism: 'systematic',
+      },
     },
+    repeatPassword: '',
     passwordMismatch: false,
   };
   componentDidMount() {
@@ -45,14 +47,14 @@ class SignupForm extends Component {
   onSubmit = async event => {
     event.preventDefault();
     //
-    const passwordMismatch = this.state.password !== this.state.repeatPassword;
+    const passwordMismatch = this.state.investor.password !== this.state.repeatPassword;
     this.setState({ passwordMismatch });
     if (passwordMismatch) {
       return;
     }
     this.setState({ loading: true });
     const { data: { investorSignup } } = await this.props.signup({
-      ...omit(this.state, 'repeatPassword', 'passwordMismatch'),
+      ...this.state.investor,
       organizationId: this.props.organization.id,
     });
     if (investorSignup) {
@@ -67,24 +69,21 @@ class SignupForm extends Component {
       this.setState({ loading: false });
     }
   };
-  handleChange = (event, { name, value }) => {
-    const [field, ...path] = name.split('.');
-    if (path.length) {
-      const newState = { ...this.state[field] };
-      this.setState({ [field]: set(newState, path, value) });
-    } else {
-      this.setState({ [name]: value });
-    }
-  };
+  handleChange = handleChange().bind(this);
   render() {
     return (
       <Form onSubmit={this.onSubmit} error={this.state.passwordMismatch}>
         <Header as="h2" dividing>Create your Investor account</Header>
         <Header as="h3" dividing>Investor identity</Header>
-        <NameField name="name" value={this.state.name} onChange={this.handleChange} required />
+        <NameField
+          name="investor.name"
+          value={this.state.investor.name}
+          onChange={this.handleChange}
+          required
+        />
         <Form.Input
-          name="email"
-          value={this.state.email}
+          name="investor.email"
+          value={this.state.investor.email}
           onChange={this.handleChange}
           label="Email"
           placeholder="Email"
@@ -93,8 +92,8 @@ class SignupForm extends Component {
         />
         <Form.Group>
           <Form.Input
-            name="password"
-            value={this.state.password}
+            name="investor.password"
+            value={this.state.investor.password}
             onChange={this.handleChange}
             label="Password"
             placeholder="Password"
@@ -120,27 +119,27 @@ class SignupForm extends Component {
         />
         <Header as="h3" dividing>Investor profile</Header>
         <CheckboxesField
-          name="investmentSettings.dealCategories"
-          value={this.state.investmentSettings.dealCategories}
+          name="investor.investmentSettings.dealCategories"
+          value={this.state.investor.investmentSettings.dealCategories}
           onChange={this.handleChange}
-          checkboxes={this.props.organization.investmentSettings.dealCategories}
+          checkboxes={this.props.organization.parametersSettings.investment.dealCategories}
           label="Deal categories interested in"
         />
         <TicketField
-          name="investmentSettings.averageTicket"
-          value={this.state.investmentSettings.averageTicket}
+          name="investor.investmentSettings.averageTicket"
+          value={this.state.investor.investmentSettings.averageTicket}
           onChange={this.handleChange}
           label="Average ticket"
           required
         />
         <MechanismField
-          name="investmentSettings.mechanism"
-          value={this.state.investmentSettings.mechanism}
+          name="investor.investmentSettings.mechanism"
+          value={this.state.investor.investmentSettings.mechanism}
           onChange={this.handleChange}
           label="Investment mechanism interested in"
         />
         <Segment basic textAlign="center">
-          <Button type="submit" primary disabled={this.state.loading} label="Create my account" />
+          <Button type="submit" primary disabled={this.state.loading} content="Create my account" />
         </Segment>
       </Form>
     );

@@ -6,12 +6,14 @@ import { Dropdown, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import Router from 'next/router';
 
+import { RouterPropType } from '../../lib/prop-types';
 import { logoutMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
+import { linkHref, linkAs } from '../../lib/url';
 
 class UserDropdownMenu extends Component {
   static propTypes = {
-    shortId: PropTypes.string.isRequired,
+    router: RouterPropType.isRequired,
     firstName: PropTypes.string.isRequired,
     pictureUrl: PropTypes.string.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
@@ -24,15 +26,12 @@ class UserDropdownMenu extends Component {
   componentDidMount() {
     Router.prefetch('/login');
   }
-  onClick = async () => {
+  onLogout = async () => {
     this.props.client.resetStore();
     const { data: { logout } } = await this.props.logout();
     if (logout) {
       this.props.cookies.remove('token', { path: '/' });
-      Router.push(
-        `/login?shortId=${this.props.shortId}`,
-        `/organization/${this.props.shortId}/login`,
-      );
+      Router.push(linkHref('/login', this.props.router), linkAs('/login', this.props.router));
     } else {
       console.error('LOGOUT ERROR');
     }
@@ -48,14 +47,14 @@ class UserDropdownMenu extends Component {
         <Dropdown.Menu>
           <Link
             prefetch
-            href={`/account?shortId=${this.props.shortId}`}
-            as={`/organization/${this.props.shortId}/account`}
+            href={linkHref('/account', this.props.router)}
+            as={linkAs('/account', this.props.router)}
           >
             <Dropdown.Item>
               <a>My Account</a>
             </Dropdown.Item>
           </Link>
-          <Dropdown.Item onClick={this.onClick}><a>Logout</a></Dropdown.Item>
+          <Dropdown.Item onClick={this.onLogout}><a>Logout</a></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );

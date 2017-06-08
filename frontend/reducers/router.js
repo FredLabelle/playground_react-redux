@@ -1,6 +1,7 @@
 import { parse } from 'querystring';
 
 const initialState = {
+  admin: '',
   organizationShortId: '',
   pathname: '/',
   query: {},
@@ -9,14 +10,14 @@ const initialState = {
 export default (state = initialState, { type, payload }) => {
   switch (type) {
     case 'ON_ROUTE_CHANGE_START': {
-      const pathRegexp = /\/organization\/([a-z]+)(\/[a-z]+)?(\?.*)?/;
+      const pathRegexp = /(\/admin)?\/organization\/([a-z]+)(\/[a-z]+)?(\?.*)?/;
       const matches = payload.url.match(pathRegexp);
       if (!matches) {
         return initialState;
       }
-      const [, organizationShortId, pathname = '/', queryString = '?'] = matches;
+      const [, admin = '', organizationShortId, pathname = '/', queryString = '?'] = matches;
       const query = parse(queryString.substr(1));
-      return { organizationShortId, pathname, query };
+      return { admin, organizationShortId, pathname, query };
     }
     default: {
       return state;

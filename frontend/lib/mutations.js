@@ -41,3 +41,15 @@ export const updateInvestorFileMutation = gql`
     updateInvestorFile(input: $input)
   }
 `;
+
+export const adminLoginAckMutation = gql`
+  mutation adminLoginAck {
+    adminLoginAck
+  }
+`;
+
+export const updateOrganizationMutation = gql`
+  mutation updateOrganization($input: UpdateOrganizationInput!) {
+    updateOrganization(input: $input)
+  }
+`;

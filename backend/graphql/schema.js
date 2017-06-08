@@ -32,6 +32,7 @@ type AverageTicket {
 }
 
 type InvestmentSettings {
+  type: String!
   dealCategories: [String]!
   averageTicket: AverageTicket!
   mechanism: String!
@@ -61,12 +62,19 @@ type User {
   shortId: ID!
   name: Name!
   email: String!
+  role: String!
   picture: File
-  investmentSettings: InvestmentSettings!
-  type: String!
-  individualSettings: IndividualSettings!
-  corporationSettings: CorporationSettings!
-  advisor: Advisor!
+  investmentSettings: InvestmentSettings
+  individualSettings: IndividualSettings
+  corporationSettings: CorporationSettings
+  advisor: Advisor
+}
+
+type GeneralSettings {
+  name: String!
+  website: String!
+  description: String!
+  emailDomains: [String]!
 }
 
 type OrganizationInvestmentSettings {
@@ -79,14 +87,17 @@ type Email {
   body: String!
 }
 
+type ParametersSettings {
+  investment: OrganizationInvestmentSettings!
+  invitationEmail: Email!
+}
+
 type Organization {
   id: ID!
   shortId: ID!
-  name: String!
-  website: String!
-  domain: String!
-  investmentSettings: OrganizationInvestmentSettings!
-  invitationEmail: Email!
+  generalSettings: GeneralSettings!
+  parametersSettings: ParametersSettings!
+  domain: String
 }
 
 type Query {

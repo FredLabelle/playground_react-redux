@@ -20,9 +20,9 @@ export const AddressPropType = PropTypes.shape({
 });
 
 export const FilePropType = PropTypes.shape({
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   url: PropTypes.string.isRequired,
-  image: PropTypes.bool.isRequired,
+  image: PropTypes.bool,
 });
 
 export const RouterPropType = PropTypes.shape({
@@ -37,37 +37,50 @@ export const RouterPropType = PropTypes.shape({
 export const OrganizationPropType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   shortId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  domain: PropTypes.string.isRequired,
-  investmentSettings: PropTypes.shape({
-    dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-    defaultCurrency: PropTypes.string.isRequired,
+  generalSettings: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    website: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    emailDomains: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
+  parametersSettings: PropTypes.shape({
+    investment: PropTypes.shape({
+      dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
+      defaultCurrency: PropTypes.string.isRequired,
+    }).isRequired,
+    invitationEmail: PropTypes.shape({
+      subject: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  domain: PropTypes.string,
 });
 
 export const MePropType = PropTypes.shape({
-  name: NamePropType.isRequired,
-  email: PropTypes.string,
+  name: NamePropType, // .isRequired,
+  email: PropTypes.string, // required?
+  role: PropTypes.string, // .isRequired,
+  picture: FilePropType, // .isRequired,
   investmentSettings: PropTypes.shape({
+    type: PropTypes.string.isRequired,
     dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
     averageTicket: TicketPropType.isRequired,
     mechanism: PropTypes.string.isRequired,
-  }) /* .isRequired*/,
-  type: PropTypes.string.isRequired,
+  }),
   individualSettings: PropTypes.shape({
     birthdate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     nationality: PropTypes.string.isRequired,
     idDocument: FilePropType.isRequired,
     fiscalAddress: AddressPropType.isRequired,
-  }).isRequired,
+  }),
   corporationSettings: PropTypes.shape({
     position: PropTypes.string.isRequired,
     companyName: PropTypes.string.isRequired,
     companyAddress: AddressPropType.isRequired,
     incProof: FilePropType.isRequired,
-  }).isRequired,
+  }),
   advisor: PropTypes.shape({
     name: NamePropType.isRequired,
     email: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 });

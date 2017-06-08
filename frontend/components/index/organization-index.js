@@ -6,7 +6,7 @@ import { organizationQuery } from '../../lib/queries';
 const OrganizationIndex = ({ organization }) =>
   organization &&
   <div>
-    <h1>Welcome to {organization.name}</h1>
+    <h1>Welcome to {organization.generalSettings.name}</h1>
   </div>;
 OrganizationIndex.propTypes = {
   organization: OrganizationPropType,

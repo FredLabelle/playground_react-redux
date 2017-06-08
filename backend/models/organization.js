@@ -17,36 +17,33 @@ const Organization = sequelize.define(
       type: Sequelize.STRING,
       unique: true,
     },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    emailDomain: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    website: {
-      type: Sequelize.STRING,
-    },
-    investmentSettings: {
+    generalSettings: {
       type: Sequelize.JSONB,
       defaultValue: {
-        dealCategories: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
-        defaultCurrency: 'usd',
+        name: '',
+        website: '',
+        description: '',
+        emailDomains: [],
       },
       allowNull: false,
     },
-    invitationEmail: {
+    parametersSettings: {
       type: Sequelize.JSONB,
       defaultValue: {
-        subject: 'Welcome to {{organization}}',
-        body: [
-          'Dear {{firstName}},',
-          '',
-          'Here is the link to signup to the club: {{signupLink}}',
-          '',
-          'Best,',
-        ].join('\n'),
+        investment: {
+          dealCategories: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
+          defaultCurrency: 'usd',
+        },
+        invitationEmail: {
+          subject: 'Welcome to {{organization}}',
+          body: [
+            'Dear {{firstName}},',
+            '',
+            'Here is the link to signup to the club: {{signupLink}}',
+            '',
+            'Best,',
+          ].join('\n'),
+        },
       },
       allowNull: false,
     },
@@ -54,7 +51,7 @@ const Organization = sequelize.define(
   {
     getterMethods: {
       domain() {
-        const { hostname } = parse(this.website);
+        const { hostname } = parse(this.generalSettings.website);
         return hostname;
       },
     },

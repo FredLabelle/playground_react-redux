@@ -140,6 +140,7 @@ const UserService = {
     try {
       await user.update(input);
       const investorProfile = await user.getInvestorProfile();
+      // input lacks some fields in nested JSONB so we need to default to current values
       const { individualSettings, corporationSettings } = investorProfile.toJSON();
       const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
       await investorProfile.update(update);

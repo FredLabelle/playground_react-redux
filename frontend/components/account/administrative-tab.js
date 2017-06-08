@@ -2,12 +2,11 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
 import { Form, Header, Segment, Button, Message } from 'semantic-ui-react';
-import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 import moment from 'moment';
 
-import { omitDeep, handleChange } from '../../lib/util';
+import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { MePropType } from '../../lib/prop-types';
 import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
@@ -25,26 +24,34 @@ class AdministrativeTab extends Component {
     onUnsavedChangesChange: PropTypes.func.isRequired,
   };
   state = {
-    name: this.props.me.name,
-    type: this.props.me.type,
-    individualSettings: {
-      ...this.props.me.individualSettings,
-      birthdate: moment(this.props.me.individualSettings.birthdate, 'DD-MM-YYYY'),
+    me: {
+      ...pick(this.props.me, [
+        'name',
+        'investmentSettings',
+        'individualSettings',
+        'corporationSettings',
+        'advisor',
+      ]),
+      individualSettings: {
+        ...this.props.me.individualSettings,
+        birthdate: moment(this.props.me.individualSettings.birthdate, 'DD-MM-YYYY'),
+      },
     },
-    corporationSettings: this.props.me.corporationSettings,
-    advisor: this.props.me.advisor,
     saving: false,
     success: false,
   };
   componentWillReceiveProps(props) {
     this.setState({
-      individualSettings: {
-        ...this.state.individualSettings,
-        idDocument: props.me.individualSettings.idDocument,
-      },
-      corporationSettings: {
-        ...this.state.corporationSettings,
-        incProof: props.me.corporationSettings.incProof,
+      me: {
+        ...this.state.me,
+        individualSettings: {
+          ...this.state.me.individualSettings,
+          idDocument: props.me.individualSettings.idDocument,
+        },
+        corporationSettings: {
+          ...this.state.me.corporationSettings,
+          incProof: props.me.corporationSettings.incProof,
+        },
       },
     });
   }
@@ -54,11 +61,10 @@ class AdministrativeTab extends Component {
     const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
     this.setState({ saving: false });
     if (updateInvestor) {
-      console.info('UPDATE INVESTOR SUCCESS');
+      this.props.onUnsavedChangesChange(false);
       this.setState({ success: true });
-      setTimeout(() => {
-        this.setState({ success: false });
-      }, 2000);
+      await sleep(2000);
+      this.setState({ success: false });
     } else {
       console.error('UPDATE INVESTOR ERROR');
     }
@@ -66,7 +72,7 @@ class AdministrativeTab extends Component {
   handleChange = handleChange(() => {
     const me = pick(this.props.me, [
       'name',
-      'type',
+      'investmentSettings',
       'individualSettings',
       'corporationSettings',
       'advisor',
@@ -76,19 +82,18 @@ class AdministrativeTab extends Component {
     this.props.onUnsavedChangesChange(unsavedChanges);
   }).bind(this);
   handleNationalityChange = nationality => {
-    const newState = { ...this.state.individualSettings };
-    newState.nationality = nationality;
-    this.setState({ individualSettings: newState });
+    const newState = { ...this.state.me };
+    newState.individualSettings.nationality = nationality;
+    this.setState({ me: newState });
   };
   handleBirthdateChange = birthdate => {
-    const newState = { ...this.state.individualSettings };
-    newState.birthdate = birthdate;
-    this.setState({ individualSettings: newState });
+    const newState = { ...this.state.me };
+    newState.individualSettings.birthdate = birthdate;
+    this.setState({ me: newState });
   };
-  me = () => omit(this.state, 'saving', 'success');
   update = () => {
-    const update = omitDeep(this.me(), 'idDocument', 'incProof', '__typename');
-    const birthdate = this.state.individualSettings.birthdate.format('DD-MM-YYYY');
+    const update = omitDeep(this.state.me, 'idDocument', 'incProof', '__typename');
+    const birthdate = this.state.me.individualSettings.birthdate.format('DD-MM-YYYY');
     update.individualSettings.birthdate = birthdate;
     return update;
   };
@@ -97,8 +102,8 @@ class AdministrativeTab extends Component {
       <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <RadioField
-            name="type"
-            value={this.state.type}
+            name="me.investmentSettings.type"
+            value={this.state.me.investmentSettings.type}
             onChange={this.handleChange}
             radio={[
               { value: 'individual', label: 'Individual' },
@@ -106,16 +111,16 @@ class AdministrativeTab extends Component {
             ]}
             label="Type of Investor"
           />
-          {this.state.type === 'individual'
+          {this.state.me.investmentSettings.type === 'individual'
             ? <IndividualSettings
-                me={this.me()}
+                me={this.state.me}
                 handleChange={this.handleChange}
                 handleNationalityChange={this.handleNationalityChange}
                 handleBirthdateChange={this.handleBirthdateChange}
                 updateInvestorFile={this.props.updateInvestorFile}
               />
             : <CorporationSettings
-                me={this.me()}
+                me={this.state.me}
                 handleChange={this.handleChange}
                 updateInvestorFile={this.props.updateInvestorFile}
               />}
@@ -125,13 +130,13 @@ class AdministrativeTab extends Component {
             that will be in copy of every correspondence.
           </p>
           <NameField
-            name="advisor.name"
-            value={this.state.advisor.name}
+            name="me.advisor.name"
+            value={this.state.me.advisor.name}
             onChange={this.handleChange}
           />
           <Form.Input
-            name="advisor.email"
-            value={this.state.advisor.email}
+            name="me.advisor.email"
+            value={this.state.me.advisor.email}
             onChange={this.handleChange}
             label="Email"
             placeholder="Email"

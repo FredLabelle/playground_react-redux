@@ -7,7 +7,6 @@ const initSequelize = async () => {
     await sequelize.authenticate();
     console.info('Postgres: connection has been established successfully.');
     await sequelize.sync();
-    // await sequelize.sync({ force: true });
     console.info('Postgres: database synced successfully.');
   } catch (error) {
     console.error(`Postgres error: ${error}`);

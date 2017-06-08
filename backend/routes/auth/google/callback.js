@@ -39,9 +39,8 @@ module.exports = async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL;
     const shortId = organization.shortId;
     const queryString = stringify({ token });
-    const url = `${frontendUrl}/admin/organization/${shortId}/login?${queryString}`;
+    const url = `${frontendUrl}/admin/organization/${shortId}/account?${queryString}`;
     res.redirect(url);
-    // res.redirect(`${process.env.FRONTEND_URL}/admin/organization/${shortId}/account`);
   } catch (error) {
     console.error(error);
     res.redirect(process.env.FRONTEND_URL);

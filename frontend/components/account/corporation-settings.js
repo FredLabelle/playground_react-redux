@@ -9,9 +9,9 @@ import FileField from '../fields/file-field';
 const CorporationSettings = ({ me, handleChange, updateInvestorFile }) =>
   <div>
     <Header as="h3" dividing>Legal representative</Header>
-    <NameField name="name" value={me.name} onChange={handleChange} />
+    <NameField name="me.name" value={me.name} onChange={handleChange} />
     <Form.Input
-      name="corporationSettings.position"
+      name="me.corporationSettings.position"
       value={me.corporationSettings.position}
       onChange={handleChange}
       label="Position"
@@ -19,14 +19,14 @@ const CorporationSettings = ({ me, handleChange, updateInvestorFile }) =>
     />
     <Header as="h3" dividing>Company information</Header>
     <Form.Input
-      name="corporationSettings.companyName"
+      name="me.corporationSettings.companyName"
       value={me.corporationSettings.companyName}
       onChange={handleChange}
       label="Name"
       placeholder="Name"
     />
     <AddressField
-      name="corporationSettings.companyAddress"
+      name="me.corporationSettings.companyAddress"
       value={me.corporationSettings.companyAddress}
       onChange={handleChange}
     />

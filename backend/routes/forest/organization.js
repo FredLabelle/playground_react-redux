@@ -10,18 +10,22 @@ module.exports.seedDatabase = async (req, res) => {
     await sequelize.sync({ force: true });
     const organization = await Organization.create({
       shortId: 'eclub',
-      name: 'eClub',
-      emailDomain: 'hivyapp.com',
-      website: 'https://efounders.co',
+      generalSettings: {
+        name: 'eClub',
+        website: 'https://efounders.co',
+        description: 'eFounders club',
+        emailDomains: ['e-founders.com'],
+      },
     });
     await UserService.signup({
       name: {
         firstName: 'Simon',
         lastName: 'Arvaux',
       },
-      email: 'simon@e-founders.com',
+      email: 'simon.arvaux@gmail.com',
       password: 'password',
       investmentSettings: {
+        type: 'individual',
         dealCategories: [],
         averageTicket: {
           amount: '5000',

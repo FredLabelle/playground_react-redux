@@ -1,7 +1,13 @@
 import flatten from 'lodash/flatten';
 import transform from 'lodash/transform';
 import isObject from 'lodash/isObject';
+import cloneDeep from 'lodash/cloneDeep';
 import set from 'lodash/set';
+
+export const sleep = duration =>
+  new Promise(resolve => {
+    setTimeout(resolve, duration);
+  });
 
 export const omitDeep = (object, ...omittedKeys) => {
   const omittedKeysFlattened = flatten(omittedKeys);
@@ -18,7 +24,7 @@ export const omitDeep = (object, ...omittedKeys) => {
 export const handleChange = afterChange =>
   function handleChangeFunc(event, { name, value }) {
     const [field, ...path] = name.split('.');
-    const newState = { ...this.state[field] };
+    const newState = cloneDeep(this.state[field]);
     const prop = path.length ? field : name;
     const newValue = path.length ? set(newState, path, value) : value;
     this.setState({ [prop]: newValue }, afterChange);
