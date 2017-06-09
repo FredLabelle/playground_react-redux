@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Form, Header, Segment, Button, Message } from 'semantic-ui-react';
 import pick from 'lodash/pick';
@@ -10,6 +11,7 @@ import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { MePropType } from '../../lib/prop-types';
 import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
+import { setUnsavedChanges } from '../../actions/form';
 import RadioField from '../fields/radio-field';
 import IndividualSettings from './individual-settings';
 import CorporationSettings from './corporation-settings';
@@ -21,7 +23,7 @@ class AdministrativeTab extends Component {
     active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
     updateInvestorFile: PropTypes.func.isRequired,
-    onUnsavedChangesChange: PropTypes.func.isRequired,
+    setUnsavedChanges: PropTypes.func.isRequired,
   };
   state = {
     me: {
@@ -61,7 +63,7 @@ class AdministrativeTab extends Component {
     const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
     this.setState({ saving: false });
     if (updateInvestor) {
-      this.props.onUnsavedChangesChange(false);
+      this.props.setUnsavedChanges(false);
       this.setState({ success: true });
       await sleep(2000);
       this.setState({ success: false });
@@ -79,7 +81,7 @@ class AdministrativeTab extends Component {
     ]);
     const meOmitted = omitDeep(me, 'idDocument', 'incProof', '__typename');
     const unsavedChanges = !isEqual(this.update(), meOmitted);
-    this.props.onUnsavedChangesChange(unsavedChanges);
+    this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
   handleNationalityChange = nationality => {
     const newState = { ...this.state.me };
@@ -160,6 +162,7 @@ class AdministrativeTab extends Component {
 }
 
 export default compose(
+  connect(null, { setUnsavedChanges }),
   graphql(updateInvestorMutation, {
     props: ({ mutate }) => ({
       updateInvestor: input =>

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { connect } from 'react-redux';
+import { compose, graphql } from 'react-apollo';
 import { Segment, Form, Header, Button, Message } from 'semantic-ui-react';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
@@ -9,6 +10,7 @@ import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { OrganizationPropType, MePropType } from '../../lib/prop-types';
 import { meQuery } from '../../lib/queries';
 import { updateInvestorMutation } from '../../lib/mutations';
+import { setUnsavedChanges } from '../../actions/form';
 import NameField from '../fields/name-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import TicketField from '../fields/ticket-field';
@@ -20,7 +22,7 @@ class AccountTab extends Component {
     me: MePropType.isRequired,
     active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
-    onUnsavedChangesChange: PropTypes.func.isRequired,
+    setUnsavedChanges: PropTypes.func.isRequired,
   };
   state = {
     me: {
@@ -35,7 +37,7 @@ class AccountTab extends Component {
     const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
     this.setState({ saving: false });
     if (updateInvestor) {
-      this.props.onUnsavedChangesChange(false);
+      this.props.setUnsavedChanges(false);
       this.setState({ success: true });
       await sleep(2000);
       this.setState({ success: false });
@@ -47,7 +49,7 @@ class AccountTab extends Component {
     const me = pick(this.props.me, 'name', 'investmentSettings');
     const meOmitted = omitDeep(me, '__typename');
     const unsavedChanges = !isEqual(this.update(), meOmitted);
-    this.props.onUnsavedChangesChange(unsavedChanges);
+    this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
   update = () => omitDeep(this.state.me, '__typename');
   render() {
@@ -94,12 +96,15 @@ class AccountTab extends Component {
   }
 }
 
-export default graphql(updateInvestorMutation, {
-  props: ({ mutate }) => ({
-    updateInvestor: input =>
-      mutate({
-        variables: { input },
-        refetchQueries: [{ query: meQuery }],
-      }),
+export default compose(
+  connect(null, { setUnsavedChanges }),
+  graphql(updateInvestorMutation, {
+    props: ({ mutate }) => ({
+      updateInvestor: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
   }),
-})(AccountTab);
+)(AccountTab);

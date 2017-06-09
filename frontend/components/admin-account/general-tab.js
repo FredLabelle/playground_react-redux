@@ -15,7 +15,7 @@ class GeneralTab extends Component {
     active: PropTypes.bool.isRequired,
     organization: OrganizationPropType.isRequired,
     updateOrganization: PropTypes.func.isRequired,
-    onUnsavedChangesChange: PropTypes.func.isRequired,
+    setUnsavedChanges: PropTypes.func.isRequired,
   };
   state = {
     organization: {
@@ -34,7 +34,7 @@ class GeneralTab extends Component {
     const { data: { updateOrganization } } = await this.props.updateOrganization(this.update());
     this.setState({ saving: false });
     if (updateOrganization) {
-      this.props.onUnsavedChangesChange(false);
+      this.props.setUnsavedChanges(false);
       this.setState({ success: true });
       await sleep(2000);
       this.setState({ success: false });
@@ -46,7 +46,7 @@ class GeneralTab extends Component {
     const organization = pick(this.props.organization, 'generalSettings');
     const organizationOmitted = omitDeep(organization, '__typename');
     const unsavedChanges = !isEqual(this.update(), organizationOmitted);
-    this.props.onUnsavedChangesChange(unsavedChanges);
+    this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
   update = () => {
     const update = omitDeep(this.state.organization, '__typename');

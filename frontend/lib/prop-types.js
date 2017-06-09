@@ -31,7 +31,12 @@ export const RouterPropType = PropTypes.shape({
   query: PropTypes.shape({
     token: PropTypes.string,
     tab: PropTypes.string,
+    item: PropTypes.string,
   }).isRequired,
+});
+
+export const FormPropType = PropTypes.shape({
+  unsavedChanges: PropTypes.bool.isRequired,
 });
 
 export const OrganizationPropType = PropTypes.shape({
