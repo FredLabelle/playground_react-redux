@@ -91,3 +91,19 @@ export const meQuery = gql`
     }
   }
 `;
+
+export const investorsQuery = gql`
+  query {
+    investors {
+      fullName
+      picture {
+        url
+      }
+      corporationSettings {
+        companyName
+      }
+      createdAt
+      email
+    }
+  }
+`;

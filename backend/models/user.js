@@ -55,6 +55,11 @@ module.exports = sequelize.define(
     },
   },
   {
+    getterMethods: {
+      fullName() {
+        return `${this.name.firstName} ${this.name.lastName}`;
+      },
+    },
     hooks: {
       async beforeCreate(user) {
         // generate password on user creation

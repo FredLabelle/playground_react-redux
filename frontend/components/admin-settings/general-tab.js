@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { connect } from 'react-redux';
+import { compose, graphql } from 'react-apollo';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 import { Segment, Form, Header, Image, Message, Button } from 'semantic-ui-react';
@@ -9,6 +10,7 @@ import { sleep, handleChange, omitDeep } from '../../lib/util';
 import { OrganizationPropType } from '../../lib/prop-types';
 import { updateOrganizationMutation } from '../../lib/mutations';
 import { organizationQuery } from '../../lib/queries';
+import { setUnsavedChanges } from '../../actions/form';
 
 class GeneralTab extends Component {
   static propTypes = {
@@ -113,17 +115,20 @@ class GeneralTab extends Component {
   }
 }
 
-export default graphql(updateOrganizationMutation, {
-  props: ({ mutate, ownProps: { organization } }) => ({
-    updateOrganization: input =>
-      mutate({
-        variables: { input },
-        refetchQueries: [
-          {
-            query: organizationQuery,
-            variables: { shortId: organization.shortId },
-          },
-        ],
-      }),
+export default compose(
+  connect(null, { setUnsavedChanges }),
+  graphql(updateOrganizationMutation, {
+    props: ({ mutate, ownProps: { organization } }) => ({
+      updateOrganization: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [
+            {
+              query: organizationQuery,
+              variables: { shortId: organization.shortId },
+            },
+          ],
+        }),
+    }),
   }),
-})(GeneralTab);
+)(GeneralTab);

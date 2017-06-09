@@ -42,7 +42,7 @@ const UserService = {
       if (!canSignup) {
         return null;
       }
-      const hash = createHash('md5').digest('hex');
+      const hash = createHash('md5').update(input.email).digest('hex');
       const picture = {
         name: '',
         url: `https://www.gravatar.com/avatar/${hash}?d=retro`,

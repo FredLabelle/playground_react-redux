@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import Router from 'next/router';
 
+import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import Login from '../common/login';
@@ -29,8 +30,7 @@ class UserLogin extends Component {
   };
   onResetPasswordModalClose = () => {
     this.setState({ resetPasswordModalOpen: false });
-    const { shortId } = this.props.organization;
-    Router.replace(`/login?shortId=${shortId}`, `/organization/${shortId}/login`);
+    Router.replace(linkHref('/login', this.props.router), linkAs('/login', this.props.router));
   };
   forgotPassword = event => {
     event.preventDefault();

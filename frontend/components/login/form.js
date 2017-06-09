@@ -6,13 +6,14 @@ import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
-import { OrganizationPropType } from '../../lib/prop-types';
+import { linkHref, linkAs } from '../../lib/url';
+import { RouterPropType } from '../../lib/prop-types';
 import { investorLoginMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 
 class LoginForm extends Component {
   static propTypes = {
-    organization: OrganizationPropType.isRequired,
+    router: RouterPropType.isRequired,
     forgotPassword: PropTypes.func.isRequired,
     onEmailChange: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
@@ -27,7 +28,7 @@ class LoginForm extends Component {
     error: false,
   };
   componentDidMount() {
-    Router.prefetch('/account');
+    Router.prefetch('/settings');
   }
   onSubmit = async event => {
     event.preventDefault();
@@ -39,8 +40,7 @@ class LoginForm extends Component {
     });
     if (investorLogin) {
       this.props.cookies.set('token', investorLogin, { path: '/' });
-      const { shortId } = this.props.organization;
-      Router.push(`/account?shortId=${shortId}`, `/organization/${shortId}/account`);
+      Router.push(linkHref('/settings', this.props.router), linkAs('/settings', this.props.router));
     } else {
       this.setState({ loading: false, error: true });
     }

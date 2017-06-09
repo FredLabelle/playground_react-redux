@@ -2,12 +2,12 @@ import { Container } from 'semantic-ui-react';
 
 import withData from '../../lib/withData';
 import NavBar from '../../components/navbar';
-import AdminAccount from '../../components/admin-account';
+import AdminDeals from '../../components/admin-deals';
 
-const AdminAccountPage = () =>
+const AdminDealsPage = () =>
   <Container>
     <NavBar />
-    <AdminAccount />
+    <AdminDeals />
   </Container>;
 
-export default withData(AdminAccountPage);
+export default withData(AdminDealsPage);

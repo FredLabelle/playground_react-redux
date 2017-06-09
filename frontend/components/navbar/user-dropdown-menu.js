@@ -47,11 +47,11 @@ class UserDropdownMenu extends Component {
         <Dropdown.Menu>
           <Link
             prefetch
-            href={linkHref('/account', this.props.router)}
-            as={linkAs('/account', this.props.router)}
+            href={linkHref('/settings', this.props.router)}
+            as={linkAs('/settings', this.props.router)}
           >
             <Dropdown.Item>
-              <a>My Account</a>
+              <a>Settings</a>
             </Dropdown.Item>
           </Link>
           <Dropdown.Item onClick={this.onLogout}><a>Logout</a></Dropdown.Item>

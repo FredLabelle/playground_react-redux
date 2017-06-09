@@ -1,6 +1,6 @@
 const DataLoader = require('dataloader');
 
-const { Organization } = require('../models');
+const { Organization, InvestorProfile } = require('../models');
 
 const OrganizationService = {
   shortIdLoader() {
@@ -32,8 +32,13 @@ const OrganizationService = {
     });
   },
   async organization(shortId) {
-    const organization = await OrganizationService.findByShortId(shortId);
-    return organization.toJSON();
+    try {
+      const organization = await OrganizationService.findByShortId(shortId);
+      return organization.toJSON();
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   },
   async update(user, input) {
     try {
@@ -46,6 +51,21 @@ const OrganizationService = {
     } catch (error) {
       console.error(error);
       return false;
+    }
+  },
+  async investors(user) {
+    try {
+      const organization = await user.getOrganization();
+      const investors = await organization.getUsers({
+        where: { role: 'investor' },
+        include: [{ model: InvestorProfile }],
+      });
+      return investors.map(investor =>
+        Object.assign({}, investor.toJSON(), investor.InvestorProfile.toJSON())
+      );
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   },
 };

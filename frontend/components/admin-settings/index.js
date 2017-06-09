@@ -2,42 +2,25 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Cookies, withCookies } from 'react-cookie';
 import { Menu } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { RouterPropType, FormPropType, OrganizationPropType } from '../../lib/prop-types';
-import { organizationQuery, meQuery } from '../../lib/queries';
-import { adminLoginAckMutation } from '../../lib/mutations';
+import { organizationQuery } from '../../lib/queries';
 import { setUnsavedChanges } from '../../actions/form';
-import { linkHref, linkAs } from '../../lib/url';
 import GeneralTab from './general-tab';
 import UsersTab from './users-tab';
 import ParametersTab from './parameters-tab';
 
-class AdminAccount extends Component {
+class AdminSettings extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
     form: FormPropType.isRequired,
     organization: OrganizationPropType,
-    // me: MePropType,
-    cookies: PropTypes.instanceOf(Cookies).isRequired,
-    adminLoginAck: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
-  static defaultProps = { organization: null, me: null };
+  static defaultProps = { organization: null };
   state = { tab: this.props.router.query.tab };
-  componentDidMount() {
-    const { token } = this.props.router.query;
-    if (token) {
-      this.props.cookies.set('token', token, { path: '/' });
-      this.props.adminLoginAck();
-      Router.replace(
-        linkHref('/account', this.props.router),
-        linkAs('/account', this.props.router),
-      );
-    }
-  }
   onClick = event => {
     event.preventDefault();
     if (this.props.form.unsavedChanges) {
@@ -55,8 +38,8 @@ class AdminAccount extends Component {
     const shortId = this.props.router.organizationShortId;
     const { tab } = event.target.dataset;
     Router.replace(
-      `/admin/account?shortId=${shortId}&tab=${tab}`,
-      `/admin/organization/${shortId}/account?tab=${tab}`,
+      `/admin/settings?shortId=${shortId}&tab=${tab}`,
+      `/admin/organization/${shortId}/settings?tab=${tab}`,
     );
   };
   render() {
@@ -66,7 +49,7 @@ class AdminAccount extends Component {
       <div>
         <Menu attached="top" tabular widths={3}>
           <Menu.Item data-tab="general" active={active('general')} onClick={this.onClick}>
-            Account
+            General
           </Menu.Item>
           <Menu.Item data-tab="users" active={active('users')} onClick={this.onClick}>
             Users
@@ -75,17 +58,12 @@ class AdminAccount extends Component {
             Parameters
           </Menu.Item>
         </Menu>
-        <GeneralTab
-          active={active('general')}
-          organization={this.props.organization}
-          setUnsavedChanges={this.props.setUnsavedChanges}
-        />
+        <GeneralTab active={active('general')} organization={this.props.organization} />
         <UsersTab active={active('users')} />
         <ParametersTab
           active={active('parameters')}
           router={this.props.router}
           organization={this.props.organization}
-          setUnsavedChanges={this.props.setUnsavedChanges}
         />
       </div>
     );
@@ -93,7 +71,6 @@ class AdminAccount extends Component {
 }
 
 export default compose(
-  withCookies,
   connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
   graphql(organizationQuery, {
     options: ({ router }) => ({
@@ -101,15 +78,4 @@ export default compose(
     }),
     props: ({ data: { organization } }) => ({ organization }),
   }),
-  /* graphql(meQuery, {
-    props: ({ data: { me } }) => ({ me }),
-  }),*/
-  graphql(adminLoginAckMutation, {
-    props: ({ mutate }) => ({
-      adminLoginAck: () =>
-        mutate({
-          refetchQueries: [{ query: meQuery }],
-        }),
-    }),
-  }),
-)(AdminAccount);
+)(AdminSettings);

@@ -1,9 +1,11 @@
 const { makeExecutableSchema } = require('graphql-tools');
+const GraphQLDate = require('graphql-date');
 const GraphQLJSON = require('graphql-type-json');
 
 const { schema: mutationsSchema, resolvers: mutationsResolvers } = require('./mutations');
 
 const schema = `
+scalar Date
 scalar JSON
 
 type Name {
@@ -61,6 +63,7 @@ type User {
   id: ID!
   shortId: ID!
   name: Name!
+  fullName: String!
   email: String!
   role: String!
   picture: File
@@ -68,6 +71,7 @@ type User {
   individualSettings: IndividualSettings
   corporationSettings: CorporationSettings
   advisor: Advisor
+  createdAt: Date!
 }
 
 type GeneralSettings {
@@ -103,6 +107,7 @@ type Organization {
 type Query {
   organization(shortId: ID!): Organization
   me: User
+  investors: [User]
 }
 
 schema {
@@ -112,6 +117,7 @@ schema {
 `;
 
 const resolvers = {
+  Date: GraphQLDate,
   JSON: GraphQLJSON,
   Query: {
     organization(root, { shortId }, context) {
@@ -122,6 +128,15 @@ const resolvers = {
         return null;
       }
       return context.User.me(context.user);
+    },
+    investors(root, params, context) {
+      if (!context.user) {
+        return null;
+      }
+      if (context.user.role !== 'admin') {
+        return null;
+      }
+      return context.Organization.investors(context.user);
     },
   },
 };

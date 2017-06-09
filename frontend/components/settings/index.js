@@ -17,7 +17,7 @@ import AccountTab from './account-tab';
 import AdministrativeTab from './administrative-tab';
 import ParametersTab from './parameters-tab';
 
-class Account extends Component {
+class Settings extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
     form: FormPropType.isRequired,
@@ -44,8 +44,8 @@ class Account extends Component {
     const shortId = this.props.router.organizationShortId;
     const { tab } = event.target.dataset;
     Router.replace(
-      `/account?shortId=${shortId}&tab=${tab}`,
-      `/organization/${shortId}/account?tab=${tab}`,
+      `/settings?shortId=${shortId}&tab=${tab}`,
+      `/organization/${shortId}/settings?tab=${tab}`,
     );
   };
   render() {
@@ -91,4 +91,4 @@ export default compose(
   graphql(meQuery, {
     props: ({ data: { me } }) => ({ me }),
   }),
-)(Account);
+)(Settings);

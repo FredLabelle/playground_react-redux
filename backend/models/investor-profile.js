@@ -16,7 +16,7 @@ module.exports = sequelize.define('InvestorProfile', {
   individualSettings: {
     type: Sequelize.JSONB,
     defaultValue: {
-      birthdate: '01-01-1970',
+      birthdate: new Date('01-01-1970'),
       nationality: '',
       idDocument: {
         name: '',

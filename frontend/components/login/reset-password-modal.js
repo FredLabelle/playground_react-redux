@@ -5,6 +5,7 @@ import { withCookies, Cookies } from 'react-cookie';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
 import Router from 'next/router';
 
+import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
 import { resetPasswordMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
@@ -29,8 +30,7 @@ class ResetPasswordModal extends Component {
     });
     if (resetPassword) {
       this.props.cookies.set('token', resetPassword, { path: '/' });
-      const shortId = this.props.router.organizationShortId;
-      Router.push(`/account?shortId=${shortId}`, `/organization/${shortId}/account`);
+      Router.push(linkHref('/settings', this.props.router), linkAs('/settings', this.props.router));
     } else {
       console.error('RESET PASSWORD ERROR');
     }

@@ -18,8 +18,8 @@ class ParametersTab extends Component {
     const shortId = this.props.organization.shortId;
     const { item } = event.target.dataset;
     Router.replace(
-      `/admin/account?shortId=${shortId}&tab=parameters&item=${item}`,
-      `/admin/organization/${shortId}/account?tab=parameters&item=${item}`,
+      `/admin/settings?shortId=${shortId}&tab=parameters&item=${item}`,
+      `/admin/organization/${shortId}/settings?tab=parameters&item=${item}`,
     );
   };
   render() {

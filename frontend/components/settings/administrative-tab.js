@@ -36,7 +36,7 @@ class AdministrativeTab extends Component {
       ]),
       individualSettings: {
         ...this.props.me.individualSettings,
-        birthdate: moment(this.props.me.individualSettings.birthdate, 'DD-MM-YYYY'),
+        birthdate: moment(this.props.me.individualSettings.birthdate),
       },
     },
     saving: false,
@@ -95,7 +95,7 @@ class AdministrativeTab extends Component {
   };
   update = () => {
     const update = omitDeep(this.state.me, 'idDocument', 'incProof', '__typename');
-    const birthdate = this.state.me.individualSettings.birthdate.format('DD-MM-YYYY');
+    const birthdate = this.state.me.individualSettings.birthdate.toDate().toJSON();
     update.individualSettings.birthdate = birthdate;
     return update;
   };

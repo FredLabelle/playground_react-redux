@@ -42,7 +42,7 @@ class SignupForm extends Component {
     passwordMismatch: false,
   };
   componentDidMount() {
-    Router.prefetch('/account');
+    Router.prefetch('/settings');
   }
   onSubmit = async event => {
     event.preventDefault();
@@ -61,8 +61,8 @@ class SignupForm extends Component {
       this.props.cookies.set('token', investorSignup, { path: '/' });
       const { shortId } = this.props.organization;
       Router.push(
-        `/account?shortId=${shortId}&tab=administrative`,
-        `/organization/${shortId}/account?tab=administrative`,
+        `/settings?shortId=${shortId}&tab=administrative`,
+        `/organization/${shortId}/settings?tab=administrative`,
       );
     } else {
       console.error('SIGNUP ERROR');
