@@ -14,7 +14,13 @@ const AdminInvestors = ({ router }) =>
         href={linkHref('/investors/new', router)}
         as={linkAs('/investors/new', router)}
       >
-        <Button primary content="Create new investor" />
+        <Button
+          type="button"
+          primary
+          content="Create new investor"
+          icon="add user"
+          labelPosition="left"
+        />
       </Link>
     </Segment>
     <InvestorsList />

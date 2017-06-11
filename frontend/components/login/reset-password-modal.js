@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
 import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
@@ -9,9 +10,11 @@ import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
 import { resetPasswordMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
+import PasswordField from '../fields/password-field';
 
 class ResetPasswordModal extends Component {
   static propTypes = {
+    error: PropTypes.bool.isRequired,
     router: RouterPropType.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -20,10 +23,9 @@ class ResetPasswordModal extends Component {
     // eslint-disable-next-line react/no-unused-prop-types
     cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
-  state = { password: '', repeatPassword: '' };
+  state = { password: '' };
   onSubmit = async event => {
     event.preventDefault();
-    // this.props.onClose();
     const { data: { resetPassword } } = await this.props.resetPassword({
       password: this.state.password,
       token: this.props.router.query.token,
@@ -44,31 +46,24 @@ class ResetPasswordModal extends Component {
         <Header icon="privacy" content="Reset password" />
         <Modal.Content>
           <p>Reset your password by typing it twice.</p>
-          <Form id="reset-password" onSubmit={this.onSubmit}>
-            <Form.Input
+          <Form id="reset-password" onSubmit={this.onSubmit} error={this.props.error}>
+            <PasswordField
               name="password"
               value={this.state.password}
               onChange={this.handleChange}
-              label="Password"
-              placeholder="Password"
-              type="password"
-              required
-            />
-            <Form.Input
-              name="repeatPassword"
-              value={this.state.repeatPassword}
-              onChange={this.handleChange}
-              label="Repeat password"
-              placeholder="Repeat password"
-              type="password"
-              required
             />
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button type="submit" color="green" form="reset-password">
-            <Icon name="checkmark" /> Reset password
-          </Button>
+          <Button
+            type="submit"
+            form="reset-password"
+            color="green"
+            disabled={this.props.error}
+            content="Reset password"
+            icon="checkmark"
+            labelPosition="left"
+          />
         </Modal.Actions>
       </Modal>
     );
@@ -77,6 +72,10 @@ class ResetPasswordModal extends Component {
 
 export default compose(
   withCookies,
+  connect(({ form }) => ({ form }), null, ({ form }, stateProps, ownProps) => {
+    const error = form.passwordsMismatch || form.passwordTooWeak;
+    return Object.assign({ error }, ownProps);
+  }),
   graphql(resetPasswordMutation, {
     props: ({ mutate }) => ({
       resetPassword: input =>

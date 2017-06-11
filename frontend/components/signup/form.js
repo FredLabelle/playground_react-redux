@@ -1,8 +1,9 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
-import { Form, Header, Button, Segment, Message } from 'semantic-ui-react';
+import { Form, Header, Button, Segment } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { handleChange } from '../../lib/util';
@@ -10,12 +11,14 @@ import { OrganizationPropType } from '../../lib/prop-types';
 import { investorSignupMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 import NameField from '../fields/name-field';
+import PasswordField from '../fields/password-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import TicketField from '../fields/ticket-field';
 import MechanismField from '../fields/mechanism-field';
 
 class SignupForm extends Component {
   static propTypes = {
+    error: PropTypes.bool.isRequired,
     organization: OrganizationPropType.isRequired,
     signup: PropTypes.func.isRequired,
     cookies: PropTypes.instanceOf(Cookies).isRequired,
@@ -38,20 +41,12 @@ class SignupForm extends Component {
         mechanism: 'systematic',
       },
     },
-    repeatPassword: '',
-    passwordMismatch: false,
   };
   componentDidMount() {
     Router.prefetch('/settings');
   }
   onSubmit = async event => {
     event.preventDefault();
-    //
-    const passwordMismatch = this.state.investor.password !== this.state.repeatPassword;
-    this.setState({ passwordMismatch });
-    if (passwordMismatch) {
-      return;
-    }
     this.setState({ loading: true });
     const { data: { investorSignup } } = await this.props.signup({
       ...this.state.investor,
@@ -72,7 +67,7 @@ class SignupForm extends Component {
   handleChange = handleChange().bind(this);
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={this.state.passwordMismatch}>
+      <Form onSubmit={this.onSubmit} error={this.props.error}>
         <Header as="h2" dividing>Create your Investor account</Header>
         <Header as="h3" dividing>Investor identity</Header>
         <NameField
@@ -90,32 +85,11 @@ class SignupForm extends Component {
           type="email"
           required
         />
-        <Form.Group>
-          <Form.Input
-            name="investor.password"
-            value={this.state.investor.password}
-            onChange={this.handleChange}
-            label="Password"
-            placeholder="Password"
-            type="password"
-            required
-            width={8}
-          />
-          <Form.Input
-            name="repeatPassword"
-            value={this.state.repeatPassword}
-            onChange={this.handleChange}
-            label="Repeat password"
-            placeholder="Repeat Password"
-            type="password"
-            required
-            width={8}
-          />
-        </Form.Group>
-        <Message
-          error
-          header="Password mismatch"
-          content="Please double-check the passwords are matching."
+        <PasswordField
+          grouped
+          name="investor.password"
+          value={this.state.investor.password}
+          onChange={this.handleChange}
         />
         <Header as="h3" dividing>Investor profile</Header>
         <CheckboxesField
@@ -139,7 +113,14 @@ class SignupForm extends Component {
           label="Investment mechanism interested in"
         />
         <Segment basic textAlign="center">
-          <Button type="submit" primary disabled={this.state.loading} content="Create my account" />
+          <Button
+            type="submit"
+            primary
+            disabled={this.props.error || this.state.loading}
+            content="Create my account"
+            icon="add user"
+            labelPosition="left"
+          />
         </Segment>
       </Form>
     );
@@ -148,6 +129,10 @@ class SignupForm extends Component {
 
 export default compose(
   withCookies,
+  connect(({ form }) => ({ form }), null, ({ form }, stateProps, ownProps) => {
+    const error = form.passwordsMismatch || form.passwordTooWeak;
+    return Object.assign({ error }, ownProps);
+  }),
   graphql(investorSignupMutation, {
     props: ({ mutate }) => ({
       signup: input =>

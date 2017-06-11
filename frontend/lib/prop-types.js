@@ -37,6 +37,8 @@ export const RouterPropType = PropTypes.shape({
 
 export const FormPropType = PropTypes.shape({
   unsavedChanges: PropTypes.bool.isRequired,
+  passwordsMismatch: PropTypes.bool.isRequired,
+  passwordTooWeak: PropTypes.bool.isRequired,
 });
 
 export const OrganizationPropType = PropTypes.shape({

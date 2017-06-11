@@ -84,7 +84,8 @@ class LoginForm extends Component {
             primary
             disabled={this.state.loading}
             content="Login"
-            className="js-login-submit"
+            icon="user"
+            labelPosition="left"
           />
         </Segment>
       </Form>

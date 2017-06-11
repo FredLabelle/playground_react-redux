@@ -56,9 +56,14 @@ class ForgotPasswordModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button type="submit" color="green" form="forgot-password">
-            <Icon name="mail" /> Send email
-          </Button>
+          <Button
+            type="submit"
+            form="forgot-password"
+            color="green"
+            content="Send email"
+            icon="mail"
+            labelPosition="left"
+          />
         </Modal.Actions>
       </Modal>
     );
