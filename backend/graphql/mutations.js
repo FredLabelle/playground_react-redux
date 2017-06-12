@@ -119,6 +119,12 @@ input CreateInvestorInput {
   organizationId: String!
 }
 
+input InviteInvestorInput {
+  name: NameInput!
+  email: String!
+  organizationId: String!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -130,8 +136,19 @@ type Mutation {
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   createInvestor(input: CreateInvestorInput!): Boolean!
+  inviteInvestor(input: InviteInvestorInput!): Boolean!
 }
 `;
+
+const adminMutation = mutation => (user, input) => {
+  if (!user) {
+    return false;
+  }
+  if (user.role !== 'admin') {
+    return false;
+  }
+  return mutation(user, input);
+};
 
 exports.resolvers = {
   Mutation: {
@@ -160,10 +177,13 @@ exports.resolvers = {
       return true;
     },
     updateOrganization(root, { input }, context) {
-      return context.Organization.update(context.user, input);
+      return adminMutation(context.Organization.update)(context.user, input);
     },
     createInvestor(root, { input }, context) {
-      return context.Organization.createInvestor(context.user, input);
+      return adminMutation(context.Organization.createInvestor)(context.user, input);
+    },
+    inviteInvestor(root, { input }, context) {
+      return adminMutation(context.Organization.inviteInvestor)(context.user, input);
     },
   },
 };

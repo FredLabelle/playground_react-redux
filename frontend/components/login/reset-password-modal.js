@@ -28,7 +28,7 @@ class ResetPasswordModal extends Component {
     event.preventDefault();
     const { data: { resetPassword } } = await this.props.resetPassword({
       password: this.state.password,
-      token: this.props.router.query.token,
+      token: this.props.router.query.resetPasswordToken,
     });
     if (resetPassword) {
       this.props.cookies.set('token', resetPassword, { path: '/' });
@@ -72,7 +72,7 @@ class ResetPasswordModal extends Component {
 
 export default compose(
   withCookies,
-  connect(({ form }) => ({ form }), null, ({ form }, stateProps, ownProps) => {
+  connect(({ form }) => ({ form }), null, ({ form }, dispatchProps, ownProps) => {
     const error = form.passwordsMismatch || form.passwordTooWeak;
     return Object.assign({ error }, ownProps);
   }),

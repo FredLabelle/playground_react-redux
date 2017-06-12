@@ -29,9 +29,13 @@ export const RouterPropType = PropTypes.shape({
   organizationShortId: PropTypes.string.isRequired,
   pathname: PropTypes.string.isRequired,
   query: PropTypes.shape({
+    resetPasswordToken: PropTypes.string,
     token: PropTypes.string,
     tab: PropTypes.string,
     item: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
   }).isRequired,
 });
 

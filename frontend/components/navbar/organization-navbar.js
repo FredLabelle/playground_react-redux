@@ -12,7 +12,7 @@ const OrganizationNavBar = ({ router, organization, me }) =>
   organization &&
   <Menu secondary>
     <Menu.Item className="horizontally fitted">
-      <Link prefetch href={linkHref('/', router)} as={linkAs('/', router)}>
+      <Link prefetch href={linkHref('/', router, me)} as={linkAs('/', router, me)}>
         <a>
           <Image
             src={`//logo.clearbit.com/${organization.domain}?size=35`}
@@ -22,18 +22,12 @@ const OrganizationNavBar = ({ router, organization, me }) =>
       </Link>
     </Menu.Item>
     <Menu.Item className="horizontally fitted">
-      <Link prefetch href={linkHref('/', router)} as={linkAs('/', router)}>
+      <Link prefetch href={linkHref('/', router, me)} as={linkAs('/', router, me)}>
         <a>{organization.generalSettings.name}</a>
       </Link>
     </Menu.Item>
     <Menu className="right" secondary>
-      {me
-        ? <UserDropdownMenu
-            router={router}
-            firstName={me.name.firstName}
-            pictureUrl={me.picture.url}
-          />
-        : <LoginMenuItem router={router} />}
+      {me ? <UserDropdownMenu router={router} me={me} /> : <LoginMenuItem router={router} />}
     </Menu>
   </Menu>;
 OrganizationNavBar.propTypes = {

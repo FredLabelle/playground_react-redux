@@ -6,7 +6,7 @@ import { Dropdown, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import Router from 'next/router';
 
-import { RouterPropType } from '../../lib/prop-types';
+import { RouterPropType, MePropType } from '../../lib/prop-types';
 import { logoutMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 import { linkHref, linkAs } from '../../lib/url';
@@ -14,8 +14,7 @@ import { linkHref, linkAs } from '../../lib/url';
 class UserDropdownMenu extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
-    firstName: PropTypes.string.isRequired,
-    pictureUrl: PropTypes.string.isRequired,
+    me: MePropType.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     logout: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
@@ -31,7 +30,10 @@ class UserDropdownMenu extends Component {
     const { data: { logout } } = await this.props.logout();
     if (logout) {
       this.props.cookies.remove('token', { path: '/' });
-      Router.push(linkHref('/login', this.props.router), linkAs('/login', this.props.router));
+      Router.push(
+        linkHref('/login', this.props.router, this.props.me),
+        linkAs('/login', this.props.router, this.props.me),
+      );
     } else {
       console.error('LOGOUT ERROR');
     }
@@ -39,7 +41,7 @@ class UserDropdownMenu extends Component {
   render() {
     const trigger = (
       <span>
-        <Image avatar src={this.props.pictureUrl} /> {this.props.firstName}
+        <Image avatar src={this.props.me.picture.url} /> {this.props.me.name.firstName}
       </span>
     );
     return (
@@ -47,8 +49,8 @@ class UserDropdownMenu extends Component {
         <Dropdown.Menu>
           <Link
             prefetch
-            href={linkHref('/settings', this.props.router)}
-            as={linkAs('/settings', this.props.router)}
+            href={linkHref('/settings', this.props.router, this.props.me)}
+            as={linkAs('/settings', this.props.router, this.props.me)}
           >
             <Dropdown.Item>
               <a>Settings</a>

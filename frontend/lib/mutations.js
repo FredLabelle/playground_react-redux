@@ -59,3 +59,9 @@ export const createInvestorMutation = gql`
     createInvestor(input: $input)
   }
 `;
+
+export const inviteInvestorMutation = gql`
+  mutation inviteInvestor($input: InviteInvestorInput!) {
+    inviteInvestor(input: $input)
+  }
+`;

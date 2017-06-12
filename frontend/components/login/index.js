@@ -20,7 +20,7 @@ class UserLogin extends Component {
   state = {
     email: '',
     forgotPasswordModalOpen: false,
-    resetPasswordModalOpen: !!this.props.router.query.token,
+    resetPasswordModalOpen: !!this.props.router.query.resetPasswordToken,
   };
   onEmailChange = email => {
     this.setState({ email });

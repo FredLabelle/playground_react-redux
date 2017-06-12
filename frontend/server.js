@@ -14,14 +14,18 @@ const redirectToLoginMiddleware = async (req, res, nextCallback) => {
   const admin = req.url.startsWith('/admin') ? '/admin' : '';
   const { shortId } = req.params;
   try {
-    const token = req.universalCookies.get('token') || req.query.token;
+    // if redirected to admin dashboard after admin login, get token from query string
+    const token = req.query.token || req.universalCookies.get('token');
     const { role } = await verify(token, process.env.FOREST_ENV_SECRET);
     if (admin && role !== 'admin') {
-      res.redirect(`/organization/${shortId}`);
+      return res.redirect(`/organization/${shortId}`);
     }
-    nextCallback();
+    if (!admin && role === 'admin') {
+      return res.redirect(`/admin/organization/${shortId}`);
+    }
+    return nextCallback();
   } catch (error) {
-    res.redirect(`${admin}/organization/${shortId}/login`);
+    return res.redirect(`${admin}/organization/${shortId}/login`);
   }
 };
 

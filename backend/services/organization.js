@@ -85,15 +85,45 @@ const OrganizationService = {
       const investor = Object.assign({ role: 'investor', picture, resetPasswordToken }, input);
       const newUser = await organization.createUser(investor);
       await newUser.createInvestorProfile(investor);
-      const queryString = stringify({ token: resetPasswordToken });
       const frontendUrl = process.env.FRONTEND_URL;
       const { shortId } = organization;
+      const queryString = stringify({ resetPasswordToken });
       const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
       const { subject, body } = generateInvitationEmailContent(organization, newUser, url);
       sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: newUser.email,
+        subject,
+        templateId: 166944,
+        vars: { content: body },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async inviteInvestor(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const canSignup = await UserService.canSignup(input.email, organization.id);
+      if (!canSignup) {
+        return false;
+      }
+      const frontendUrl = process.env.FRONTEND_URL;
+      const { shortId } = organization;
+      const queryString = stringify({
+        firstName: input.name.firstName,
+        lastName: input.name.lastName,
+        email: input.email,
+      });
+      const url = `${frontendUrl}/organization/${shortId}/signup?${queryString}`;
+      const { subject, body } = generateInvitationEmailContent(organization, input, url);
+      sendEmail({
+        fromEmail: 'investorx@e-founders.com',
+        fromName: 'InvestorX',
+        to: input.email,
         subject,
         templateId: 166944,
         vars: { content: body },

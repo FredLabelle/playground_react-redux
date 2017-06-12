@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Header, Button, Segment, Message } from 'semantic-ui-react';
 
 import { handleChange } from '../../lib/util';
-import { OrganizationPropType } from '../../lib/prop-types';
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import NameField from '../fields/name-field';
 import PasswordField from '../fields/password-field';
 import CheckboxesField from '../fields/checkboxes-field';
@@ -15,6 +15,7 @@ class NewInvestorForm extends Component {
   static propTypes = {
     signup: PropTypes.bool,
     error: PropTypes.bool.isRequired,
+    router: RouterPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     loading: PropTypes.bool.isRequired,
     success: PropTypes.bool,
@@ -24,10 +25,10 @@ class NewInvestorForm extends Component {
   state = {
     investor: {
       name: {
-        firstName: '',
-        lastName: '',
+        firstName: this.props.router.query.firstName || '',
+        lastName: this.props.router.query.lastName || '',
       },
-      email: '',
+      email: this.props.router.query.email || '',
       password: '',
       investmentSettings: {
         type: 'individual',
@@ -111,7 +112,9 @@ class NewInvestorForm extends Component {
   }
 }
 
-export default connect(({ form }) => ({ form }), null, ({ form }, stateProps, ownProps) => {
+const mapStateToProps = ({ router, form }) => ({ router, form });
+
+export default connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => {
   const error = form.passwordsMismatch || form.passwordTooWeak;
-  return Object.assign({ error }, ownProps);
+  return Object.assign({ router, error }, ownProps);
 })(NewInvestorForm);

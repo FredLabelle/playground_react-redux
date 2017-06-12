@@ -13,7 +13,7 @@ router.use(
   authMiddleware,
   graphqlExpress(req => {
     const query = req.query.query || req.body.query;
-    if (query && query.length > 2000) {
+    if (query && query.length > 2048) {
       throw new Error('Query too large.');
     }
     return {
