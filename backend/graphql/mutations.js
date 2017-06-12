@@ -112,6 +112,13 @@ input UpdateOrganizationInput {
   parametersSettings: ParametersSettingsInput
 }
 
+input CreateInvestorInput {
+  name: NameInput!
+  email: String!
+  investmentSettings: InvestmentSettingsInput!
+  organizationId: String!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -122,6 +129,7 @@ type Mutation {
   updateInvestorFile(input: UpdateInvestorFileInput!): Boolean!
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
+  createInvestor(input: CreateInvestorInput!): Boolean!
 }
 `;
 
@@ -153,6 +161,9 @@ exports.resolvers = {
     },
     updateOrganization(root, { input }, context) {
       return context.Organization.update(context.user, input);
+    },
+    createInvestor(root, { input }, context) {
+      return context.Organization.createInvestor(context.user, input);
     },
   },
 };

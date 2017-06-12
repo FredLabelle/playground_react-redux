@@ -68,8 +68,8 @@ class InvitationEmailParameters extends Component {
           />
           <p>
             You can use <strong>{'{{organization}}'}</strong>,{' '}
-            <strong>{'{{firstName}}'}</strong>, <strong>{'{{lastName}}'}</strong>{' '}
-            and <strong>{'{{signupLink}}'}</strong>.
+            <strong>{'{{firstname}}'}</strong>, <strong>{'{{lastname}}'}</strong>{' '}
+            and <strong>{'{{url}}'}</strong>.
           </p>
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">

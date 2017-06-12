@@ -63,7 +63,7 @@ module.exports = sequelize.define(
     hooks: {
       async beforeCreate(user) {
         // generate password on user creation
-        if (user.role === 'investor') {
+        if (user.role === 'investor' && user.password) {
           const password = await bcrypt.hash(user.password, 10);
           Object.assign(user, { password });
         }

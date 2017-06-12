@@ -1,14 +1,13 @@
 const { promisify } = require('util');
 const { stringify } = require('querystring');
-const { createHash } = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
 
-const { User } = require('../models');
-const OrganizationService = require('../services/organization');
+const { User, Organization } = require('../models');
+const { gravatarPicture } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
 const { uploadFileFromUrl, deleteFile } = require('../lib/gcs');
 
@@ -37,17 +36,12 @@ const UserService = {
   },
   async signup(input) {
     try {
-      const organization = await OrganizationService.findById(input.organizationId);
+      const organization = await Organization.findById(input.organizationId);
       const canSignup = await UserService.canSignup(input.email, organization.id);
       if (!canSignup) {
         return null;
       }
-      const hash = createHash('md5').update(input.email).digest('hex');
-      const picture = {
-        name: '',
-        url: `https://www.gravatar.com/avatar/${hash}?d=retro`,
-        image: true,
-      };
+      const picture = gravatarPicture(input.email);
       const investor = Object.assign({ role: 'investor', picture }, input);
       const user = await organization.createUser(investor);
       await user.createInvestorProfile(investor);
@@ -81,19 +75,18 @@ const UserService = {
   },
   async forgotPassword({ email, organizationId }) {
     try {
-      const organization = await OrganizationService.findById(organizationId);
+      const organization = await Organization.findById(organizationId);
       const user = await UserService.findByEmail(email, organization.id);
       if (!user) {
         return false;
       }
       const resetPasswordToken = uuid();
-      // const profile = user.InvestorProfile;// await user.getInvestorProfile();
       await user.update({ resetPasswordToken });
       const queryString = stringify({ token: resetPasswordToken });
       const frontendUrl = process.env.FRONTEND_URL;
       const { shortId } = organization;
       const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
-      await sendEmail({
+      sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: email,
@@ -160,10 +153,13 @@ const UserService = {
         newFile.url = await uploadFileFromUrl(file.url, name);
       } else {
         await deleteFile(name);
+        if (folderName === 'picture') {
+          Object.assign(newFile, gravatarPicture(user.email));
+        }
       }
-      const investorProfile = await user.getInvestorProfile();
-      investorProfile.set(field, newFile);
-      await investorProfile.save();
+      const record = folderName === 'picture' ? user : await user.getInvestorProfile();
+      record.set(field, newFile);
+      await record.save();
       return true;
     } catch (error) {
       console.error(error);

@@ -20,7 +20,7 @@ class AdminMenu extends Component {
     Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
   };
   render() {
-    const active = pathname => pathname === this.props.router.pathname;
+    const active = (...pathnames) => pathnames.includes(this.props.router.pathname);
     return (
       <Menu attached="top" tabular widths={5}>
         <Menu.Item name="/" active={active('/')} onClick={this.onClick}>
@@ -29,7 +29,11 @@ class AdminMenu extends Component {
         <Menu.Item name="/deals" active={active('/deals')} onClick={this.onClick}>
           Deals
         </Menu.Item>
-        <Menu.Item name="/investors" active={active('/investors')} onClick={this.onClick}>
+        <Menu.Item
+          name="/investors"
+          active={active('/investors', '/investors/new')}
+          onClick={this.onClick}
+        >
           Investors
         </Menu.Item>
         <Menu.Item name="/tickets" active={active('/tickets')} onClick={this.onClick}>

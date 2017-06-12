@@ -3,7 +3,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
-import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
+import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';

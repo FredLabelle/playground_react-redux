@@ -25,12 +25,14 @@ export default class extends Component {
     file: FilePropType.isRequired,
     mutation: PropTypes.func.isRequired,
     mutationName: PropTypes.string.isRequired,
-    imagesOnly: PropTypes.bool.isRequired,
-    tabs: PropTypes.arrayOf(PropTypes.string).isRequired,
+    imagesOnly: PropTypes.bool,
+    tabs: PropTypes.arrayOf(PropTypes.string),
+    crop: PropTypes.string,
   };
   static defaultProps = {
     imagesOnly: false,
     tabs: ['file', 'gdrive', 'dropbox', 'url'],
+    crop: 'disabled',
   };
   state = {
     progress: 1,
@@ -47,6 +49,7 @@ export default class extends Component {
     const dialog = uploadcare.openDialog(null, {
       imagesOnly: this.props.imagesOnly,
       tabs: this.props.tabs,
+      crop: this.props.crop,
     });
     dialog.done(file => {
       file.progress(({ progress }) => {

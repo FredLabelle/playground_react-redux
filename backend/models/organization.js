@@ -35,11 +35,11 @@ const Organization = sequelize.define(
           defaultCurrency: 'usd',
         },
         invitationEmail: {
-          subject: 'Welcome to {{organization}}',
+          subject: "You've been invited to join {{organization}}!",
           body: [
-            'Dear {{firstName}},',
+            'Dear {{firstname}},',
             '',
-            'Here is the link to signup to the club: {{signupLink}}',
+            'Here is the link to signup to the club: {{url}}',
             '',
             'Best,',
           ].join('\n'),

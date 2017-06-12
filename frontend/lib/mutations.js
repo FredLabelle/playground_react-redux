@@ -53,3 +53,9 @@ export const updateOrganizationMutation = gql`
     updateOrganization(input: $input)
   }
 `;
+
+export const createInvestorMutation = gql`
+  mutation createInvestor($input: CreateInvestorInput!) {
+    createInvestor(input: $input)
+  }
+`;

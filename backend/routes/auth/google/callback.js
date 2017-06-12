@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
       {
         name: { firstName: profile.given_name, lastName: profile.family_name },
         email: profile.email,
+        verified: true,
         role: 'admin',
         picture: {
           name: '',
@@ -37,7 +38,7 @@ module.exports = async (req, res) => {
       organization
     );
     const frontendUrl = process.env.FRONTEND_URL;
-    const shortId = organization.shortId;
+    const { shortId } = organization;
     const queryString = stringify({ token });
     const url = `${frontendUrl}/admin/organization/${shortId}?${queryString}`;
     res.redirect(url);

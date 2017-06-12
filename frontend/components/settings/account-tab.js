@@ -9,9 +9,10 @@ import isEqual from 'lodash/isEqual';
 import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { OrganizationPropType, MePropType } from '../../lib/prop-types';
 import { meQuery } from '../../lib/queries';
-import { updateInvestorMutation } from '../../lib/mutations';
+import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { setUnsavedChanges } from '../../actions/form';
 import NameField from '../fields/name-field';
+import FileField from '../fields/file-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import TicketField from '../fields/ticket-field';
 import MechanismField from '../fields/mechanism-field';
@@ -22,11 +23,12 @@ class AccountTab extends Component {
     me: MePropType.isRequired,
     active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
+    updateInvestorFile: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   state = {
     me: {
-      ...pick(this.props.me, 'name', 'investmentSettings'),
+      ...pick(this.props.me, 'name', 'picture', 'investmentSettings'),
     },
     saving: false,
     saved: false,
@@ -51,14 +53,23 @@ class AccountTab extends Component {
     const unsavedChanges = !isEqual(this.update(), meOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
-  update = () => omitDeep(this.state.me, '__typename');
+  update = () => omitDeep(this.state.me, 'picture', '__typename');
   render() {
-    // console.log(this.state.me);
     return (
       <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Header as="h3" dividing>Investor identity</Header>
           <NameField name="me.name" value={this.state.me.name} onChange={this.handleChange} />
+          <FileField
+            field="picture"
+            label="Profile picture"
+            file={this.state.me.picture}
+            mutation={this.props.updateInvestorFile}
+            mutationName="updateInvestorFile"
+            imagesOnly
+            tabs={['camera', 'file', 'gdrive', 'dropbox', 'url']}
+            crop="192x192 upscale"
+          />
           <Header as="h3" dividing>Investor profile</Header>
           <CheckboxesField
             name="me.investmentSettings.dealCategories"
@@ -101,6 +112,15 @@ export default compose(
   graphql(updateInvestorMutation, {
     props: ({ mutate }) => ({
       updateInvestor: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: meQuery }],
+        }),
+    }),
+  }),
+  graphql(updateInvestorFileMutation, {
+    props: ({ mutate }) => ({
+      updateInvestorFile: input =>
         mutate({
           variables: { input },
           refetchQueries: [{ query: meQuery }],

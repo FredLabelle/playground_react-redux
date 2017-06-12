@@ -36,6 +36,7 @@ export const meQuery = gql`
       email
       picture {
         url
+        image
       }
       role
       investmentSettings {

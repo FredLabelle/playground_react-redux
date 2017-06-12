@@ -19,7 +19,7 @@ const uploadFileFromUrl = (url, name) =>
         .pipe(writeStream)
         .on('finish', async () => {
           try {
-            const signedUrl = await file.getSignedUrl({
+            const [signedUrl] = await file.getSignedUrl({
               action: 'read',
               // in 10 years
               expires: Date.now() + 315360000 * 1000,

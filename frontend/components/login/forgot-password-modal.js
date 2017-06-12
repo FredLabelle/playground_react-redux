@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Button, Form, Modal, Header, Icon } from 'semantic-ui-react';
+import { Button, Form, Modal, Header } from 'semantic-ui-react';
 
 import { OrganizationPropType } from '../../lib/prop-types';
 import { forgotPasswordMutation } from '../../lib/mutations';

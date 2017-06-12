@@ -11,13 +11,16 @@ const app = next({ dev: process.env.NODE_ENV === 'development' });
 const verify = promisify(jwt.verify);
 
 const redirectToLoginMiddleware = async (req, res, nextCallback) => {
+  const admin = req.url.startsWith('/admin') ? '/admin' : '';
+  const { shortId } = req.params;
   try {
-    const token = req.universalCookies.get('token');
-    await verify(token, process.env.FOREST_ENV_SECRET);
+    const token = req.universalCookies.get('token') || req.query.token;
+    const { role } = await verify(token, process.env.FOREST_ENV_SECRET);
+    if (admin && role !== 'admin') {
+      res.redirect(`/organization/${shortId}`);
+    }
     nextCallback();
   } catch (error) {
-    const admin = req.url.startsWith('/admin') ? '/admin' : '';
-    const { shortId } = req.params;
     res.redirect(`${admin}/organization/${shortId}/login`);
   }
 };

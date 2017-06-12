@@ -1,6 +1,11 @@
+const { stringify } = require('querystring');
 const DataLoader = require('dataloader');
+const uuid = require('uuid/v4');
 
 const { Organization, InvestorProfile } = require('../models');
+const UserService = require('./user');
+const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
+const { sendEmail } = require('../lib/mailjet');
 
 const OrganizationService = {
   shortIdLoader() {
@@ -66,6 +71,37 @@ const OrganizationService = {
     } catch (error) {
       console.error(error);
       return null;
+    }
+  },
+  async createInvestor(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const canSignup = await UserService.canSignup(input.email, organization.id);
+      if (!canSignup) {
+        return false;
+      }
+      const resetPasswordToken = uuid();
+      const picture = gravatarPicture(input.email);
+      const investor = Object.assign({ role: 'investor', picture, resetPasswordToken }, input);
+      const newUser = await organization.createUser(investor);
+      await newUser.createInvestorProfile(investor);
+      const queryString = stringify({ token: resetPasswordToken });
+      const frontendUrl = process.env.FRONTEND_URL;
+      const { shortId } = organization;
+      const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
+      const { subject, body } = generateInvitationEmailContent(organization, newUser, url);
+      sendEmail({
+        fromEmail: 'investorx@e-founders.com',
+        fromName: 'InvestorX',
+        to: newUser.email,
+        subject,
+        templateId: 166944,
+        vars: { content: body },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   },
 };

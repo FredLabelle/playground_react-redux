@@ -8,14 +8,12 @@ const appRouter = require('./routes/router');
 const authRouter = require('./routes/auth/router');
 const graphqlRouter = require('./graphql/router');
 const forestRouter = require('./routes/forest/router');
-const passport = require('./lib/passport');
 const sequelize = require('./models/sequelize');
 
 const app = express();
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(passport.initialize());
 app.use(appRouter);
 app.use('/auth', authRouter);
 app.use(graphqlRouter);
