@@ -39,7 +39,8 @@ const Organization = sequelize.define(
           body: [
             'Dear {{firstname}},',
             '',
-            'Here is the link to signup to the club: {{url}}',
+            'Here is the link to signup to the club:',
+            '{{url}}',
             '',
             'Best,',
           ].join('\n'),

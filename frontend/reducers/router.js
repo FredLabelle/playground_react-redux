@@ -10,7 +10,7 @@ const initialState = {
 export default (state = initialState, { type, payload }) => {
   switch (type) {
     case 'ON_ROUTE_CHANGE_START': {
-      const pathRegexp = /(\/admin)?\/organization\/([a-z]+)(\/[a-z]+)?(\?.*)?/;
+      const pathRegexp = /(\/admin)?\/organization\/([a-z]+)(\/[a-z/]+)?(\?.*)?/;
       const matches = payload.url.match(pathRegexp);
       if (!matches) {
         return initialState;

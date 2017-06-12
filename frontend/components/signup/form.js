@@ -31,8 +31,8 @@ class SignupForm extends Component {
       this.props.cookies.set('token', investorSignup, { path: '/' });
       const { shortId } = this.props.organization;
       Router.push(
-        `/settings?shortId=${shortId}&tab=administrative`,
-        `/organization/${shortId}/settings?tab=administrative`,
+        `/settings/administrative?shortId=${shortId}`,
+        `/organization/${shortId}/settings/administrative`,
       );
     } else {
       console.error('SIGNUP ERROR');

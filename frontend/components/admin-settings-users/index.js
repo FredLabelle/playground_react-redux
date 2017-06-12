@@ -1,8 +1,8 @@
 import AdminSettingsMenu from '../common/admin-settings-menu';
-import AdminSettingsGeneral from './admin-settings-general';
+import AdminSettingsUsers from './admin-settings-users';
 
 export default () =>
   <div>
     <AdminSettingsMenu />
-    <AdminSettingsGeneral />
+    <AdminSettingsUsers />
   </div>;

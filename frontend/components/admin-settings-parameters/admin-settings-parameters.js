@@ -1,36 +1,37 @@
-import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { connect } from 'react-redux';
+import { compose, graphql } from 'react-apollo';
 import { Segment, Sidebar, Menu, Icon } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
+import { organizationQuery } from '../../lib/queries';
 import DealCategoriesParameters from './deal-categories-parameters';
 import InvitationEmailParameters from './invitation-email-parameters';
 
-class ParametersTab extends Component {
+class AdminSettingsParameters extends Component {
   static propTypes = {
-    active: PropTypes.bool.isRequired,
     router: RouterPropType.isRequired,
-    organization: OrganizationPropType.isRequired,
+    organization: OrganizationPropType,
   };
+  static defaultProps = { organization: null };
   onClick = event => {
     event.preventDefault();
     const shortId = this.props.organization.shortId;
     const { item } = event.target.dataset;
     Router.replace(
-      `/admin/settings?shortId=${shortId}&tab=parameters&item=${item}`,
-      `/admin/organization/${shortId}/settings?tab=parameters&item=${item}`,
+      `/admin/settings/parameters?shortId=${shortId}&item=${item}`,
+      `/admin/organization/${shortId}/settings/parameters?item=${item}`,
     );
   };
   render() {
+    if (!this.props.organization) {
+      return null;
+    }
     const { dealCategories } = this.props.organization.parametersSettings.investment;
     const active = item => item === (this.props.router.query.item || 'deal-categories');
     return (
-      <Segment
-        attached="bottom"
-        className={`tab ${this.props.active ? 'active' : ''}`}
-        style={{ width: '99.99999999%' }}
-      >
+      <Segment attached="bottom" className="tab active" style={{ width: '99.99999999%' }}>
         <Sidebar.Pushable as={Segment}>
           <Sidebar as={Menu} width="wide" visible vertical inverted>
             <Menu.Item
@@ -96,4 +97,12 @@ class ParametersTab extends Component {
   }
 }
 
-export default ParametersTab;
+export default compose(
+  connect(({ router }) => ({ router })),
+  graphql(organizationQuery, {
+    options: ({ router }) => ({
+      variables: { shortId: router.organizationShortId },
+    }),
+    props: ({ data: { organization } }) => ({ organization }),
+  }),
+)(AdminSettingsParameters);

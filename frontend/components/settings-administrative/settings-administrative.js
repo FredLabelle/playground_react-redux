@@ -5,10 +5,9 @@ import { compose, graphql } from 'react-apollo';
 import { Form, Header, Segment, Button, Message } from 'semantic-ui-react';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
-import moment from 'moment';
 
 import { sleep, omitDeep, handleChange } from '../../lib/util';
-import { MePropType } from '../../lib/prop-types';
+import { MePropType, FormPropType } from '../../lib/prop-types';
 import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 import { setUnsavedChanges } from '../../actions/form';
@@ -17,14 +16,15 @@ import IndividualSettings from './individual-settings';
 import CorporationSettings from './corporation-settings';
 import NameField from '../fields/name-field';
 
-class AdministrativeTab extends Component {
+class SettingsAdministrative extends Component {
   static propTypes = {
-    me: MePropType.isRequired,
-    active: PropTypes.bool.isRequired,
+    form: FormPropType.isRequired,
+    me: MePropType,
     updateInvestor: PropTypes.func.isRequired,
     updateInvestorFile: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
+  static defaultProps = { me: null };
   state = {
     me: {
       ...pick(this.props.me, [
@@ -34,10 +34,6 @@ class AdministrativeTab extends Component {
         'corporationSettings',
         'advisor',
       ]),
-      individualSettings: {
-        ...this.props.me.individualSettings,
-        birthdate: moment(this.props.me.individualSettings.birthdate),
-      },
     },
     saving: false,
     success: false,
@@ -83,25 +79,11 @@ class AdministrativeTab extends Component {
     const unsavedChanges = !isEqual(this.update(), meOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
-  handleNationalityChange = nationality => {
-    const newState = { ...this.state.me };
-    newState.individualSettings.nationality = nationality;
-    this.setState({ me: newState });
-  };
-  handleBirthdateChange = birthdate => {
-    const newState = { ...this.state.me };
-    newState.individualSettings.birthdate = birthdate;
-    this.setState({ me: newState });
-  };
-  update = () => {
-    const update = omitDeep(this.state.me, 'idDocument', 'incProof', '__typename');
-    const birthdate = this.state.me.individualSettings.birthdate.toDate().toJSON();
-    update.individualSettings.birthdate = birthdate;
-    return update;
-  };
+  update = () => omitDeep(this.state.me, 'idDocument', 'incProof', '__typename');
   render() {
     return (
-      <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
+      this.props.me &&
+      <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <RadioField
             name="me.investmentSettings.type"
@@ -117,8 +99,6 @@ class AdministrativeTab extends Component {
             ? <IndividualSettings
                 me={this.state.me}
                 handleChange={this.handleChange}
-                handleNationalityChange={this.handleNationalityChange}
-                handleBirthdateChange={this.handleBirthdateChange}
                 updateInvestorFile={this.props.updateInvestorFile}
               />
             : <CorporationSettings
@@ -149,7 +129,7 @@ class AdministrativeTab extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.saving}
+              disabled={this.state.saving || !this.props.form.unsavedChanges}
               content={this.state.saving ? 'Saving…' : 'Save'}
               icon="save"
               labelPosition="left"
@@ -162,7 +142,10 @@ class AdministrativeTab extends Component {
 }
 
 export default compose(
-  connect(null, { setUnsavedChanges }),
+  connect(({ form }) => ({ form }), { setUnsavedChanges }),
+  graphql(meQuery, {
+    props: ({ data: { me } }) => ({ me }),
+  }),
   graphql(updateInvestorMutation, {
     props: ({ mutate }) => ({
       updateInvestor: input =>
@@ -181,4 +164,4 @@ export default compose(
         }),
     }),
   }),
-)(AdministrativeTab);
+)(SettingsAdministrative);

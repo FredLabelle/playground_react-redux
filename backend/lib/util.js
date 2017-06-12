@@ -15,7 +15,8 @@ module.exports.generateInvitationEmailContent = (organization, { name }, url) =>
       .replace(/{{firstname}}/g, name.firstName)
       .replace(/{{lastname}}/g, name.lastName)
       .replace(/{{organization}}/g, organization.generalSettings.name)
-      .replace(/{{url}}/g, url);
+      .replace(/{{url}}/g, url)
+      .replace(/\n/g, '<br />');
   return {
     subject: replace(organization.parametersSettings.invitationEmail.subject),
     body: replace(organization.parametersSettings.invitationEmail.body),

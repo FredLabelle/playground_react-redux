@@ -7,18 +7,19 @@ import isEqual from 'lodash/isEqual';
 import { Segment, Form, Header, Image, Message, Button } from 'semantic-ui-react';
 
 import { sleep, handleChange, omitDeep } from '../../lib/util';
-import { OrganizationPropType } from '../../lib/prop-types';
+import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
 import { updateOrganizationMutation } from '../../lib/mutations';
 import { organizationQuery } from '../../lib/queries';
 import { setUnsavedChanges } from '../../actions/form';
 
-class GeneralTab extends Component {
+class AdminSettingsGeneral extends Component {
   static propTypes = {
-    active: PropTypes.bool.isRequired,
-    organization: OrganizationPropType.isRequired,
+    form: FormPropType.isRequired,
+    organization: OrganizationPropType,
     updateOrganization: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
+  static defaultProps = { organization: null };
   state = {
     organization: {
       ...pick(this.props.organization, 'generalSettings'),
@@ -59,7 +60,8 @@ class GeneralTab extends Component {
   };
   render() {
     return (
-      <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
+      this.props.organization &&
+      <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Header as="h3" dividing>Organization information</Header>
           <Image
@@ -103,7 +105,7 @@ class GeneralTab extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.saving}
+              disabled={this.state.saving || !this.props.form.unsavedChanges}
               content={this.state.saving ? 'Saving…' : 'Save'}
               icon="save"
               labelPosition="left"
@@ -116,7 +118,13 @@ class GeneralTab extends Component {
 }
 
 export default compose(
-  connect(null, { setUnsavedChanges }),
+  connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
+  graphql(organizationQuery, {
+    options: ({ router }) => ({
+      variables: { shortId: router.organizationShortId },
+    }),
+    props: ({ data: { organization } }) => ({ organization }),
+  }),
   graphql(updateOrganizationMutation, {
     props: ({ mutate, ownProps: { organization } }) => ({
       updateOrganization: input =>
@@ -131,4 +139,4 @@ export default compose(
         }),
     }),
   }),
-)(GeneralTab);
+)(AdminSettingsGeneral);

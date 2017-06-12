@@ -7,25 +7,26 @@ import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
 import { sleep, omitDeep, handleChange } from '../../lib/util';
-import { OrganizationPropType, MePropType } from '../../lib/prop-types';
-import { meQuery } from '../../lib/queries';
-import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
+import { FormPropType, MePropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
+import { meQuery, organizationQuery } from '../../lib/queries';
+import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FileField from '../fields/file-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import TicketField from '../fields/ticket-field';
 import MechanismField from '../fields/mechanism-field';
 
-class AccountTab extends Component {
+class SettingsAccount extends Component {
   static propTypes = {
+    form: FormPropType.isRequired,
+    me: MePropType,
     organization: OrganizationPropType.isRequired,
-    me: MePropType.isRequired,
-    active: PropTypes.bool.isRequired,
     updateInvestor: PropTypes.func.isRequired,
     updateInvestorFile: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
+  static defaultProps = { me: null };
   state = {
     me: {
       ...pick(this.props.me, 'name', 'picture', 'investmentSettings'),
@@ -56,7 +57,8 @@ class AccountTab extends Component {
   update = () => omitDeep(this.state.me, 'picture', '__typename');
   render() {
     return (
-      <Segment attached="bottom" className={`tab ${this.props.active ? 'active' : ''}`}>
+      this.props.me &&
+      <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Header as="h3" dividing>Investor identity</Header>
           <NameField name="me.name" value={this.state.me.name} onChange={this.handleChange} />
@@ -95,7 +97,7 @@ class AccountTab extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.saving}
+              disabled={this.state.saving || !this.props.form.unsavedChanges}
               content={this.state.saving ? 'Saving…' : 'Save'}
               icon="save"
               labelPosition="left"
@@ -108,7 +110,16 @@ class AccountTab extends Component {
 }
 
 export default compose(
-  connect(null, { setUnsavedChanges }),
+  connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
+  graphql(meQuery, {
+    props: ({ data: { me } }) => ({ me }),
+  }),
+  graphql(organizationQuery, {
+    options: ({ router }) => ({
+      variables: { shortId: router.organizationShortId },
+    }),
+    props: ({ data: { organization } }) => ({ organization }),
+  }),
   graphql(updateInvestorMutation, {
     props: ({ mutate }) => ({
       updateInvestor: input =>
@@ -127,4 +138,4 @@ export default compose(
         }),
     }),
   }),
-)(AccountTab);
+)(SettingsAccount);

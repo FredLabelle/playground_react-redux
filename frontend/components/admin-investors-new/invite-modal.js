@@ -72,6 +72,7 @@ class InviteModal extends Component {
             type="submit"
             form="invite"
             color="green"
+            disabled={this.state.success}
             content="Send invite"
             icon="mail"
             labelPosition="left"

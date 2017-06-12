@@ -39,6 +39,16 @@ app.prepare().then(() => {
   server.get('/organization/:shortId/login', route('/login'));
   server.get('/organization/:shortId', redirectToLoginMiddleware, route('/'));
   server.get('/organization/:shortId/settings', redirectToLoginMiddleware, route('/settings'));
+  server.get(
+    '/organization/:shortId/settings/administrative',
+    redirectToLoginMiddleware,
+    route('/settings/administrative'),
+  );
+  server.get(
+    '/organization/:shortId/settings/parameters',
+    redirectToLoginMiddleware,
+    route('/settings/parameters'),
+  );
   server.get('/admin/organization/:shortId/login', route('/admin/login'));
   server.get('/admin/organization/:shortId', redirectToLoginMiddleware, route('/admin'));
   server.get(
@@ -70,6 +80,16 @@ app.prepare().then(() => {
     '/admin/organization/:shortId/settings',
     redirectToLoginMiddleware,
     route('/admin/settings'),
+  );
+  server.get(
+    '/admin/organization/:shortId/settings/users',
+    redirectToLoginMiddleware,
+    route('/admin/settings/users'),
+  );
+  server.get(
+    '/admin/organization/:shortId/settings/parameters',
+    redirectToLoginMiddleware,
+    route('/admin/settings/parameters'),
   );
   const handle = app.getRequestHandler();
   server.get('*', (req, res) => {
