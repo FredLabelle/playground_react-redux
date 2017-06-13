@@ -97,14 +97,14 @@ input OrganizationInvestmentSettingsInput {
   defaultCurrency: String!
 }
 
-input EmailInput {
+input InvitationEmailInput {
   subject: String!
   body: String!
 }
 
 input ParametersSettingsInput {
   investment: OrganizationInvestmentSettingsInput!
-  invitationEmail: EmailInput!
+  invitationEmail: InvitationEmailInput!
 }
 
 input UpdateOrganizationInput {
@@ -119,9 +119,14 @@ input CreateInvestorInput {
   organizationId: String!
 }
 
-input InviteInvestorInput {
+input InvestorInfoInput {
   name: NameInput!
   email: String!
+}
+
+input InviteInvestorInput {
+  investor: InvestorInfoInput!
+  invitationEmail: InvitationEmailInput!
   organizationId: String!
 }
 

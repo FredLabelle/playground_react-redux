@@ -1536,25 +1536,25 @@ graphql-date@^1.0.3:
   dependencies:
     assert-err "^1.0.0"
 
-graphql-server-core@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/graphql-server-core/-/graphql-server-core-0.8.0.tgz#44cb0bc91c47fccbd1f6ccd60fcfaca4684c9fe3"
+graphql-server-core@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/graphql-server-core/-/graphql-server-core-0.8.2.tgz#3070ba7724c25b2c901594bf18b351e60f9efee5"
   optionalDependencies:
-    "@types/graphql" "^0.9.0"
+    "@types/graphql" "^0.9.1"
 
-graphql-server-express@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/graphql-server-express/-/graphql-server-express-0.8.0.tgz#cd7adae925296146ae313f7dc4b99dfc529b4325"
+graphql-server-express@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/graphql-server-express/-/graphql-server-express-0.8.2.tgz#a89e3ea3ad7a13e55fcd0c3bffa455acbd67ffe2"
   dependencies:
-    graphql-server-core "^0.8.0"
-    graphql-server-module-graphiql "^0.8.0"
+    graphql-server-core "^0.8.2"
+    graphql-server-module-graphiql "^0.8.2"
   optionalDependencies:
     "@types/express" "^4.0.35"
     "@types/graphql" "^0.9.1"
 
-graphql-server-module-graphiql@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/graphql-server-module-graphiql/-/graphql-server-module-graphiql-0.8.0.tgz#469c2dd2a8aeb9bb50971b283a11cc0876d3d281"
+graphql-server-module-graphiql@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/graphql-server-module-graphiql/-/graphql-server-module-graphiql-0.8.2.tgz#18e20a149fc704f554feb831b87a24658785d6e2"
 
 graphql-tools@^1.0.0:
   version "1.0.0"

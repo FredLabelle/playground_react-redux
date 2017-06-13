@@ -86,14 +86,14 @@ type OrganizationInvestmentSettings {
   defaultCurrency: String!
 }
 
-type Email {
+type InvitationEmail {
   subject: String!
   body: String!
 }
 
 type ParametersSettings {
   investment: OrganizationInvestmentSettings!
-  invitationEmail: Email!
+  invitationEmail: InvitationEmail!
 }
 
 type Organization {

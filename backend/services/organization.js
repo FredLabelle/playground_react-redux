@@ -107,26 +107,17 @@ const OrganizationService = {
   async inviteInvestor(user, input) {
     try {
       const organization = await user.getOrganization();
-      const canSignup = await UserService.canSignup(input.email, organization.id);
+      const canSignup = await UserService.canSignup(input.investor.email, organization.id);
       if (!canSignup) {
         return false;
       }
-      const frontendUrl = process.env.FRONTEND_URL;
-      const { shortId } = organization;
-      const queryString = stringify({
-        firstName: input.name.firstName,
-        lastName: input.name.lastName,
-        email: input.email,
-      });
-      const url = `${frontendUrl}/organization/${shortId}/signup?${queryString}`;
-      const { subject, body } = generateInvitationEmailContent(organization, input, url);
       sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: input.email,
-        subject,
+        subject: input.invitationEmail.subject,
         templateId: 166944,
-        vars: { content: body },
+        vars: { content: input.invitationEmail.body },
       });
       return true;
     } catch (error) {
