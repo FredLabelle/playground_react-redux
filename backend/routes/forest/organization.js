@@ -35,6 +35,48 @@ module.exports.seedDatabase = async (req, res) => {
       },
       organizationId: organization.id,
     });
+    await organization.createCompany({
+      name: 'Aircall',
+      website: 'https://aircall.io',
+      description: 'Your phone connected to your business tools.',
+    });
+    const company = await organization.createCompany({
+      name: 'Spendesk',
+      website: 'https://www.spendesk.com',
+      description: 'Smart spending solution for teams.',
+    });
+    await organization.createCompany({
+      name: 'Hivy',
+      website: 'https://hivyapp.com',
+      description: 'The Office Management Platform.',
+    });
+    await organization.createCompany({
+      name: 'Forest',
+      website: 'https://www.forestadmin.com/',
+      description: 'The plug and play Admin Interface.',
+    });
+    await organization.createDeal({
+      category: 'Serie A',
+      totalAmount: {
+        amount: '1300000',
+        currency: 'usd',
+      },
+      minTicket: {
+        amount: '25000',
+        currency: 'usd',
+      },
+      maxTicket: {
+        amount: '',
+        currency: 'usd',
+      },
+      carried: '20',
+      deck: {
+        name: '',
+        url: '',
+        image: false,
+      },
+      companyId: company.id,
+    });
     return res.json({ success: 'Done!' });
   } catch (error) {
     console.error('Seed Database:', error);

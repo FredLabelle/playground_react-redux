@@ -28,7 +28,7 @@ type Address {
   state: String!
 }
 
-type AverageTicket {
+type Amount {
   amount: String!
   currency: String!
 }
@@ -36,7 +36,7 @@ type AverageTicket {
 type InvestmentSettings {
   type: String!
   dealCategories: [String]!
-  averageTicket: AverageTicket!
+  averageTicket: Amount!
   mechanism: String!
 }
 
@@ -104,10 +104,33 @@ type Organization {
   domain: String
 }
 
+type Company {
+  id: ID!
+  name: String!
+  website: String!
+  description: String!
+  domain: String!
+}
+
+type Deal {
+  id: ID!
+  company: Company!
+  category: String!
+  totalAmount: Amount!
+  minTicket: Amount!
+  maxTicket: Amount!
+  carried: String!
+  deck: File!
+  description: String!
+  createdAt: Date!
+}
+
 type Query {
   organization(shortId: ID!): Organization
   me: User
   investors: [User]
+  companies: [Company]
+  deals: [Deal]
 }
 
 schema {
@@ -115,6 +138,16 @@ schema {
   mutation: Mutation
 }
 `;
+
+const adminQuery = query => user => {
+  if (!user) {
+    return null;
+  }
+  if (user.role !== 'admin') {
+    return null;
+  }
+  return query(user);
+};
 
 const resolvers = {
   Date: GraphQLDate,
@@ -130,13 +163,13 @@ const resolvers = {
       return context.User.me(context.user);
     },
     investors(root, params, context) {
-      if (!context.user) {
-        return null;
-      }
-      if (context.user.role !== 'admin') {
-        return null;
-      }
-      return context.Organization.investors(context.user);
+      return adminQuery(context.Organization.investors)(context.user);
+    },
+    companies(root, params, context) {
+      return adminQuery(context.Organization.companies)(context.user);
+    },
+    deals(root, params, context) {
+      return adminQuery(context.Organization.deals)(context.user);
     },
   },
 };

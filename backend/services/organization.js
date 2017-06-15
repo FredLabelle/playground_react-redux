@@ -2,7 +2,7 @@ const { stringify } = require('querystring');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 
-const { Organization, InvestorProfile } = require('../models');
+const { Organization, InvestorProfile, Company } = require('../models');
 const UserService = require('./user');
 const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
@@ -119,6 +119,55 @@ const OrganizationService = {
         templateId: 166944,
         vars: { content: input.invitationEmail.body },
       });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async companies(user) {
+    try {
+      const organization = await user.getOrganization();
+      const companies = await organization.getCompanies();
+      return companies.map(company => company.toJSON());
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async upsertCompany(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const company = await Company.findOne({
+        where: { name: input.name },
+      });
+      const result = company
+        ? await company.update(input)
+        : await organization.createCompany(input);
+      return result.toJSON();
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async deals(user) {
+    try {
+      const organization = await user.getOrganization();
+      const deals = await organization.getDeals({
+        include: [{ model: Company }],
+      });
+      return deals.map(deal =>
+        Object.assign({}, deal.toJSON(), { company: deal.Company.toJSON() })
+      );
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async createDeal(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      await organization.createDeal(input);
       return true;
     } catch (error) {
       console.error(error);

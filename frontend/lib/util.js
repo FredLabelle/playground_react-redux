@@ -27,7 +27,9 @@ export const handleChange = afterChange =>
     const newState = cloneDeep(this.state[field]);
     const prop = path.length ? field : name;
     const newValue = path.length ? set(newState, path, value) : value;
-    this.setState({ [prop]: newValue }, afterChange);
+    this.setState({ [prop]: newValue }, () => {
+      afterChange(name);
+    });
   };
 
 export const generateInvitationEmailContent = (organization, { name }, url) => {

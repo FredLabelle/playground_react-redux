@@ -14,6 +14,21 @@ InvestorProfile.belongsTo(User, { foreignKey: 'userId' });
 // provides createInvestorProfile
 User.hasOne(InvestorProfile, { foreignKey: 'userId' });
 
+// adds fk
+Company.belongsTo(Organization, { foreignKey: 'organizationId' });
+// provides createCompany
+Organization.hasMany(Company, { foreignKey: 'organizationId' });
+
+// adds fk
+Deal.belongsTo(Organization, { foreignKey: 'organizationId' });
+// provides createDeal
+Organization.hasMany(Deal, { foreignKey: 'organizationId' });
+
+// adds fk
+Deal.belongsTo(Company, { foreignKey: 'companyId' });
+// provides createDeal
+Company.hasMany(Deal, { foreignKey: 'companyId' });
+
 module.exports = {
   Company,
   Deal,

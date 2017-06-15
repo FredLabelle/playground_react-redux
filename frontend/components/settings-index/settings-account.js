@@ -14,7 +14,7 @@ import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mu
 import NameField from '../fields/name-field';
 import FileField from '../fields/file-field';
 import CheckboxesField from '../fields/checkboxes-field';
-import TicketField from '../fields/ticket-field';
+import AmountField from '../fields/amount-field';
 import MechanismField from '../fields/mechanism-field';
 
 class SettingsAccount extends Component {
@@ -80,7 +80,7 @@ class SettingsAccount extends Component {
             checkboxes={this.props.organization.parametersSettings.investment.dealCategories}
             label="Deal categories interested in"
           />
-          <TicketField
+          <AmountField
             name="me.investmentSettings.averageTicket"
             value={this.state.me.investmentSettings.averageTicket}
             onChange={this.handleChange}

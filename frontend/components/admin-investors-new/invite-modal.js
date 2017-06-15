@@ -106,10 +106,8 @@ class InviteModal extends Component {
   };
   onInvitationEmailSubmit = async event => {
     event.preventDefault();
-    const { data: { inviteInvestor } } = await this.props.inviteInvestor({
-      ...pick(this.state, 'investor', 'invitationEmail'),
-      organizationId: this.props.organization.id,
-    });
+    const newInvestor = pick(this.state, 'investor', 'invitationEmail');
+    const { data: { inviteInvestor } } = await this.props.inviteInvestor(newInvestor);
     if (inviteInvestor) {
       this.setState({ success: true });
       await sleep(2000);

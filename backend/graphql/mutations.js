@@ -4,7 +4,7 @@ input NameInput {
   lastName: String!
 }
 
-input AverageTicketInput {
+input AmountInput {
   amount: String!
   currency: String!
 }
@@ -12,7 +12,7 @@ input AverageTicketInput {
 input InvestmentSettingsInput {
   type: String!
   dealCategories: [String]!
-  averageTicket: AverageTicketInput!
+  averageTicket: AmountInput!
   mechanism: String!
 }
 
@@ -116,7 +116,6 @@ input CreateInvestorInput {
   name: NameInput!
   email: String!
   investmentSettings: InvestmentSettingsInput!
-  organizationId: String!
 }
 
 input InvestorInfoInput {
@@ -127,7 +126,23 @@ input InvestorInfoInput {
 input InviteInvestorInput {
   investor: InvestorInfoInput!
   invitationEmail: InvitationEmailInput!
-  organizationId: String!
+}
+
+input UpsertCompanyInput {
+  name: String!
+  website: String!
+  description: String!
+}
+
+input CreateDealInput {
+  companyId: ID!
+  category: String!
+  totalAmount: AmountInput!
+  minTicket: AmountInput!
+  maxTicket: AmountInput!
+  carried: String!
+  deck: FileInput!
+  description: String!
 }
 
 type Mutation {
@@ -142,6 +157,8 @@ type Mutation {
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   createInvestor(input: CreateInvestorInput!): Boolean!
   inviteInvestor(input: InviteInvestorInput!): Boolean!
+  upsertCompany(input: UpsertCompanyInput!): Company
+  createDeal(input: CreateDealInput!): Boolean!
 }
 `;
 
@@ -189,6 +206,12 @@ exports.resolvers = {
     },
     inviteInvestor(root, { input }, context) {
       return adminMutation(context.Organization.inviteInvestor)(context.user, input);
+    },
+    upsertCompany(root, { input }, context) {
+      return adminMutation(context.Organization.upsertCompany)(context.user, input);
+    },
+    createDeal(root, { input }, context) {
+      return adminMutation(context.Organization.createDeal)(context.user, input);
     },
   },
 };

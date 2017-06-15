@@ -1,20 +1,26 @@
-import { Component } from 'react';
-import { Segment } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { Segment, Button } from 'semantic-ui-react';
+import Link from 'next/link';
 
-class AdminDeals extends Component {
-  static propTypes = {
-    // active: PropTypes.bool.isRequired,
-  };
-  onSubmit = async event => {
-    event.preventDefault();
-  };
-  render() {
-    return (
-      <Segment attached="bottom" className="tab active">
-        Deals
-      </Segment>
-    );
-  }
-}
+import { linkHref, linkAs } from '../../lib/url';
+import { RouterPropType } from '../../lib/prop-types';
+import DealsList from './deals-list';
 
-export default AdminDeals;
+const AdminDeals = ({ router }) =>
+  <Segment attached="bottom" className="tab active">
+    <Segment basic textAlign="right">
+      <Link prefetch href={linkHref('/deals/new', router)} as={linkAs('/deals/new', router)}>
+        <Button
+          type="button"
+          primary
+          content="Create new deal"
+          icon="folder open outline"
+          labelPosition="left"
+        />
+      </Link>
+    </Segment>
+    <DealsList />
+  </Segment>;
+AdminDeals.propTypes = { router: RouterPropType.isRequired };
+
+export default connect(({ router }) => ({ router }))(AdminDeals);

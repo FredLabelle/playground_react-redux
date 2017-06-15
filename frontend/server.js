@@ -57,6 +57,11 @@ app.prepare().then(() => {
     route('/admin/deals'),
   );
   server.get(
+    '/admin/organization/:shortId/deals/new',
+    redirectToLoginMiddleware,
+    route('/admin/deals/new'),
+  );
+  server.get(
     '/admin/organization/:shortId/investors',
     redirectToLoginMiddleware,
     route('/admin/investors'),

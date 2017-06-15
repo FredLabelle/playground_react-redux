@@ -52,8 +52,7 @@ const Organization = sequelize.define(
   {
     getterMethods: {
       domain() {
-        const { hostname } = parse(this.generalSettings.website);
-        return hostname;
+        return parse(this.generalSettings.website).hostname;
       },
     },
     hooks: {

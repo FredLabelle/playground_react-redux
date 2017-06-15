@@ -2,17 +2,18 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Form } from 'semantic-ui-react';
 
-import { TicketPropType } from '../../lib/prop-types';
+import { AmountPropType } from '../../lib/prop-types';
 
 export default class extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    value: TicketPropType.isRequired,
+    value: AmountPropType.isRequired,
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
+    placeholder: PropTypes.string,
     required: PropTypes.bool,
   };
-  static defaultProps = { required: false };
+  static defaultProps = { placeholder: '', required: false };
   handleChange = (event, { name, value }) => {
     const newValue = {
       ...this.props.value,
@@ -41,6 +42,7 @@ export default class extends Component {
           onChange={this.handleChange}
           label={this.props.label}
           type="number"
+          placeholder={this.props.placeholder}
           required={this.props.required}
           width={12}
         />

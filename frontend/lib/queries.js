@@ -108,3 +108,48 @@ export const investorsQuery = gql`
     }
   }
 `;
+
+export const companiesQuery = gql`
+  query {
+    companies {
+      id
+      name
+      website
+      description
+      domain
+    }
+  }
+`;
+
+export const dealsQuery = gql`
+  query {
+    deals {
+      id
+      company {
+        name
+        website
+        description
+        domain
+      }
+      category
+      totalAmount {
+        amount
+        currency
+      }
+      minTicket {
+        amount
+        currency
+      }
+      maxTicket {
+        amount
+        currency
+      }
+      carried
+      deck {
+        url
+      }
+      description
+      createdAt
+    }
+  }
+`;

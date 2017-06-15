@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Button } from 'semantic-ui-react';
 import omit from 'lodash/omit';
+import Router from 'next/router';
 
+import { linkHref, linkAs } from '../../lib/url';
 import { sleep } from '../../lib/util';
-import { OrganizationPropType } from '../../lib/prop-types';
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import { createInvestorMutation } from '../../lib/mutations';
 import NewInvestorForm from '../common/new-investor-form';
@@ -14,6 +16,7 @@ import InviteModal from './invite-modal';
 
 class CreateNewInvestor extends Component {
   static propTypes = {
+    router: RouterPropType.isRequired,
     organization: OrganizationPropType,
     // eslint-disable-next-line react/no-unused-prop-types
     createInvestor: PropTypes.func.isRequired,
@@ -26,14 +29,16 @@ class CreateNewInvestor extends Component {
   };
   onSubmit = async investor => {
     this.setState({ loading: true });
-    const { data: { createInvestor } } = await this.props.createInvestor({
-      ...omit(investor, 'password'),
-      organizationId: this.props.organization.id,
-    });
+    const newInvestor = omit(investor, 'password');
+    const { data: { createInvestor } } = await this.props.createInvestor(newInvestor);
     if (createInvestor) {
       this.setState({ success: true });
       await sleep(2000);
       this.setState({ success: false });
+      Router.push(
+        linkHref('/investors', this.props.router),
+        linkAs('/investors', this.props.router),
+      );
     } else {
       console.error('CREATE INVESTOR ERROR');
       this.setState({ loading: false });

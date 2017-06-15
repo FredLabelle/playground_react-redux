@@ -5,7 +5,7 @@ export const NamePropType = PropTypes.shape({
   lastName: PropTypes.string.isRequired,
 });
 
-export const TicketPropType = PropTypes.shape({
+export const AmountPropType = PropTypes.shape({
   amount: PropTypes.string.isRequired,
   currency: PropTypes.string.isRequired,
 });
@@ -45,6 +45,12 @@ export const FormPropType = PropTypes.shape({
   passwordTooWeak: PropTypes.bool.isRequired,
 });
 
+export const CompanyPropType = PropTypes.shape({
+  name: PropTypes.string.isRequired,
+  website: PropTypes.string.isRequired,
+  domain: PropTypes.string.isRequired,
+});
+
 export const OrganizationPropType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   shortId: PropTypes.string.isRequired,
@@ -75,7 +81,7 @@ export const MePropType = PropTypes.shape({
   investmentSettings: PropTypes.shape({
     type: PropTypes.string.isRequired,
     dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-    averageTicket: TicketPropType.isRequired,
+    averageTicket: AmountPropType.isRequired,
     mechanism: PropTypes.string.isRequired,
   }),
   individualSettings: PropTypes.shape({

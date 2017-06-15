@@ -8,7 +8,7 @@ import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import NameField from '../fields/name-field';
 import PasswordField from '../fields/password-field';
 import CheckboxesField from '../fields/checkboxes-field';
-import TicketField from '../fields/ticket-field';
+import AmountField from '../fields/amount-field';
 import MechanismField from '../fields/mechanism-field';
 
 class NewInvestorForm extends Component {
@@ -83,7 +83,7 @@ class NewInvestorForm extends Component {
           checkboxes={this.props.organization.parametersSettings.investment.dealCategories}
           label="Deal categories interested in"
         />
-        <TicketField
+        <AmountField
           name="investor.investmentSettings.averageTicket"
           value={this.state.investor.investmentSettings.averageTicket}
           onChange={this.handleChange}

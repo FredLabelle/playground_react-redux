@@ -23,13 +23,17 @@ export default class extends Component {
     field: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     file: FilePropType.isRequired,
-    mutation: PropTypes.func.isRequired,
-    mutationName: PropTypes.string.isRequired,
+    onChange: PropTypes.func,
+    mutation: PropTypes.func,
+    mutationName: PropTypes.string,
     imagesOnly: PropTypes.bool,
     tabs: PropTypes.arrayOf(PropTypes.string),
     crop: PropTypes.string,
   };
   static defaultProps = {
+    onChange: () => {},
+    mutation: () => {},
+    mutationName: '',
     imagesOnly: false,
     tabs: ['file', 'gdrive', 'dropbox', 'url'],
     crop: 'disabled',
@@ -63,6 +67,10 @@ export default class extends Component {
           image: !!originalImageInfo,
         };
         this.setState({ file: fileState, processed: false });
+        this.props.onChange(null, { name: this.props.field, value: fileState });
+        if (!this.props.mutationName) {
+          return;
+        }
         const { data } = await this.props.mutation({
           field: this.props.field,
           file: fileState,

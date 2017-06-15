@@ -44,24 +44,31 @@ const InvestorsListRow = ({ investor: { pictureUrl, fullName, companyName, creat
       23 commited
     </Table.Cell>
     <Table.Cell>
-      <strong style={{ color: '#21ba45' }}>Created</strong><br />
+      <strong>Created</strong><br />
       {moment(createdAt).format('DD/MM/YYYY')}
     </Table.Cell>
     <Table.Cell textAlign="center">
       View | <a href={`mailto:${email}`}>Contact</a> | Delete
     </Table.Cell>
+    <style jsx>{`
+      strong {
+        color: #21ba45;
+      }
+    `}</style>
   </Table.Row>;
 InvestorsListRow.propTypes = { investor: InvestorPropType.isRequired };
 
 const InvestorsList = ({ investors }) =>
-  <Table basic="very" celled>
-    <InvestorsListHeader />
-    <Table.Body>
-      {investors.map(investor =>
-        <InvestorsListRow key={investor.pictureUrl} investor={investor} />,
-      )}
-    </Table.Body>
-  </Table>;
+  investors.length
+    ? <Table basic="very" celled>
+        <InvestorsListHeader />
+        <Table.Body>
+          {investors.map(investor =>
+            <InvestorsListRow key={investor.pictureUrl} investor={investor} />,
+          )}
+        </Table.Body>
+      </Table>
+    : null;
 InvestorsList.propTypes = { investors: PropTypes.arrayOf(InvestorPropType) };
 InvestorsList.defaultProps = { investors: [] };
 

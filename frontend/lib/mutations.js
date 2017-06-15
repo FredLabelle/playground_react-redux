@@ -65,3 +65,21 @@ export const inviteInvestorMutation = gql`
     inviteInvestor(input: $input)
   }
 `;
+
+export const upsertCompanyMutation = gql`
+  mutation upsertCompany($input: UpsertCompanyInput!) {
+    upsertCompany(input: $input) {
+      id
+      name
+      website
+      description
+      domain
+    }
+  }
+`;
+
+export const createDealMutation = gql`
+  mutation createDeal($input: CreateDealInput!) {
+    createDeal(input: $input)
+  }
+`;
