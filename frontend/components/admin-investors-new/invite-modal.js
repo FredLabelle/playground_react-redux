@@ -51,6 +51,7 @@ const InviteInvitationEmailForm = ({ onSubmit, success, invitationEmail, onChang
       onChange={onChange}
       label="Body"
       placeholder="Body"
+      required
       autoHeight
     />
     <Message success header="Success!" content="Your invite has been sent." />
@@ -85,9 +86,12 @@ class InviteModal extends Component {
     inviteInvestor: PropTypes.func.isRequired,
   };
   state = initialState;
-  onClose = () => {
+  onCancel = () => {
     this.setState(initialState);
     this.props.onClose();
+  };
+  onBack = () => {
+    this.setState({ form: 'invite-investor' });
   };
   onInvestorSubmit = event => {
     event.preventDefault();
@@ -111,7 +115,7 @@ class InviteModal extends Component {
     if (inviteInvestor) {
       this.setState({ success: true });
       await sleep(2000);
-      this.onClose();
+      this.onCancel();
     } else {
       console.error('INVITE INVESTOR ERROR');
     }
@@ -119,7 +123,7 @@ class InviteModal extends Component {
   handleChange = handleChange().bind(this);
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onClose} size="small">
+      <Modal open={this.props.open} onClose={this.onCancel} size="small">
         <Header icon="mail" content="Invite investor by mail" />
         <Modal.Content>
           {this.state.form === 'invite-investor'
@@ -140,9 +144,9 @@ class InviteModal extends Component {
           <Button
             type="button"
             color="red"
-            onClick={this.onClose}
-            content="Cancel"
-            icon="remove"
+            onClick={this.state.form === 'invite-investor' ? this.onCancel : this.onBack}
+            content={this.state.form === 'invite-investor' ? 'Cancel' : 'Back'}
+            icon={this.state.form === 'invite-investor' ? 'remove' : 'arrow left'}
             labelPosition="left"
           />
           <Button

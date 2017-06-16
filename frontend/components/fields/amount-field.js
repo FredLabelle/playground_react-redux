@@ -12,8 +12,17 @@ export default class extends Component {
     label: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     required: PropTypes.bool,
+    min: PropTypes.string,
+    max: PropTypes.string,
+    currencyDisabled: PropTypes.bool,
   };
-  static defaultProps = { placeholder: '', required: false };
+  static defaultProps = {
+    placeholder: '',
+    required: false,
+    min: '',
+    max: '',
+    currencyDisabled: false,
+  };
   handleChange = (event, { name, value }) => {
     const newValue = {
       ...this.props.value,
@@ -44,6 +53,8 @@ export default class extends Component {
           type="number"
           placeholder={this.props.placeholder}
           required={this.props.required}
+          min={this.props.min}
+          max={this.props.max}
           width={12}
         />
         <Form.Select
@@ -53,6 +64,7 @@ export default class extends Component {
           label="Currency"
           options={options}
           placeholder="Currency"
+          disabled={this.props.currencyDisabled}
           width={4}
         />
       </Form.Group>

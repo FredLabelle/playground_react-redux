@@ -14,7 +14,7 @@ const AdminDeals = ({ router }) =>
           type="button"
           primary
           content="Create new deal"
-          icon="folder open outline"
+          icon="add square"
           labelPosition="left"
         />
       </Link>

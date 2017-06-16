@@ -10,7 +10,7 @@ const app = next({ dev: process.env.NODE_ENV === 'development' });
 
 const verify = promisify(jwt.verify);
 
-const redirectToLoginMiddleware = async (req, res, nextCallback) => {
+const redirectMiddleware = async (req, res, nextCallback) => {
   const admin = req.url.startsWith('/admin') ? '/admin' : '';
   const { shortId } = req.params;
   try {
@@ -37,63 +37,52 @@ app.prepare().then(() => {
   server.use(cookiesMiddleware());
   server.get('/organization/:shortId/signup', route('/signup'));
   server.get('/organization/:shortId/login', route('/login'));
-  server.get('/organization/:shortId', redirectToLoginMiddleware, route('/'));
-  server.get('/organization/:shortId/settings', redirectToLoginMiddleware, route('/settings'));
+  server.get('/organization/:shortId', redirectMiddleware, route('/'));
+  server.get('/organization/:shortId/settings', redirectMiddleware, route('/settings'));
   server.get(
     '/organization/:shortId/settings/administrative',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/settings/administrative'),
   );
   server.get(
     '/organization/:shortId/settings/parameters',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/settings/parameters'),
   );
   server.get('/admin/organization/:shortId/login', route('/admin/login'));
-  server.get('/admin/organization/:shortId', redirectToLoginMiddleware, route('/admin'));
-  server.get(
-    '/admin/organization/:shortId/deals',
-    redirectToLoginMiddleware,
-    route('/admin/deals'),
-  );
+  server.get('/admin/organization/:shortId', redirectMiddleware, route('/admin'));
+  server.get('/admin/organization/:shortId/deals', redirectMiddleware, route('/admin/deals'));
   server.get(
     '/admin/organization/:shortId/deals/new',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/admin/deals/new'),
   );
   server.get(
     '/admin/organization/:shortId/investors',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/admin/investors'),
   );
   server.get(
     '/admin/organization/:shortId/investors/new',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/admin/investors/new'),
   );
+  server.get('/admin/organization/:shortId/tickets', redirectMiddleware, route('/admin/tickets'));
   server.get(
-    '/admin/organization/:shortId/tickets',
-    redirectToLoginMiddleware,
-    route('/admin/tickets'),
+    '/admin/organization/:shortId/tickets/new',
+    redirectMiddleware,
+    route('/admin/tickets/new'),
   );
-  server.get(
-    '/admin/organization/:shortId/reports',
-    redirectToLoginMiddleware,
-    route('/admin/reports'),
-  );
-  server.get(
-    '/admin/organization/:shortId/settings',
-    redirectToLoginMiddleware,
-    route('/admin/settings'),
-  );
+  server.get('/admin/organization/:shortId/reports', redirectMiddleware, route('/admin/reports'));
+  server.get('/admin/organization/:shortId/settings', redirectMiddleware, route('/admin/settings'));
   server.get(
     '/admin/organization/:shortId/settings/users',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/admin/settings/users'),
   );
   server.get(
     '/admin/organization/:shortId/settings/parameters',
-    redirectToLoginMiddleware,
+    redirectMiddleware,
     route('/admin/settings/parameters'),
   );
   const handle = app.getRequestHandler();

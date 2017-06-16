@@ -125,12 +125,21 @@ type Deal {
   createdAt: Date!
 }
 
+type Ticket {
+  id: ID!
+  investor: User!
+  deal: Deal!
+  amount: Amount!
+  createdAt: Date!
+}
+
 type Query {
   organization(shortId: ID!): Organization
   me: User
   investors: [User]
   companies: [Company]
   deals: [Deal]
+  tickets: [Ticket]
 }
 
 schema {
@@ -170,6 +179,9 @@ const resolvers = {
     },
     deals(root, params, context) {
       return adminQuery(context.Organization.deals)(context.user);
+    },
+    tickets(root, params, context) {
+      return adminQuery(context.Organization.tickets)(context.user);
     },
   },
 };

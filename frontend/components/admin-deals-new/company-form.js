@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Form, Button, Header, Grid, Image, Search, Message } from 'semantic-ui-react';
-import { parse } from 'url';
 import escapeRegExp from 'lodash/escapeRegExp';
 import omit from 'lodash/omit';
 import pick from 'lodash/pick';
@@ -26,7 +25,6 @@ class Company extends Component {
       domain: '',
     },
     isNew: true,
-    searchLoading: false,
     results: [],
     loading: false,
     success: false,
@@ -50,11 +48,10 @@ class Company extends Component {
       console.error('UPSERT COMPANY ERROR');
     }
   };
-  companyDomain = ({ website }) => parse(website).hostname;
   companyToResult = company => ({
     title: company.name,
     description: company.description,
-    image: `//logo.clearbit.com/${this.companyDomain(company)}?size=192`,
+    image: `//logo.clearbit.com/${company.domain}?size=192`,
   });
   handleResultSelect = (event, result) => {
     const company = this.props.companies.find(({ name }) => name === result.title);
@@ -78,12 +75,15 @@ class Company extends Component {
         <Header as="h3" dividing>Company</Header>
         <Grid>
           <Grid.Column width={4}>
-            {this.state.company.domain &&
-              <Image
-                src={`//logo.clearbit.com/${this.state.company.domain}?size=192`}
-                alt={this.state.company.name}
-                centered
-              />}
+            <Image
+              src={
+                this.state.company.domain
+                  ? `//logo.clearbit.com/${this.state.company.domain}?size=192`
+                  : '//via.placeholder.com/192?text=COMPANY+LOGO'
+              }
+              alt={this.state.company.name}
+              centered
+            />
           </Grid.Column>
           <Grid.Column width={12}>
             <Form id="upsert-company" onSubmit={this.onSubmit} success={this.state.success}>
@@ -92,7 +92,6 @@ class Company extends Component {
                   label="Name"
                   width={8}
                   control={Search}
-                  loading={this.state.searchLoading}
                   onResultSelect={this.handleResultSelect}
                   onSearchChange={this.handleSearchChange}
                   results={this.state.results}

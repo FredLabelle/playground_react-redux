@@ -145,6 +145,12 @@ input CreateDealInput {
   description: String!
 }
 
+input CreateTicketInput {
+  userId: ID!
+  dealId: ID!
+  amount: AmountInput!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -159,6 +165,7 @@ type Mutation {
   inviteInvestor(input: InviteInvestorInput!): Boolean!
   upsertCompany(input: UpsertCompanyInput!): Company
   createDeal(input: CreateDealInput!): Boolean!
+  createTicket(input: CreateTicketInput!): Boolean!
 }
 `;
 
@@ -212,6 +219,9 @@ exports.resolvers = {
     },
     createDeal(root, { input }, context) {
       return adminMutation(context.Organization.createDeal, false)(context.user, input);
+    },
+    createTicket(root, { input }, context) {
+      return adminMutation(context.Organization.createTicket, false)(context.user, input);
     },
   },
 };

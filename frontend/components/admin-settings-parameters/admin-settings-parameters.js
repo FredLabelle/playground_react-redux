@@ -33,7 +33,7 @@ class AdminSettingsParameters extends Component {
     return (
       <Segment attached="bottom" className="tab active" style={{ width: '99.99999999%' }}>
         <Sidebar.Pushable as={Segment}>
-          <Sidebar as={Menu} width="wide" visible vertical inverted>
+          <Sidebar as={Menu} width="wide" visible vertical>
             <Menu.Item
               data-item="deal-categories"
               active={active('deal-categories')}

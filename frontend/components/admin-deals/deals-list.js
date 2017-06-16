@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
-import { Table, Header, Image } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import moment from 'moment';
 
-import { CompanyPropType, AmountPropType } from '../../lib/prop-types';
+import { DealPropType } from '../../lib/prop-types';
 import { dealsQuery } from '../../lib/queries';
+import CompanyCell from '../common/company-cell';
+import DealCell from '../common/deal-cell';
 
 const DealsListHeader = () =>
   <Table.Header>
@@ -15,43 +17,14 @@ const DealsListHeader = () =>
       <Table.HeaderCell>Tickets</Table.HeaderCell>
       <Table.HeaderCell>Reports</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
-      <Table.HeaderCell />
+      <Table.HeaderCell>Actions</Table.HeaderCell>
     </Table.Row>
   </Table.Header>;
 
-const DealPropType = PropTypes.shape({
-  company: CompanyPropType.isRequired,
-  category: PropTypes.string.isRequired,
-  totalAmount: AmountPropType.isRequired,
-  createdAt: PropTypes.instanceOf(Date).isRequired,
-});
-
-const formatter = currency =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-  });
-
-const DealsListRow = ({ deal: { company, category, totalAmount, createdAt } }) =>
+const DealsListRow = ({ deal }) =>
   <Table.Row>
-    <Table.Cell>
-      <Header as="h4" image>
-        <Image src={`//logo.clearbit.com/${company.domain}?size=192`} size="mini" />
-        <Header.Content>
-          {company.name}
-          <Header.Subheader>
-            <a href={company.website} target="_blank" rel="noopener noreferrer">
-              {company.website}
-            </a>
-          </Header.Subheader>
-        </Header.Content>
-      </Header>
-    </Table.Cell>
-    <Table.Cell>
-      {category}<br />
-      {formatter(totalAmount.currency).format(totalAmount.amount)}
-    </Table.Cell>
+    <CompanyCell company={deal.company} />
+    <DealCell deal={deal} />
     <Table.Cell>
       35 contacted<br />
       23 commited
@@ -66,7 +39,7 @@ const DealsListRow = ({ deal: { company, category, totalAmount, createdAt } }) =
     </Table.Cell>
     <Table.Cell>
       <strong>Open</strong><br />
-      {moment(createdAt).format('DD/MM/YYYY')}
+      {moment(deal.createdAt).format('DD/MM/YYYY')}
     </Table.Cell>
     <Table.Cell textAlign="center">
       View | Share | Close

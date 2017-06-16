@@ -83,3 +83,9 @@ export const createDealMutation = gql`
     createDeal(input: $input)
   }
 `;
+
+export const createTicketMutation = gql`
+  mutation createTicket($input: CreateTicketInput!) {
+    createTicket(input: $input)
+  }
+`;

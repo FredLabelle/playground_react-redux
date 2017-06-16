@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
-import { Table, Header, Image } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import moment from 'moment';
 
+import { InvestorPropType } from '../../lib/prop-types';
 import { investorsQuery } from '../../lib/queries';
+import InvestorCell from '../common/investor-cell';
 
 const InvestorsListHeader = () =>
   <Table.Header>
@@ -12,29 +14,13 @@ const InvestorsListHeader = () =>
       <Table.HeaderCell>Tickets</Table.HeaderCell>
       <Table.HeaderCell>Tickets</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
-      <Table.HeaderCell />
+      <Table.HeaderCell>Actions</Table.HeaderCell>
     </Table.Row>
   </Table.Header>;
 
-const InvestorPropType = PropTypes.shape({
-  pictureUrl: PropTypes.string.isRequired,
-  fullName: PropTypes.string.isRequired,
-  companyName: PropTypes.string.isRequired,
-  createdAt: PropTypes.instanceOf(Date).isRequired,
-  email: PropTypes.string.isRequired,
-});
-
-const InvestorsListRow = ({ investor: { pictureUrl, fullName, companyName, createdAt, email } }) =>
+const InvestorsListRow = ({ investor }) =>
   <Table.Row>
-    <Table.Cell>
-      <Header as="h4" image>
-        <Image src={pictureUrl} shape="rounded" size="mini" />
-        <Header.Content>
-          {fullName}
-          <Header.Subheader>{companyName}</Header.Subheader>
-        </Header.Content>
-      </Header>
-    </Table.Cell>
+    <InvestorCell investor={investor} />
     <Table.Cell>
       35 tickets<br />
       $600.000
@@ -45,10 +31,10 @@ const InvestorsListRow = ({ investor: { pictureUrl, fullName, companyName, creat
     </Table.Cell>
     <Table.Cell>
       <strong>Created</strong><br />
-      {moment(createdAt).format('DD/MM/YYYY')}
+      {moment(investor.createdAt).format('DD/MM/YYYY')}
     </Table.Cell>
     <Table.Cell textAlign="center">
-      View | <a href={`mailto:${email}`}>Contact</a> | Delete
+      View | <a href={`mailto:${investor.email}`}>Contact</a> | Delete
     </Table.Cell>
     <style jsx>{`
       strong {
@@ -63,9 +49,7 @@ const InvestorsList = ({ investors }) =>
     ? <Table basic="very" celled>
         <InvestorsListHeader />
         <Table.Body>
-          {investors.map(investor =>
-            <InvestorsListRow key={investor.pictureUrl} investor={investor} />,
-          )}
+          {investors.map(investor => <InvestorsListRow key={investor.id} investor={investor} />)}
         </Table.Body>
       </Table>
     : null;

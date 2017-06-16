@@ -1,8 +1,9 @@
 const { stringify } = require('querystring');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
+const omit = require('lodash/omit');
 
-const { Organization, InvestorProfile, Company } = require('../models');
+const { Organization, InvestorProfile, Company, User, Deal } = require('../models');
 const UserService = require('./user');
 const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
@@ -67,7 +68,7 @@ const OrganizationService = {
         include: [{ model: InvestorProfile }],
       });
       return investors.map(investor =>
-        Object.assign({}, investor.toJSON(), investor.InvestorProfile.toJSON())
+        Object.assign({}, investor.toJSON(), omit(investor.InvestorProfile.toJSON(), 'id'))
       );
     } catch (error) {
       console.error(error);
@@ -115,7 +116,7 @@ const OrganizationService = {
       sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
-        to: input.email,
+        to: input.investor.email,
         subject: input.invitationEmail.subject,
         templateId: 166944,
         vars: { content: input.invitationEmail.body },
@@ -174,6 +175,42 @@ const OrganizationService = {
       const newDeck = Object.assign({}, input.deck);
       newDeck.url = await uploadFileFromUrl(input.deck.url, name);
       await deal.update({ deck: newDeck });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async tickets(user) {
+    try {
+      const organization = await user.getOrganization();
+      const tickets = await organization.getTickets({
+        include: [
+          {
+            model: User,
+            include: [{ model: InvestorProfile }],
+          },
+          {
+            model: Deal,
+            include: [{ model: Company }],
+          },
+        ],
+      });
+      return tickets.map(ticket =>
+        Object.assign({}, ticket.toJSON(), {
+          investor: Object.assign({}, ticket.User.toJSON(), ticket.User.InvestorProfile.toJSON()),
+          deal: Object.assign({}, ticket.Deal.toJSON(), { company: ticket.Deal.Company.toJSON() }),
+        })
+      );
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async createTicket(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      await organization.createTicket(input);
       return true;
     } catch (error) {
       console.error(error);

@@ -28,9 +28,18 @@ export const handleChange = afterChange =>
     const prop = path.length ? field : name;
     const newValue = path.length ? set(newState, path, value) : value;
     this.setState({ [prop]: newValue }, () => {
-      afterChange(name);
+      if (afterChange) {
+        afterChange(name);
+      }
     });
   };
+
+export const numberFormatter = currency =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+  });
 
 export const generateInvitationEmailContent = (organization, { name }, url) => {
   const replace = string =>

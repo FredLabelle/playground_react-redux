@@ -1,20 +1,26 @@
-import { Component } from 'react';
-import { Segment } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { Segment, Button } from 'semantic-ui-react';
+import Link from 'next/link';
 
-class AdminTickets extends Component {
-  static propTypes = {
-    // active: PropTypes.bool.isRequired,
-  };
-  onSubmit = async event => {
-    event.preventDefault();
-  };
-  render() {
-    return (
-      <Segment attached="bottom" className="tab active">
-        Tickets
-      </Segment>
-    );
-  }
-}
+import { linkHref, linkAs } from '../../lib/url';
+import { RouterPropType } from '../../lib/prop-types';
+import TicketsList from './tickets-list';
 
-export default AdminTickets;
+const AdminTickets = ({ router }) =>
+  <Segment attached="bottom" className="tab active">
+    <Segment basic textAlign="right">
+      <Link prefetch href={linkHref('/tickets/new', router)} as={linkAs('/tickets/new', router)}>
+        <Button
+          type="button"
+          primary
+          content="Create new ticket"
+          icon="ticket"
+          labelPosition="left"
+        />
+      </Link>
+    </Segment>
+    <TicketsList />
+  </Segment>;
+AdminTickets.propTypes = { router: RouterPropType.isRequired };
+
+export default connect(({ router }) => ({ router }))(AdminTickets);

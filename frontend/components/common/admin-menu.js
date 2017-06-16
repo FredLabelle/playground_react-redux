@@ -36,7 +36,11 @@ class AdminMenu extends Component {
         >
           Investors
         </Menu.Item>
-        <Menu.Item name="/tickets" active={active('/tickets')} onClick={this.onClick}>
+        <Menu.Item
+          name="/tickets"
+          active={active('/tickets', '/tickets/new')}
+          onClick={this.onClick}
+        >
           Tickets
         </Menu.Item>
         <Menu.Item name="/reports" active={active('/reports')} onClick={this.onClick}>

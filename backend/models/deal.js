@@ -3,52 +3,56 @@ const shortid = require('shortid');
 
 const sequelize = require('./sequelize');
 
-module.exports = sequelize.define('Deal', {
-  id: {
-    type: Sequelize.UUID,
-    defaultValue: Sequelize.UUIDV4,
-    primaryKey: true,
-    allowNull: false,
-  },
-  shortId: {
-    type: Sequelize.STRING,
-    unique: true,
-  },
-  category: {
-    type: Sequelize.STRING,
-  },
-  totalAmount: {
-    type: Sequelize.JSONB,
-  },
-  minTicket: {
-    type: Sequelize.JSONB,
-  },
-  maxTicket: {
-    type: Sequelize.JSONB,
-  },
-  carried: {
-    type: Sequelize.STRING,
-  },
-  deck: {
-    type: Sequelize.JSONB,
-    defaultValue: {
-      name: '',
-      url: '',
-      image: false,
+module.exports = sequelize.define(
+  'Deal',
+  {
+    id: {
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
     },
-    allowNull: false,
-  },
-  description: {
-    type: Sequelize.STRING,
-    defaultValue: '',
-  },
-}, {
-  hooks: {
-    beforeCreate(organization) {
-      if (!organization.shortId) {
-        const shortId = shortid.generate();
-        Object.assign(organization, { shortId });
-      }
+    shortId: {
+      type: Sequelize.STRING,
+      unique: true,
+    },
+    category: {
+      type: Sequelize.STRING,
+    },
+    totalAmount: {
+      type: Sequelize.JSONB,
+    },
+    minTicket: {
+      type: Sequelize.JSONB,
+    },
+    maxTicket: {
+      type: Sequelize.JSONB,
+    },
+    carried: {
+      type: Sequelize.STRING,
+    },
+    deck: {
+      type: Sequelize.JSONB,
+      defaultValue: {
+        name: '',
+        url: '',
+        image: false,
+      },
+      allowNull: false,
+    },
+    description: {
+      type: Sequelize.STRING,
+      defaultValue: '',
     },
   },
-});
+  {
+    hooks: {
+      beforeCreate(organization) {
+        if (!organization.shortId) {
+          const shortId = shortid.generate();
+          Object.assign(organization, { shortId });
+        }
+      },
+    },
+  }
+);

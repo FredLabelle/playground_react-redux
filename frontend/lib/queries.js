@@ -96,6 +96,7 @@ export const meQuery = gql`
 export const investorsQuery = gql`
   query {
     investors {
+      id
       fullName
       picture {
         url
@@ -149,6 +150,41 @@ export const dealsQuery = gql`
         url
       }
       description
+      createdAt
+    }
+  }
+`;
+
+export const ticketsQuery = gql`
+  query {
+    tickets {
+      id
+      investor {
+        fullName
+        picture {
+          url
+        }
+        corporationSettings {
+          companyName
+        }
+      }
+      deal {
+        company {
+          name
+          website
+          description
+          domain
+        }
+        category
+        totalAmount {
+          amount
+          currency
+        }
+      }
+      amount {
+        amount
+        currency
+      }
       createdAt
     }
   }

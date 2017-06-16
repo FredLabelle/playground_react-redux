@@ -25,6 +25,14 @@ export const FilePropType = PropTypes.shape({
   image: PropTypes.bool,
 });
 
+export const InvestorPropType = PropTypes.shape({
+  pictureUrl: PropTypes.string.isRequired,
+  fullName: PropTypes.string.isRequired,
+  companyName: PropTypes.string.isRequired,
+  createdAt: PropTypes.instanceOf(Date),
+  email: PropTypes.string,
+});
+
 export const RouterPropType = PropTypes.shape({
   organizationShortId: PropTypes.string.isRequired,
   pathname: PropTypes.string.isRequired,
@@ -49,6 +57,13 @@ export const CompanyPropType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   website: PropTypes.string.isRequired,
   domain: PropTypes.string.isRequired,
+});
+
+export const DealPropType = PropTypes.shape({
+  company: CompanyPropType.isRequired,
+  category: PropTypes.string.isRequired,
+  totalAmount: AmountPropType.isRequired,
+  createdAt: PropTypes.instanceOf(Date),
 });
 
 export const OrganizationPropType = PropTypes.shape({

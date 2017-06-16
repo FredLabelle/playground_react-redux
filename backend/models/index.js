@@ -1,8 +1,9 @@
 const Company = require('./company');
 const Deal = require('./deal');
-const Organization = require('./organization');
-const User = require('./user');
 const InvestorProfile = require('./investor-profile');
+const Organization = require('./organization');
+const Ticket = require('./ticket');
+const User = require('./user');
 
 // adds fk
 User.belongsTo(Organization, { foreignKey: 'organizationId' });
@@ -29,10 +30,26 @@ Deal.belongsTo(Company, { foreignKey: 'companyId' });
 // provides createDeal
 Company.hasMany(Deal, { foreignKey: 'companyId' });
 
+// adds fk
+Ticket.belongsTo(Organization, { foreignKey: 'organizationId' });
+// provides createTicket
+Organization.hasMany(Ticket, { foreignKey: 'organizationId' });
+
+// adds fk
+Ticket.belongsTo(Deal, { foreignKey: 'dealId' });
+// provides createTicket
+Deal.hasMany(Ticket, { foreignKey: 'dealId' });
+
+// adds fk
+Ticket.belongsTo(User, { foreignKey: 'userId' });
+// provides createTicket
+User.hasMany(Ticket, { foreignKey: 'userId' });
+
 module.exports = {
   Company,
   Deal,
-  Organization,
-  User,
   InvestorProfile,
+  Organization,
+  Ticket,
+  User,
 };
