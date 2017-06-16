@@ -6,6 +6,7 @@ const { Organization, InvestorProfile, Company } = require('../models');
 const UserService = require('./user');
 const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
+const { uploadFileFromUrl } = require('../lib/gcs');
 
 const OrganizationService = {
   shortIdLoader() {
@@ -167,7 +168,12 @@ const OrganizationService = {
   async createDeal(user, input) {
     try {
       const organization = await user.getOrganization();
-      await organization.createDeal(input);
+      const deal = await organization.createDeal(input);
+      const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
+      const name = `decks${env}/${deal.shortId}`;
+      const newDeck = Object.assign({}, input.deck);
+      newDeck.url = await uploadFileFromUrl(input.deck.url, name);
+      await deal.update({ deck: newDeck });
       return true;
     } catch (error) {
       console.error(error);

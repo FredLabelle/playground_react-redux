@@ -90,6 +90,10 @@ export default class extends Component {
     event.preventDefault();
     const file = { name: '', url: '', image: false };
     this.setState({ file });
+    this.props.onChange(null, { name: this.props.field, value: file });
+    if (!this.props.mutationName) {
+      return;
+    }
     const { data } = await this.props.mutation({
       field: this.props.field,
       file,

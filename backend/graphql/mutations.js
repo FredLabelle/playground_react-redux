@@ -162,12 +162,12 @@ type Mutation {
 }
 `;
 
-const adminMutation = mutation => (user, input) => {
+const adminMutation = (mutation, errorValue) => (user, input) => {
   if (!user) {
-    return false;
+    return errorValue;
   }
   if (user.role !== 'admin') {
-    return false;
+    return errorValue;
   }
   return mutation(user, input);
 };
@@ -199,19 +199,19 @@ exports.resolvers = {
       return true;
     },
     updateOrganization(root, { input }, context) {
-      return adminMutation(context.Organization.update)(context.user, input);
+      return adminMutation(context.Organization.update, false)(context.user, input);
     },
     createInvestor(root, { input }, context) {
-      return adminMutation(context.Organization.createInvestor)(context.user, input);
+      return adminMutation(context.Organization.createInvestor, false)(context.user, input);
     },
     inviteInvestor(root, { input }, context) {
-      return adminMutation(context.Organization.inviteInvestor)(context.user, input);
+      return adminMutation(context.Organization.inviteInvestor, false)(context.user, input);
     },
     upsertCompany(root, { input }, context) {
-      return adminMutation(context.Organization.upsertCompany)(context.user, input);
+      return adminMutation(context.Organization.upsertCompany, null)(context.user, input);
     },
     createDeal(root, { input }, context) {
-      return adminMutation(context.Organization.createDeal)(context.user, input);
+      return adminMutation(context.Organization.createDeal, false)(context.user, input);
     },
   },
 };
