@@ -26,7 +26,7 @@ export const FilePropType = PropTypes.shape({
 });
 
 export const TicketsPropType = PropTypes.shape({
-  count: PropTypes.number.isRequired,
+  count: PropTypes.number,
   sum: AmountPropType,
 });
 

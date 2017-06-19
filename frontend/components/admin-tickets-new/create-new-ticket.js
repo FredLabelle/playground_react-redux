@@ -223,8 +223,6 @@ export default compose(
         ? investors.map(investor => ({
             ...investor,
             createdAt: new Date(investor.createdAt),
-            pictureUrl: investor.picture.url,
-            companyName: investor.corporationSettings.companyName,
           }))
         : [],
     }),

@@ -8,6 +8,7 @@ import { ticketsQuery } from '../../lib/queries';
 import InvestorCell from '../common/investor-cell';
 import CompanyCell from '../common/company-cell';
 import DealCell from '../common/deal-cell';
+import TicketsCell from '../common/tickets-cell';
 
 const TicketsListHeader = () =>
   <Table.Header>
@@ -15,7 +16,7 @@ const TicketsListHeader = () =>
       <Table.HeaderCell>Investor</Table.HeaderCell>
       <Table.HeaderCell>Company</Table.HeaderCell>
       <Table.HeaderCell>Deal</Table.HeaderCell>
-      <Table.HeaderCell>Tickets</Table.HeaderCell>
+      <Table.HeaderCell>Ticket</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
       <Table.HeaderCell>Actions</Table.HeaderCell>
     </Table.Row>
@@ -33,10 +34,7 @@ const TicketsListRow = ({ ticket }) =>
     <InvestorCell investor={ticket.investor} />
     <CompanyCell company={ticket.deal.company} />
     <DealCell deal={ticket.deal} />
-    <Table.Cell>
-      23 tickets<br />
-      $300.000
-    </Table.Cell>
+    <TicketsCell tickets={{ sum: ticket.amount }} />
     <Table.Cell>
       <strong>Pending</strong><br />
       {moment(ticket.createdAt).format('DD/MM/YYYY')}
