@@ -33,6 +33,11 @@ type Amount {
   currency: String!
 }
 
+type Tickets {
+  count: Int!
+  sum: Amount
+}
+
 type InvestmentSettings {
   type: String!
   dealCategories: [String]!
@@ -63,7 +68,6 @@ type User {
   id: ID!
   shortId: ID!
   name: Name!
-  fullName: String!
   email: String!
   role: String!
   picture: File
@@ -71,6 +75,16 @@ type User {
   individualSettings: IndividualSettings
   corporationSettings: CorporationSettings
   advisor: Advisor
+  createdAt: Date!
+}
+
+type Investor {
+  id: ID!
+  fullName: String!
+  email: String!
+  tickets: Tickets!
+  pictureUrl: String!
+  companyName: String!
   createdAt: Date!
 }
 
@@ -122,6 +136,7 @@ type Deal {
   carried: String!
   deck: File!
   description: String!
+  tickets: Tickets!
   createdAt: Date!
 }
 
@@ -136,7 +151,7 @@ type Ticket {
 type Query {
   organization(shortId: ID!): Organization
   me: User
-  investors: [User]
+  investors: [Investor]
   companies: [Company]
   deals: [Deal]
   tickets: [Ticket]

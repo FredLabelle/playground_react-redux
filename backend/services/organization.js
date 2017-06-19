@@ -3,7 +3,7 @@ const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 const omit = require('lodash/omit');
 
-const { Organization, InvestorProfile, Company, User, Deal } = require('../models');
+const { Organization, InvestorProfile, Company, User, Deal, Ticket } = require('../models');
 const UserService = require('./user');
 const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
@@ -65,10 +65,16 @@ const OrganizationService = {
       const organization = await user.getOrganization();
       const investors = await organization.getUsers({
         where: { role: 'investor' },
-        include: [{ model: InvestorProfile }],
+        include: [{ model: InvestorProfile }, { model: Ticket }],
       });
       return investors.map(investor =>
-        Object.assign({}, investor.toJSON(), omit(investor.InvestorProfile.toJSON(), 'id'))
+        Object.assign({}, investor.toJSON(), omit(investor.InvestorProfile.toJSON(), 'id'), {
+          pictureUrl: investor.picture.url,
+          companyName: investor.InvestorProfile.corporationSettings.companyName,
+          tickets: {
+            count: investor.Tickets.length,
+          },
+        })
       );
     } catch (error) {
       console.error(error);
@@ -156,10 +162,22 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const deals = await organization.getDeals({
-        include: [{ model: Company }],
+        include: [{ model: Company }, { model: Ticket }],
       });
       return deals.map(deal =>
-        Object.assign({}, deal.toJSON(), { company: deal.Company.toJSON() })
+        Object.assign({}, deal.toJSON(), {
+          company: deal.Company.toJSON(),
+          tickets: {
+            count: deal.Tickets.length,
+            sum: {
+              amount: deal.Tickets.reduce(
+                (result, { amount }) => parseInt(amount.amount, 10) + result,
+                0
+              ),
+              currency: deal.totalAmount.currency,
+            },
+          },
+        })
       );
     } catch (error) {
       console.error(error);

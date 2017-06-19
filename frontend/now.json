@@ -3,6 +3,6 @@
   "type": "npm",
   "alias": ["investorx.efounders.co"],
   "engines": {
-    "node": "8.1.0"
+    "node": "8.1.2"
   }
 }

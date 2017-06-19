@@ -14,7 +14,7 @@ module.exports.seedDatabase = async (req, res) => {
         name: 'eClub',
         website: 'https://efounders.co',
         description: 'eFounders club',
-        emailDomains: ['e-founders.com'],
+        emailDomains: ['e-founders.com', 'efounders.co'],
       },
     });
     await UserService.signup({

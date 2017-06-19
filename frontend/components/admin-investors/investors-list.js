@@ -6,6 +6,7 @@ import moment from 'moment';
 import { InvestorPropType } from '../../lib/prop-types';
 import { investorsQuery } from '../../lib/queries';
 import InvestorCell from '../common/investor-cell';
+import TicketsCell from '../common/tickets-cell';
 
 const InvestorsListHeader = () =>
   <Table.Header>
@@ -21,10 +22,7 @@ const InvestorsListHeader = () =>
 const InvestorsListRow = ({ investor }) =>
   <Table.Row>
     <InvestorCell investor={investor} />
-    <Table.Cell>
-      35 tickets<br />
-      $600.000
-    </Table.Cell>
+    <TicketsCell tickets={investor.tickets} />
     <Table.Cell>
       35 contacted<br />
       23 commited
@@ -62,8 +60,6 @@ export default graphql(investorsQuery, {
       ? investors.map(investor => ({
           ...investor,
           createdAt: new Date(investor.createdAt),
-          pictureUrl: investor.picture.url,
-          companyName: investor.corporationSettings.companyName,
         }))
       : [],
   }),

@@ -7,6 +7,7 @@ import { DealPropType } from '../../lib/prop-types';
 import { dealsQuery } from '../../lib/queries';
 import CompanyCell from '../common/company-cell';
 import DealCell from '../common/deal-cell';
+import TicketsCell from '../common/tickets-cell';
 
 const DealsListHeader = () =>
   <Table.Header>
@@ -29,10 +30,7 @@ const DealsListRow = ({ deal }) =>
       35 contacted<br />
       23 commited
     </Table.Cell>
-    <Table.Cell>
-      23 tickets<br />
-      $300.000
-    </Table.Cell>
+    <TicketsCell tickets={deal.tickets} />
     <Table.Cell>
       35 contacted<br />
       35 contacted

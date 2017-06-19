@@ -25,12 +25,18 @@ export const FilePropType = PropTypes.shape({
   image: PropTypes.bool,
 });
 
+export const TicketsPropType = PropTypes.shape({
+  count: PropTypes.number.isRequired,
+  sum: AmountPropType,
+});
+
 export const InvestorPropType = PropTypes.shape({
   pictureUrl: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   companyName: PropTypes.string.isRequired,
   createdAt: PropTypes.instanceOf(Date),
   email: PropTypes.string,
+  tickets: TicketsPropType.isRequired,
 });
 
 export const RouterPropType = PropTypes.shape({
@@ -63,6 +69,7 @@ export const DealPropType = PropTypes.shape({
   company: CompanyPropType.isRequired,
   category: PropTypes.string.isRequired,
   totalAmount: AmountPropType.isRequired,
+  tickets: TicketsPropType.isRequired,
   createdAt: PropTypes.instanceOf(Date),
 });
 

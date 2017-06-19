@@ -98,14 +98,13 @@ export const investorsQuery = gql`
     investors {
       id
       fullName
-      picture {
-        url
-      }
-      corporationSettings {
-        companyName
-      }
-      createdAt
       email
+      tickets {
+        count
+      }
+      pictureUrl
+      companyName
+      createdAt
     }
   }
 `;
@@ -150,6 +149,13 @@ export const dealsQuery = gql`
         url
       }
       description
+      tickets {
+        count
+        sum {
+          amount
+          currency
+        }
+      }
       createdAt
     }
   }
