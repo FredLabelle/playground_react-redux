@@ -216,7 +216,10 @@ const OrganizationService = {
       });
       return tickets.map(ticket =>
         Object.assign({}, ticket.toJSON(), {
-          investor: Object.assign({}, ticket.User.toJSON(), ticket.User.InvestorProfile.toJSON()),
+          investor: Object.assign({}, ticket.User.toJSON(), ticket.User.InvestorProfile.toJSON(), {
+            pictureUrl: ticket.User.picture.url,
+            companyName: ticket.User.InvestorProfile.corporationSettings.companyName,
+          }),
           deal: Object.assign({}, ticket.Deal.toJSON(), { company: ticket.Deal.Company.toJSON() }),
         })
       );

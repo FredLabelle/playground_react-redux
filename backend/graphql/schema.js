@@ -142,7 +142,7 @@ type Deal {
 
 type Ticket {
   id: ID!
-  investor: User!
+  investor: Investor!
   deal: Deal!
   amount: Amount!
   createdAt: Date!

@@ -167,12 +167,8 @@ export const ticketsQuery = gql`
       id
       investor {
         fullName
-        picture {
-          url
-        }
-        corporationSettings {
-          companyName
-        }
+        pictureUrl
+        companyName
       }
       deal {
         company {

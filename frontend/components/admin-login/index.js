@@ -7,7 +7,7 @@ import { organizationQuery } from '../../lib/queries';
 import Login from '../common/login';
 
 const backendUrl = process.env.NODE_ENV === 'production'
-  ? 'https://investorx-backend.efounders.co'
+  ? 'https://investorx.efounders.co/api'
   : 'http://localhost:8080';
 
 const AdminLogin = ({ organization }) =>

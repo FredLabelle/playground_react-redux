@@ -69,11 +69,6 @@ export default graphql(ticketsQuery, {
     tickets: tickets
       ? tickets.map(ticket => ({
           ...ticket,
-          investor: {
-            ...ticket.investor,
-            pictureUrl: ticket.investor.picture.url,
-            companyName: ticket.investor.corporationSettings.companyName,
-          },
           createdAt: new Date(ticket.createdAt),
         }))
       : [],

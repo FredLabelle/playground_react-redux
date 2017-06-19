@@ -36,7 +36,7 @@ export const InvestorPropType = PropTypes.shape({
   companyName: PropTypes.string.isRequired,
   createdAt: PropTypes.instanceOf(Date),
   email: PropTypes.string,
-  tickets: TicketsPropType.isRequired,
+  tickets: TicketsPropType,
 });
 
 export const RouterPropType = PropTypes.shape({
@@ -69,7 +69,7 @@ export const DealPropType = PropTypes.shape({
   company: CompanyPropType.isRequired,
   category: PropTypes.string.isRequired,
   totalAmount: AmountPropType.isRequired,
-  tickets: TicketsPropType.isRequired,
+  tickets: TicketsPropType,
   createdAt: PropTypes.instanceOf(Date),
 });
 
