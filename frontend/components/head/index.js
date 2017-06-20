@@ -34,7 +34,7 @@ export default () =>
     />
     <link
       rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/react-datepicker/0.46.0/react-datepicker.min.css"
+      href="//cdnjs.cloudflare.com/ajax/libs/react-datepicker/0.48.0/react-datepicker.min.css"
     />
     <UploadcareScript />
   </Head>;

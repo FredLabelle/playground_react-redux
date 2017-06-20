@@ -13,7 +13,8 @@
     "dev": "NODE_ENV='development' node server.js",
     "build": "next build",
     "start": "NODE_ENV='production' node server.js",
-    "deploy": "now && now alias"
+    "deploy": "now -E .env/production.env && now alias",
+    "cleanup": "now rm investorx-frontend --safe -y"
   },
   "dependencies": {
     "babel-plugin-module-resolver": "^2.7.1",
@@ -32,7 +33,7 @@
     "react-apollo": "^1.4.2",
     "react-cookie": "^2.0.7",
     "react-country-region-selector": "^1.1.0",
-    "react-datepicker": "^0.47.0",
+    "react-datepicker": "^0.48.0",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
     "redux": "^3.7.0",

@@ -31,7 +31,7 @@ class AdminSettingsParameters extends Component {
     const { dealCategories } = this.props.organization.parametersSettings.investment;
     const active = item => item === (this.props.router.query.item || 'deal-categories');
     return (
-      <Segment attached="bottom" className="tab active" style={{ width: '99.99999999%' }}>
+      <Segment attached="bottom" className="tab active" style={{ width: '99.9999%' }}>
         <Sidebar.Pushable as={Segment}>
           <Sidebar as={Menu} width="wide" visible vertical>
             <Menu.Item

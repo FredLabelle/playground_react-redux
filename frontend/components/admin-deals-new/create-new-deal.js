@@ -20,7 +20,6 @@ class CreateNewDeal extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
     organization: OrganizationPropType,
-    // eslint-disable-next-line react/no-unused-prop-types
     createDeal: PropTypes.func.isRequired,
   };
   static defaultProps = {
@@ -61,9 +60,8 @@ class CreateNewDeal extends Component {
     event.preventDefault();
     const companyIdError = !this.state.deal.companyId;
     const categoryError = !this.state.deal.category;
-    const carriedError = !this.state.deal.carried;
-    this.setState({ companyIdError, categoryError, carriedError });
-    if (companyIdError || categoryError || carriedError) {
+    this.setState({ companyIdError, categoryError });
+    if (companyIdError || categoryError) {
       return;
     }
     this.setState({ loading: true });
@@ -109,23 +107,17 @@ class CreateNewDeal extends Component {
       value: dealCategory,
     }));
   };
-  carriedOptions = () =>
-    [10, 20, 30, 40, 50].map(value => ({
-      key: value,
-      text: `${value}%`,
-      value: `${value}`,
-    }));
-  error = () => {
-    const { companyIdError, categoryError, carriedError } = this.state;
-    return companyIdError || categoryError || carriedError;
-  };
   render() {
     return (
       this.props.organization &&
       <Segment attached="bottom" className="tab active">
         <Header as="h2" dividing>Create new deal</Header>
         <CompanyForm onChange={this.handleCompanyChange} />
-        <Form onSubmit={this.onSubmit} success={this.state.success} error={this.error()}>
+        <Form
+          onSubmit={this.onSubmit}
+          success={this.state.success}
+          error={this.state.companyIdError || this.state.categoryError}
+        >
           <Form.Field
             name="deal.category"
             value={this.state.deal.category}
@@ -157,14 +149,15 @@ class CreateNewDeal extends Component {
             label="Max ticket"
             placeholder="No Limit"
           />
-          <Form.Field
+          <Form.Input
             name="deal.carried"
             value={this.state.deal.carried}
             onChange={this.handleChange}
-            control={Select}
-            options={this.carriedOptions()}
             label="Carried"
             placeholder="Carried"
+            type="number"
+            min="1"
+            max="100"
             required
           />
           <FileField
@@ -185,8 +178,6 @@ class CreateNewDeal extends Component {
             <Message error header="Error!" content="Company is required." />}
           {this.state.categoryError &&
             <Message error header="Error!" content="Category is required." />}
-          {this.state.carriedError &&
-            <Message error header="Error!" content="Carried is required." />}
           <Message success header="Success!" content="New deal created." />
           <Segment basic textAlign="center">
             <Button

@@ -12,7 +12,8 @@
     "eslint": "eslint .;exit 0",
     "prettier": "prettier --print-width 100 --single-quote --trailing-comma es5 --write \"*.js\" \"{forest,graphql,lib,models,routes,services}/**/*.js\"",
     "dev": "NODE_ENV='development' nodemon",
-    "deploy": "now -E .env/production.env && now alias"
+    "deploy": "now -E .env/production.env && now alias",
+    "cleanup": "now rm investorx-backend --safe -y"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.1.1",
@@ -32,7 +33,7 @@
     "jsonwebtoken": "^7.4.1",
     "lodash": "^4.17.4",
     "node-mailjet": "^3.1.0",
-    "pg": "^6.2.4",
+    "pg": "^6.3.0",
     "pg-hstore": "^2.3.2",
     "request": "^2.81.0",
     "sequelize": "^4.1.0",
