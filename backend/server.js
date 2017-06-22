@@ -13,6 +13,18 @@ const sequelize = require('./models/sequelize');
 const app = express();
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors());
+  app.use(appRouter);
+  app.use('/auth', authRouter);
+  app.use(graphqlRouter);
+} else {
+  app.use('/api', appRouter);
+  app.use('/api/auth', authRouter);
+  app.use('/api', graphqlRouter);
+}
+
 const forestMiddleware = liana.init({
   modelsDir: `${__dirname}/models`,
   envSecret: process.env.FOREST_ENV_SECRET,
@@ -20,19 +32,7 @@ const forestMiddleware = liana.init({
   sequelize,
 });
 app.use(forestMiddleware);
-
-if (process.env.NODE_ENV === 'production') {
-  app.use('/api', appRouter);
-  app.use('/api/auth', authRouter);
-  app.use('/api', graphqlRouter);
-  app.use('/api/forest', forestRouter);
-} else {
-  app.use(cors());
-  app.use(appRouter);
-  app.use('/auth', authRouter);
-  app.use(graphqlRouter);
-  app.use('/forest', forestRouter);
-}
+app.use('/forest', forestRouter);
 
 app.listen(process.env.PORT, async () => {
   console.info(`InvestorX backend listening on port ${process.env.PORT}! ✅`);

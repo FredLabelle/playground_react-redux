@@ -23,7 +23,7 @@ const OrganizationNavBar = ({ router, organization, me }) =>
     </Menu.Item>
     <Menu.Item className="horizontally fitted">
       <Link prefetch href={linkHref('/', router, me)} as={linkAs('/', router, me)}>
-        <a>{organization.generalSettings.name}</a>
+        <a>Home</a>
       </Link>
     </Menu.Item>
     <Menu className="right" secondary>

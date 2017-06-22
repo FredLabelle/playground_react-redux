@@ -10,7 +10,6 @@ class AdminMenu extends Component {
   static propTypes = { router: RouterPropType.isRequired };
   componentDidMount() {
     Router.prefetch('/admin');
-    Router.prefetch('/admin/deals');
     Router.prefetch('/admin/investors');
     Router.prefetch('/admin/tickets');
     Router.prefetch('/admin/reports');
@@ -22,11 +21,8 @@ class AdminMenu extends Component {
   render() {
     const active = (...pathnames) => pathnames.includes(this.props.router.pathname);
     return (
-      <Menu attached="top" tabular widths={5}>
-        <Menu.Item name="/" active={active('/')} onClick={this.onClick}>
-          Dashboard
-        </Menu.Item>
-        <Menu.Item name="/deals" active={active('/deals', '/deals/new')} onClick={this.onClick}>
+      <Menu attached="top" tabular widths={4}>
+        <Menu.Item name="/" active={active('/', '/deals/new')} onClick={this.onClick}>
           Deals
         </Menu.Item>
         <Menu.Item

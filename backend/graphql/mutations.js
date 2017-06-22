@@ -136,13 +136,15 @@ input UpsertCompanyInput {
 
 input CreateDealInput {
   companyId: ID!
+  name: String!
+  description: String!
   category: String!
   totalAmount: AmountInput!
   minTicket: AmountInput!
   maxTicket: AmountInput!
   carried: String!
+  hurdle: String!
   deck: FileInput!
-  description: String!
 }
 
 input CreateTicketInput {

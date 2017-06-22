@@ -1,6 +1,6 @@
 {
   "rules": [
-    { "pathname": "/api/**", "dest": "investorx-backend.efounders.co" },
+    { "pathname": "/api**", "dest": "investorx-backend.efounders.co" },
     { "dest": "investorx-frontend.efounders.co" }
   ]
 }

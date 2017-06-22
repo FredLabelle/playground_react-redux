@@ -29,6 +29,8 @@ class CreateNewDeal extends Component {
   state = {
     deal: {
       companyId: '',
+      name: '',
+      description: '',
       category: '',
       totalAmount: {
         amount: '',
@@ -43,12 +45,12 @@ class CreateNewDeal extends Component {
         currency: this.props.organization.parametersSettings.investment.defaultCurrency,
       },
       carried: '',
+      hurdle: '',
       deck: {
         name: '',
         url: '',
         image: false,
       },
-      description: '',
     },
     companyIdError: false,
     categoryError: false,
@@ -71,7 +73,7 @@ class CreateNewDeal extends Component {
       this.setState({ success: true });
       await sleep(2000);
       this.setState({ success: false });
-      Router.push(linkHref('/deals', this.props.router), linkAs('/deals', this.props.router));
+      Router.push(linkHref('/', this.props.router), linkAs('/', this.props.router));
     } else {
       console.error('CREATE DEAL ERROR');
       this.setState({ loading: false });
@@ -113,11 +115,28 @@ class CreateNewDeal extends Component {
       <Segment attached="bottom" className="tab active">
         <Header as="h2" dividing>Create new deal</Header>
         <CompanyForm onChange={this.handleCompanyChange} />
+        <Header as="h3" dividing>Details</Header>
         <Form
           onSubmit={this.onSubmit}
           success={this.state.success}
           error={this.state.companyIdError || this.state.categoryError}
         >
+          <Form.Input
+            name="deal.name"
+            value={this.state.deal.name}
+            onChange={this.handleChange}
+            label="Name"
+            placeholder="Name"
+            required
+          />
+          <Form.TextArea
+            name="deal.description"
+            value={this.state.deal.description}
+            onChange={this.handleChange}
+            label="Description"
+            placeholder="Description"
+            autoHeight
+          />
           <Form.Field
             name="deal.category"
             value={this.state.deal.category}
@@ -160,19 +179,22 @@ class CreateNewDeal extends Component {
             max="100"
             required
           />
+          <Form.Input
+            name="deal.hurdle"
+            value={this.state.deal.hurdle}
+            onChange={this.handleChange}
+            label="Hurdle"
+            placeholder="Hurdle"
+            type="number"
+            min="1"
+            max="100"
+            required
+          />
           <FileField
             field="deal.deck"
             label="Deck"
             file={this.state.deal.deck}
             onChange={this.handleChange}
-          />
-          <Form.TextArea
-            name="deal.description"
-            value={this.state.deal.description}
-            onChange={this.handleChange}
-            label="Description"
-            placeholder="Description"
-            autoHeight
           />
           {this.state.companyIdError &&
             <Message error header="Error!" content="Company is required." />}

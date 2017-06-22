@@ -5,15 +5,9 @@ LABEL name="investorx-backend"
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 
-# Install node-gyp dependencies
-RUN apk add --no-cache make gcc g++ python
-# Install node-gyp
-RUN yarn global add node-gyp
-
 # Install packages using yarn
-COPY package.json yarn.lock /opt/
-RUN cd /opt && yarn
-ENV NODE_PATH=/opt/node_modules
+COPY package.json yarn.lock /opt/app/
+RUN yarn
 
 COPY . /opt/app
 

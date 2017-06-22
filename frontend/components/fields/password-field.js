@@ -67,8 +67,7 @@ class PasswordField extends Component {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
-    const hasNonAlphas = /\W/.test(password);
-    const passwordStrongEnough = hasUpperCase && hasLowerCase && hasNumbers && hasNonAlphas;
+    const passwordStrongEnough = hasUpperCase && hasLowerCase && hasNumbers;
     return !passwordStrongEnough;
   };
   handleChange = (event, { name, value }) => {
@@ -113,7 +112,6 @@ class PasswordField extends Component {
                 'a minimum of 1 lower case letter [a-z] and',
                 'a minimum of 1 upper case letter [A-Z] and',
                 'a minimum of 1 numeric character [0-9] and',
-                'a minimum of 1 special character: ~`!@#$%^&*()-_+={}[]|\\;:"<>,./?',
               ]}
             />
           </Message>}

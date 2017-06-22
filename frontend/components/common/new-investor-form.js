@@ -53,12 +53,6 @@ class NewInvestorForm extends Component {
           {this.props.signup ? 'Create your Investor account' : 'Create new investor'}
         </Header>
         <Header as="h3" dividing>Investor identity</Header>
-        <NameField
-          name="investor.name"
-          value={this.state.investor.name}
-          onChange={this.handleChange}
-          required
-        />
         <Form.Input
           name="investor.email"
           value={this.state.investor.email}
@@ -67,6 +61,11 @@ class NewInvestorForm extends Component {
           placeholder="Email"
           type="email"
           required
+        />
+        <NameField
+          name="investor.name"
+          value={this.state.investor.name}
+          onChange={this.handleChange}
         />
         {this.props.signup &&
           <PasswordField

@@ -39,7 +39,7 @@ const TicketsListRow = ({ ticket }) =>
       <strong>Pending</strong><br />
       {moment(ticket.createdAt).format('DD/MM/YYYY')}
     </Table.Cell>
-    <Table.Cell textAlign="center">
+    <Table.Cell>
       Accept | Reject | Edit
     </Table.Cell>
     <style jsx>{`

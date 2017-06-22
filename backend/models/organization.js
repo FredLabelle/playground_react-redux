@@ -40,6 +40,7 @@ const Organization = sequelize.define(
             'Dear {{firstname}},',
             '',
             'Here is the link to signup to the club:',
+            '',
             '{{url}}',
             '',
             'Best,',

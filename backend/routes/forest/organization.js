@@ -16,6 +16,24 @@ module.exports.seedDatabase = async (req, res) => {
         description: 'eFounders club',
         emailDomains: ['e-founders.com', 'efounders.co'],
       },
+      parametersSettings: {
+        investment: {
+          dealCategories: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
+          defaultCurrency: 'eur',
+        },
+        invitationEmail: {
+          subject: "You've been invited to join {{organization}}!",
+          body: [
+            'Dear {{firstname}},',
+            '',
+            'Here is the link to signup to the club:',
+            '',
+            '{{url}}',
+            '',
+            'Best,',
+          ].join('\n'),
+        },
+      },
     });
     await UserService.signup({
       name: {
@@ -76,6 +94,7 @@ module.exports.seedDatabase = async (req, res) => {
       description: 'The plug and play Admin Interface',
     });
     const deal = await organization.createDeal({
+      name: 'Follow',
       category: 'Serie A',
       totalAmount: {
         amount: '1300000',
@@ -90,6 +109,7 @@ module.exports.seedDatabase = async (req, res) => {
         currency: 'usd',
       },
       carried: '20',
+      hurdle: '10',
       deck: {
         name: '',
         url: '',

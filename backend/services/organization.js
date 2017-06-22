@@ -188,11 +188,15 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const deal = await organization.createDeal(input);
-      const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-      const name = `decks${env}/${deal.shortId}`;
-      const newDeck = Object.assign({}, input.deck);
-      newDeck.url = await uploadFileFromUrl(input.deck.url, name);
-      await deal.update({ deck: newDeck });
+      if (input.deck.url) {
+        const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
+        const name = `decks${env}/${deal.shortId}`;
+        const newDeck = Object.assign({}, input.deck);
+        uploadFileFromUrl(input.deck.url, name).then(url => {
+          newDeck.url = url;
+          deal.update({ deck: newDeck });
+        });
+      }
       return true;
     } catch (error) {
       console.error(error);

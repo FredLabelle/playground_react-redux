@@ -65,13 +65,10 @@ class CreateNewTicket extends Component {
     numberFormatter(minTicket.currency).format(minTicket.amount);
   getDealMaxBoundary = ({ maxTicket }) =>
     maxTicket.amount ? numberFormatter(maxTicket.currency).format(maxTicket.amount) : 'No Limit';
-  dealTitle = deal => {
-    const amount = numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount);
-    return `${deal.company.name} ${deal.category} (${amount})`;
-  };
+  dealTitle = deal => `${deal.company.name} ${deal.name} ${deal.category}`;
   dealToResult = deal => ({
     title: this.dealTitle(deal),
-    description: '',
+    description: numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount),
     image: `//logo.clearbit.com/${deal.company.domain}?size=192`,
   });
   handleDealResultSelect = (event, result) => {
@@ -133,7 +130,6 @@ class CreateNewTicket extends Component {
     this.setState({ ticket, investorsResults, investor });
   };
   handleChange = handleChange().bind(this);
-  error = () => this.state.dealIdError || this.state.userIdError;
   render() {
     const selectedDeal = this.props.deals.find(({ id }) => id === this.state.ticket.dealId);
     return (
@@ -142,7 +138,7 @@ class CreateNewTicket extends Component {
           onSubmit={this.onSubmit}
           warning={this.state.ticket.dealId !== ''}
           success={this.state.success}
-          error={this.error()}
+          error={this.state.dealIdError || this.state.userIdError}
         >
           <Header as="h2" dividing>Create new ticket</Header>
           <Form.Group>

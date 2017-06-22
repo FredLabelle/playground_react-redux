@@ -67,6 +67,7 @@ export const CompanyPropType = PropTypes.shape({
 
 export const DealPropType = PropTypes.shape({
   company: CompanyPropType.isRequired,
+  name: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   totalAmount: AmountPropType.isRequired,
   tickets: TicketsPropType,

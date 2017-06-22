@@ -12,8 +12,11 @@
     "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{actions,components,lib,pages,reducers}/**/*.js\"",
     "dev": "NODE_ENV='development' node server.js",
     "build": "next build",
-    "start": "NODE_ENV='production' node server.js",
-    "deploy": "now -E .env/production.env && now alias",
+    "start": "node server.js",
+    "deploy-staging": "now -E .env/staging.env && now alias investorx-staging-frontend.efounders.co",
+    "deploy": "now -E .env/production.env && now alias investorx-frontend.efounders.co",
+    "logs-staging": "now logs investorx-staging-frontend.efounders.co",
+    "logs": "now logs investorx-frontend.efounders.co",
     "cleanup": "now rm investorx-frontend --safe -y"
   },
   "dependencies": {
@@ -37,7 +40,7 @@
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
     "redux": "^3.7.0",
-    "semantic-ui-react": "^0.68.5",
+    "semantic-ui-react": "^0.69.0",
     "universal-cookie-express": "^2.0.5",
     "uploadcare-widget": "^2.10.3"
   },

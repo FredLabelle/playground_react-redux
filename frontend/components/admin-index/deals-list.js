@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 import { Table } from 'semantic-ui-react';
-import moment from 'moment';
+// import moment from 'moment';
 
 import { DealPropType } from '../../lib/prop-types';
 import { dealsQuery } from '../../lib/queries';
@@ -16,9 +16,9 @@ const DealsListHeader = () =>
       <Table.HeaderCell>Deal</Table.HeaderCell>
       <Table.HeaderCell>Investors</Table.HeaderCell>
       <Table.HeaderCell>Tickets</Table.HeaderCell>
-      <Table.HeaderCell>Reports</Table.HeaderCell>
+      {/* <Table.HeaderCell>Reports</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
-      <Table.HeaderCell>Actions</Table.HeaderCell>
+      <Table.HeaderCell>Actions</Table.HeaderCell>*/}
     </Table.Row>
   </Table.Header>;
 
@@ -31,7 +31,7 @@ const DealsListRow = ({ deal }) =>
       23 commited
     </Table.Cell>
     <TicketsCell tickets={deal.tickets} />
-    <Table.Cell>
+    {/* <Table.Cell>
       35 contacted<br />
       35 contacted
     </Table.Cell>
@@ -39,9 +39,9 @@ const DealsListRow = ({ deal }) =>
       <strong>Open</strong><br />
       {moment(deal.createdAt).format('DD/MM/YYYY')}
     </Table.Cell>
-    <Table.Cell textAlign="center">
+    <Table.Cell>
       View | Share | Close
-    </Table.Cell>
+    </Table.Cell>*/}
     <style jsx>{`
       strong {
         color: #21ba45;

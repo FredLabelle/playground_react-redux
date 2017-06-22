@@ -2,18 +2,15 @@ import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Button } from 'semantic-ui-react';
 
+import { BACKEND_URL_BROWSER } from '../../lib/env';
 import { OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import Login from '../common/login';
 
-const backendUrl = process.env.NODE_ENV === 'production'
-  ? 'https://investorx.efounders.co/api'
-  : 'http://localhost:8080';
-
 const AdminLogin = ({ organization }) =>
   <Login organization={organization}>
     <Segment basic textAlign="center">
-      <a href={`${backendUrl}/auth/google`}>
+      <a href={`${BACKEND_URL_BROWSER}/auth/google`}>
         <Button
           className="google plus"
           content="Login with Google"

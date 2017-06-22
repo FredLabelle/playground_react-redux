@@ -1,6 +1,6 @@
 const { promisify } = require('util');
 const { stringify } = require('querystring');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');

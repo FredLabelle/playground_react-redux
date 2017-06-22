@@ -131,6 +131,8 @@ export const dealsQuery = gql`
         description
         domain
       }
+      name
+      description
       category
       totalAmount {
         amount
@@ -148,7 +150,6 @@ export const dealsQuery = gql`
       deck {
         url
       }
-      description
       tickets {
         count
         sum {
@@ -177,6 +178,7 @@ export const ticketsQuery = gql`
           description
           domain
         }
+        name
         category
         totalAmount {
           amount

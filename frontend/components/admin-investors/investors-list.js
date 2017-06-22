@@ -13,7 +13,6 @@ const InvestorsListHeader = () =>
     <Table.Row>
       <Table.HeaderCell>Investors</Table.HeaderCell>
       <Table.HeaderCell>Tickets</Table.HeaderCell>
-      <Table.HeaderCell>Tickets</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
       <Table.HeaderCell>Actions</Table.HeaderCell>
     </Table.Row>
@@ -24,15 +23,11 @@ const InvestorsListRow = ({ investor }) =>
     <InvestorCell investor={investor} />
     <TicketsCell tickets={investor.tickets} />
     <Table.Cell>
-      35 contacted<br />
-      23 commited
-    </Table.Cell>
-    <Table.Cell>
       <strong>Created</strong><br />
       {moment(investor.createdAt).format('DD/MM/YYYY')}
     </Table.Cell>
-    <Table.Cell textAlign="center">
-      View | <a href={`mailto:${investor.email}`}>Contact</a> | Delete
+    <Table.Cell>
+      <a href={`mailto:${investor.email}`}>Contact</a>
     </Table.Cell>
     <style jsx>{`
       strong {

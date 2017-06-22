@@ -129,13 +129,15 @@ type Company {
 type Deal {
   id: ID!
   company: Company!
+  name: String!
+  description: String!
   category: String!
   totalAmount: Amount!
   minTicket: Amount!
   maxTicket: Amount!
   carried: String!
+  hurdle: String!
   deck: File!
-  description: String!
   tickets: Tickets!
   createdAt: Date!
 }

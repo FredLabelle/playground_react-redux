@@ -16,6 +16,13 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       unique: true,
     },
+    name: {
+      type: Sequelize.STRING,
+    },
+    description: {
+      type: Sequelize.STRING,
+      defaultValue: '',
+    },
     category: {
       type: Sequelize.STRING,
     },
@@ -31,6 +38,9 @@ module.exports = sequelize.define(
     carried: {
       type: Sequelize.STRING,
     },
+    hurdle: {
+      type: Sequelize.STRING,
+    },
     deck: {
       type: Sequelize.JSONB,
       defaultValue: {
@@ -39,10 +49,6 @@ module.exports = sequelize.define(
         image: false,
       },
       allowNull: false,
-    },
-    description: {
-      type: Sequelize.STRING,
-      defaultValue: '',
     },
   },
   {

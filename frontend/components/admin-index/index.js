@@ -10,7 +10,7 @@ import { meQuery } from '../../lib/queries';
 import { adminLoginAckMutation } from '../../lib/mutations';
 import { linkHref, linkAs } from '../../lib/url';
 import AdminMenu from '../common/admin-menu';
-import AdminDashboard from './admin-dashboard';
+import AdminDeals from './admin-deals';
 
 class AdminIndex extends Component {
   static propTypes = {
@@ -30,7 +30,7 @@ class AdminIndex extends Component {
     return (
       <div>
         <AdminMenu />
-        <AdminDashboard />
+        <AdminDeals />
       </div>
     );
   }
