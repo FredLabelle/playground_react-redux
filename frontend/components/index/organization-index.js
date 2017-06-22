@@ -1,9 +1,8 @@
 import Menu from '../common/menu';
 import Tickets from './tickets';
 
-export default () => (
+export default () =>
   <div>
     <Menu />
     <Tickets />
-  </div>
-);
+  </div>;

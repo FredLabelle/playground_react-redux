@@ -21,7 +21,7 @@ input InvestorSignupInput {
   email: String!
   password: String!
   investmentSettings: InvestmentSettingsInput!
-  organizationId: String!
+  organizationId: ID!
 }
 
 input InvestorLoginInput {
@@ -159,6 +159,7 @@ type Mutation {
   logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ID
+  changeEmail(input: String!): Boolean!
   updateInvestor(input: UpdateInvestorInput!): Boolean!
   updateInvestorFile(input: UpdateInvestorFileInput!): Boolean!
   adminLoginAck: Boolean!
@@ -170,6 +171,13 @@ type Mutation {
   createTicket(input: CreateTicketInput!): Boolean!
 }
 `;
+
+const authedMutation = (mutation, errorValue) => (user, input) => {
+  if (!user) {
+    return errorValue;
+  }
+  return mutation(user, input);
+};
 
 const adminMutation = (mutation, errorValue) => (user, input) => {
   if (!user) {
@@ -197,6 +205,9 @@ exports.resolvers = {
     },
     resetPassword(root, { input }, context) {
       return context.User.resetPassword(input);
+    },
+    changeEmail(root, { input }, context) {
+      return authedMutation(context.User.changeEmail, false)(context.user, input);
     },
     updateInvestor(root, { input }, context) {
       return context.User.updateInvestor(context.user, input);

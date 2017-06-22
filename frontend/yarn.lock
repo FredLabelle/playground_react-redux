@@ -1366,13 +1366,13 @@ debug@2.6.4:
   dependencies:
     ms "0.7.3"
 
-debug@2.6.7, debug@^2.1.1, debug@^2.2.0, debug@^2.6.3:
+debug@2.6.7, debug@^2.1.1, debug@^2.6.3:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.7.tgz#92bad1f6d05bbb6bba22cca88bcd0ec894c2861e"
   dependencies:
     ms "2.0.0"
 
-debug@^2.6.8:
+debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -2180,9 +2180,13 @@ graphql-anywhere@^3.0.0, graphql-anywhere@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/graphql-anywhere/-/graphql-anywhere-3.1.0.tgz#3ea0d8e8646b5cee68035016a9a7557c15c21e96"
 
-graphql-tag@^2.0.0, graphql-tag@^2.4.0:
+graphql-tag@^2.0.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.4.0.tgz#0fe137348d4db2efaf29b52ba4c1cbf84ac138cb"
+
+graphql-tag@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.4.2.tgz#6a63297d8522d03a2b72d26f1b239aab343840cd"
 
 graphql@^0.10.0:
   version "0.10.3"
@@ -2584,9 +2588,9 @@ joi@^6.10.1:
     moment "2.x.x"
     topo "1.x.x"
 
-"jquery@>=1.10.2 <3.0.0":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
+jquery@>=1.10.2:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
 js-tokens@^3.0.0:
   version "3.0.1"
@@ -4313,11 +4317,11 @@ unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
 
-uploadcare-widget@^2.10.3:
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/uploadcare-widget/-/uploadcare-widget-2.10.3.tgz#a2101b998ad63407b7dcaffb0290d40c99b2bde6"
+uploadcare-widget@^2.10.4:
+  version "2.10.4"
+  resolved "https://registry.yarnpkg.com/uploadcare-widget/-/uploadcare-widget-2.10.4.tgz#a8448d9dc2455e664d29280122e6f4bb93568755"
   dependencies:
-    jquery ">=1.10.2 <3.0.0"
+    jquery ">=1.10.2"
 
 url@0.11.0, url@^0.11.0:
   version "0.11.0"

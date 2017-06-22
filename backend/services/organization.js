@@ -162,11 +162,14 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const deals = await organization.getDeals({
-        include: [{ model: Company }, {
-          model: Ticket,
-          required: false,
-          where: user.role === 'investor' && { userId: user.id },
-        }],
+        include: [
+          { model: Company },
+          {
+            model: Ticket,
+            required: false,
+            where: user.role === 'investor' && { userId: user.id },
+          },
+        ],
       });
       const filter = user.role === 'investor' ? deal => deal.Tickets.length === 0 : () => true;
       return deals.filter(filter).map(deal =>

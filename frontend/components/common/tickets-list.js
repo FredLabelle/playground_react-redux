@@ -73,9 +73,9 @@ TicketsList.propTypes = {
 TicketsList.defaultProps = { tickets: [] };
 
 export default compose(
-  connect(({ router }) => ({ router }), null, ({ router }, dispatchProps, ownProps) => (
-    Object.assign({ admin: router.admin === '/admin' }, ownProps)
-  )),
+  connect(({ router }) => ({ router }), null, ({ router }, dispatchProps, ownProps) =>
+    Object.assign({ admin: router.admin === '/admin' }, ownProps),
+  ),
   graphql(ticketsQuery, {
     props: ({ data: { tickets } }) => ({
       tickets: tickets

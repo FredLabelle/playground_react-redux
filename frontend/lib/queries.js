@@ -29,6 +29,7 @@ export const organizationQuery = gql`
 export const meQuery = gql`
   query {
     me {
+      id
       name {
         firstName
         lastName

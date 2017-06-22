@@ -16,6 +16,7 @@ import FileField from '../fields/file-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import AmountField from '../fields/amount-field';
 import MechanismField from '../fields/mechanism-field';
+import ChangeEmailModal from './change-email-modal';
 
 class SettingsAccount extends Component {
   static propTypes = {
@@ -33,6 +34,16 @@ class SettingsAccount extends Component {
     },
     saving: false,
     saved: false,
+    changeEmailModalOpen: false,
+  };
+  componentDidMount() {
+    const email = document.querySelector('[type="email"]');
+    if (email) {
+      email.disabled = true;
+    }
+  }
+  onChangeEmailModalClose = () => {
+    this.setState({ changeEmailModalOpen: false });
   };
   onSubmit = async event => {
     event.preventDefault();
@@ -55,6 +66,10 @@ class SettingsAccount extends Component {
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
   update = () => omitDeep(this.state.me, 'picture', '__typename');
+  changeEmail = event => {
+    event.preventDefault();
+    this.setState({ changeEmailModalOpen: true });
+  };
   render() {
     return (
       this.props.me &&
@@ -62,6 +77,12 @@ class SettingsAccount extends Component {
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Header as="h3" dividing>Investor identity</Header>
           <NameField name="me.name" value={this.state.me.name} onChange={this.handleChange} />
+          <Form.Input
+            defaultValue={this.props.me.email}
+            label="Email"
+            action={{ type: 'button', content: 'Change it?', onClick: this.changeEmail }}
+            type="email"
+          />
           <FileField
             field="picture"
             label="Profile picture"
@@ -104,6 +125,10 @@ class SettingsAccount extends Component {
             />
           </Segment>
         </Form>
+        <ChangeEmailModal
+          open={this.state.changeEmailModalOpen}
+          onClose={this.onChangeEmailModalClose}
+        />
       </Segment>
     );
   }

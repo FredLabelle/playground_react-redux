@@ -35,6 +35,9 @@ module.exports = sequelize.define(
     resetPasswordToken: {
       type: Sequelize.STRING,
     },
+    changeEmailToken: {
+      type: Sequelize.STRING,
+    },
     verified: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,

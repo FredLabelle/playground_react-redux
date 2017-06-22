@@ -89,3 +89,9 @@ export const createTicketMutation = gql`
     createTicket(input: $input)
   }
 `;
+
+export const changeEmailMutation = gql`
+  mutation changeEmail($input: String!) {
+    changeEmail(input: $input)
+  }
+`;

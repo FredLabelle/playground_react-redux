@@ -30,6 +30,11 @@ const UserService = {
       where: { resetPasswordToken },
     });
   },
+  findByChangeEmailToken(changeEmailToken) {
+    return User.findOne({
+      where: { changeEmailToken },
+    });
+  },
   async canSignup(email, organizationId) {
     const user = await UserService.findByEmail(email, organizationId);
     return user === null;
@@ -112,6 +117,27 @@ const UserService = {
     } catch (error) {
       console.error(error);
       return null;
+    }
+  },
+  async changeEmail(user, input) {
+    try {
+      const changeEmailToken = await sign({ email: input }, process.env.FOREST_ENV_SECRET);
+      await user.update({ changeEmailToken });
+      const queryString = stringify({ token: changeEmailToken });
+      const backendUrl = process.env.BACKEND_URL;
+      const url = `${backendUrl}/change-email?${queryString}`;
+      await sendEmail({
+        fromEmail: 'investorx@e-founders.com',
+        fromName: 'InvestorX',
+        to: input,
+        subject: 'Change your email on InvestorX',
+        templateId: 173370,
+        vars: { firstName: user.name.firstName, link: url },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   },
   async me(user) {
