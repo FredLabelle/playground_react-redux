@@ -40,7 +40,7 @@ class LoginForm extends Component {
     });
     if (investorLogin) {
       this.props.cookies.set('token', investorLogin, { path: '/' });
-      Router.push(linkHref('/settings', this.props.router), linkAs('/settings', this.props.router));
+      Router.push(linkHref('/', this.props.router), linkAs('/', this.props.router));
     } else {
       this.setState({ loading: false, error: true });
     }

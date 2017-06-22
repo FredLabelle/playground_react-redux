@@ -162,9 +162,14 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const deals = await organization.getDeals({
-        include: [{ model: Company }, { model: Ticket }],
+        include: [{ model: Company }, {
+          model: Ticket,
+          required: false,
+          where: user.role === 'investor' && { userId: user.id },
+        }],
       });
-      return deals.map(deal =>
+      const filter = user.role === 'investor' ? deal => deal.Tickets.length === 0 : () => true;
+      return deals.filter(filter).map(deal =>
         Object.assign({}, deal.toJSON(), {
           company: deal.Company.toJSON(),
           tickets: {
@@ -207,6 +212,7 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const tickets = await organization.getTickets({
+        where: user.role === 'investor' && { userId: user.id },
         include: [
           {
             model: User,

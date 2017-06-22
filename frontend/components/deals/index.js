@@ -1,9 +1,9 @@
 import Menu from '../common/menu';
-import Tickets from './tickets';
+import Deals from './deals';
 
 export default () => (
   <div>
     <Menu />
-    <Tickets />
+    <Deals />
   </div>
 );

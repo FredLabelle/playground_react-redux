@@ -165,6 +165,13 @@ schema {
 }
 `;
 
+const authedQuery = query => user => {
+  if (!user) {
+    return null;
+  }
+  return query(user);
+};
+
 const adminQuery = query => user => {
   if (!user) {
     return null;
@@ -195,10 +202,10 @@ const resolvers = {
       return adminQuery(context.Organization.companies)(context.user);
     },
     deals(root, params, context) {
-      return adminQuery(context.Organization.deals)(context.user);
+      return authedQuery(context.Organization.deals)(context.user);
     },
     tickets(root, params, context) {
-      return adminQuery(context.Organization.tickets)(context.user);
+      return authedQuery(context.Organization.tickets)(context.user);
     },
   },
 };

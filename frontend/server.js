@@ -38,6 +38,7 @@ app.prepare().then(() => {
   server.get('/organization/:shortId/signup', route('/signup'));
   server.get('/organization/:shortId/login', route('/login'));
   server.get('/organization/:shortId', redirectMiddleware, route('/'));
+  server.get('/organization/:shortId/deals', redirectMiddleware, route('/deals'));
   server.get('/organization/:shortId/settings', redirectMiddleware, route('/settings'));
   server.get(
     '/organization/:shortId/settings/administrative',
@@ -51,7 +52,6 @@ app.prepare().then(() => {
   );
   server.get('/admin/organization/:shortId/login', route('/admin/login'));
   server.get('/admin/organization/:shortId', redirectMiddleware, route('/admin'));
-  server.get('/admin/organization/:shortId/deals', redirectMiddleware, route('/admin/deals'));
   server.get(
     '/admin/organization/:shortId/deals/new',
     redirectMiddleware,

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
-import DealsList from './deals-list';
+import DealsList from '../common/deals-list';
 
 const AdminDeals = ({ router }) =>
   <Segment attached="bottom" className="tab active">

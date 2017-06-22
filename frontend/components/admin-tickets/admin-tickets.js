@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
-import TicketsList from './tickets-list';
+import TicketsList from '../common/tickets-list';
 
 const AdminTickets = ({ router }) =>
   <Segment attached="bottom" className="tab active">

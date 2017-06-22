@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { graphql } from 'react-apollo';
+import { connect } from 'react-redux';
+import { compose, graphql } from 'react-apollo';
 import { Table } from 'semantic-ui-react';
 // import moment from 'moment';
 
@@ -9,20 +10,21 @@ import CompanyCell from '../common/company-cell';
 import DealCell from '../common/deal-cell';
 import TicketsCell from '../common/tickets-cell';
 
-const DealsListHeader = () =>
+const DealsListHeader = ({ admin }) =>
   <Table.Header>
     <Table.Row>
       <Table.HeaderCell>Companies</Table.HeaderCell>
       <Table.HeaderCell>Deal</Table.HeaderCell>
       <Table.HeaderCell>Investors</Table.HeaderCell>
-      <Table.HeaderCell>Tickets</Table.HeaderCell>
+      {admin && <Table.HeaderCell>Tickets</Table.HeaderCell>}
       {/* <Table.HeaderCell>Reports</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
       <Table.HeaderCell>Actions</Table.HeaderCell>*/}
     </Table.Row>
   </Table.Header>;
+DealsListHeader.propTypes = { admin: PropTypes.bool.isRequired };
 
-const DealsListRow = ({ deal }) =>
+const DealsListRow = ({ admin, deal }) =>
   <Table.Row>
     <CompanyCell company={deal.company} />
     <DealCell deal={deal} />
@@ -30,7 +32,7 @@ const DealsListRow = ({ deal }) =>
       35 contacted<br />
       23 commited
     </Table.Cell>
-    <TicketsCell tickets={deal.tickets} />
+    {admin && <TicketsCell tickets={deal.tickets} />}
     {/* <Table.Cell>
       35 contacted<br />
       35 contacted
@@ -48,27 +50,38 @@ const DealsListRow = ({ deal }) =>
       }
     `}</style>
   </Table.Row>;
-DealsListRow.propTypes = { deal: DealPropType.isRequired };
+DealsListRow.propTypes = {
+  admin: PropTypes.bool.isRequired,
+  deal: DealPropType.isRequired,
+};
 
-const DealsList = ({ deals }) =>
+const DealsList = ({ admin, deals }) =>
   deals.length
     ? <Table basic="very" celled>
-        <DealsListHeader />
+        <DealsListHeader admin={admin} />
         <Table.Body>
-          {deals.map(deal => <DealsListRow key={deal.id} deal={deal} />)}
+          {deals.map(deal => <DealsListRow key={deal.id} admin={admin} deal={deal} />)}
         </Table.Body>
       </Table>
     : null;
-DealsList.propTypes = { deals: PropTypes.arrayOf(DealPropType) };
+DealsList.propTypes = {
+  admin: PropTypes.bool.isRequired,
+  deals: PropTypes.arrayOf(DealPropType),
+};
 DealsList.defaultProps = { deals: [] };
 
-export default graphql(dealsQuery, {
-  props: ({ data: { deals } }) => ({
-    deals: deals
-      ? deals.map(deal => ({
-          ...deal,
-          createdAt: new Date(deal.createdAt),
-        }))
-      : [],
+export default compose(
+  connect(({ router }) => ({ router }), null, ({ router }, dispatchProps, ownProps) => (
+    Object.assign({ admin: router.admin === '/admin' }, ownProps)
+  )),
+  graphql(dealsQuery, {
+    props: ({ data: { deals } }) => ({
+      deals: deals
+        ? deals.map(deal => ({
+            ...deal,
+            createdAt: new Date(deal.createdAt),
+          }))
+        : [],
+    }),
   }),
-})(DealsList);
+)(DealsList);

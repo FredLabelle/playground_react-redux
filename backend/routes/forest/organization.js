@@ -97,16 +97,16 @@ module.exports.seedDatabase = async (req, res) => {
       name: 'Follow',
       category: 'Serie A',
       totalAmount: {
-        amount: '1300000',
-        currency: 'usd',
+        amount: '3000000',
+        currency: 'eur',
       },
       minTicket: {
         amount: '25000',
-        currency: 'usd',
+        currency: 'eur',
       },
       maxTicket: {
         amount: '',
-        currency: 'usd',
+        currency: 'eur',
       },
       carried: '20',
       hurdle: '10',
