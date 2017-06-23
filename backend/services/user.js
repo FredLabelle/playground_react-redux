@@ -91,7 +91,7 @@ const UserService = {
       const frontendUrl = process.env.FRONTEND_URL;
       const { shortId } = organization;
       const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
-      sendEmail({
+      await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: email,
@@ -134,6 +134,16 @@ const UserService = {
         templateId: 173370,
         vars: { firstName: user.name.firstName, link: url },
       });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async changePassword(user, input) {
+    try {
+      const password = await bcrypt.hash(input, 10);
+      await user.update({ password });
       return true;
     } catch (error) {
       console.error(error);

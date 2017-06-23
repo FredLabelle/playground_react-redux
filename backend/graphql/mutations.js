@@ -160,6 +160,7 @@ type Mutation {
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ID
   changeEmail(input: String!): Boolean!
+  changePassword(input: String!): Boolean!
   updateInvestor(input: UpdateInvestorInput!): Boolean!
   updateInvestorFile(input: UpdateInvestorFileInput!): Boolean!
   adminLoginAck: Boolean!
@@ -208,6 +209,9 @@ exports.resolvers = {
     },
     changeEmail(root, { input }, context) {
       return authedMutation(context.User.changeEmail, false)(context.user, input);
+    },
+    changePassword(root, { input }, context) {
+      return authedMutation(context.User.changePassword, false)(context.user, input);
     },
     updateInvestor(root, { input }, context) {
       return context.User.updateInvestor(context.user, input);

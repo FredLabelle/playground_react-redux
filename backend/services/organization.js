@@ -98,7 +98,7 @@ const OrganizationService = {
       const queryString = stringify({ resetPasswordToken });
       const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
       const { subject, body } = generateInvitationEmailContent(organization, newUser, url);
-      sendEmail({
+      await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: newUser.email,
@@ -119,7 +119,7 @@ const OrganizationService = {
       if (!canSignup) {
         return false;
       }
-      sendEmail({
+      await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: input.investor.email,

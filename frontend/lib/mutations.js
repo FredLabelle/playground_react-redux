@@ -95,3 +95,9 @@ export const changeEmailMutation = gql`
     changeEmail(input: $input)
   }
 `;
+
+export const changePasswordMutation = gql`
+  mutation changePassword($input: String!) {
+    changePassword(input: $input)
+  }
+`;

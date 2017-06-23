@@ -17,6 +17,7 @@ import CheckboxesField from '../fields/checkboxes-field';
 import AmountField from '../fields/amount-field';
 import MechanismField from '../fields/mechanism-field';
 import ChangeEmailModal from './change-email-modal';
+import ChangePasswordModal from './change-password-modal';
 
 class SettingsAccount extends Component {
   static propTypes = {
@@ -35,15 +36,17 @@ class SettingsAccount extends Component {
     saving: false,
     saved: false,
     changeEmailModalOpen: false,
+    changePasswordModalOpen: false,
   };
   componentDidMount() {
-    const email = document.querySelector('[type="email"]');
-    if (email) {
-      email.disabled = true;
-    }
+    const inputs = [...document.querySelectorAll('[type="email"], [type="password"]')];
+    inputs.forEach(input => Object.assign(input, { disabled: true }));
   }
   onChangeEmailModalClose = () => {
     this.setState({ changeEmailModalOpen: false });
+  };
+  onChangePasswordModalClose = () => {
+    this.setState({ changePasswordModalOpen: false });
   };
   onSubmit = async event => {
     event.preventDefault();
@@ -70,6 +73,10 @@ class SettingsAccount extends Component {
     event.preventDefault();
     this.setState({ changeEmailModalOpen: true });
   };
+  changePassword = event => {
+    event.preventDefault();
+    this.setState({ changePasswordModalOpen: true });
+  };
   render() {
     return (
       this.props.me &&
@@ -82,6 +89,12 @@ class SettingsAccount extends Component {
             label="Email"
             action={{ type: 'button', content: 'Change it?', onClick: this.changeEmail }}
             type="email"
+          />
+          <Form.Input
+            defaultValue="password"
+            label="Password"
+            action={{ type: 'button', content: 'Change it?', onClick: this.changePassword }}
+            type="password"
           />
           <FileField
             field="picture"
@@ -128,6 +141,10 @@ class SettingsAccount extends Component {
         <ChangeEmailModal
           open={this.state.changeEmailModalOpen}
           onClose={this.onChangeEmailModalClose}
+        />
+        <ChangePasswordModal
+          open={this.state.changePasswordModalOpen}
+          onClose={this.onChangePasswordModalClose}
         />
       </Segment>
     );
