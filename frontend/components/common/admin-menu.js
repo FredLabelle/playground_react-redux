@@ -12,7 +12,7 @@ class AdminMenu extends Component {
     Router.prefetch('/admin');
     Router.prefetch('/admin/investors');
     Router.prefetch('/admin/tickets');
-    Router.prefetch('/admin/reports');
+    // Router.prefetch('/admin/reports');
   }
   onClick = (event, { name }) => {
     event.preventDefault();
@@ -21,7 +21,7 @@ class AdminMenu extends Component {
   render() {
     const active = (...pathnames) => pathnames.includes(this.props.router.pathname);
     return (
-      <Menu attached="top" tabular widths={4}>
+      <Menu attached="top" tabular widths={3}>
         <Menu.Item name="/" active={active('/', '/deals/new')} onClick={this.onClick}>
           Deals
         </Menu.Item>
@@ -39,9 +39,9 @@ class AdminMenu extends Component {
         >
           Tickets
         </Menu.Item>
-        <Menu.Item name="/reports" active={active('/reports')} onClick={this.onClick}>
+        {/* <Menu.Item name="/reports" active={active('/reports')} onClick={this.onClick}>
           Reports
-        </Menu.Item>
+        </Menu.Item>*/}
       </Menu>
     );
   }

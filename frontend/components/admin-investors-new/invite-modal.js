@@ -13,7 +13,6 @@ import NameField from '../fields/name-field';
 
 const InviteInvestorForm = ({ onSubmit, success, investor, onChange }) =>
   <Form id="invite-investor" onSubmit={onSubmit} success={success}>
-    <NameField name="investor.name" value={investor.name} onChange={onChange} required />
     <Form.Input
       name="investor.email"
       value={investor.email}
@@ -23,6 +22,7 @@ const InviteInvestorForm = ({ onSubmit, success, investor, onChange }) =>
       type="email"
       required
     />
+    <NameField name="investor.name" value={investor.name} onChange={onChange} />
     <Message success header="Success!" content="Your invite has been sent." />
   </Form>;
 InviteInvestorForm.propTypes = {
