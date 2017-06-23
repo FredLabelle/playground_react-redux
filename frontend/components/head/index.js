@@ -1,7 +1,10 @@
+/* eslint-disable react/no-danger */
 import { Head } from 'next/document';
+import reactDatePickerStyleSheet from 'react-date-picker/index.css';
 
 import { FRONTEND_URL } from '../../lib/env';
 import UploadcareScript from './uploadcare-script';
+import globalStyleSheet from './style.css';
 
 const title = 'InvestorX';
 const description = 'InvestorX description';
@@ -32,9 +35,7 @@ export default () =>
       rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/react-datepicker/0.48.0/react-datepicker.min.css"
-    />
+    <style dangerouslySetInnerHTML={{ __html: reactDatePickerStyleSheet }} />
+    <style dangerouslySetInnerHTML={{ __html: globalStyleSheet }} />
     <UploadcareScript />
   </Head>;

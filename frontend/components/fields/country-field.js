@@ -12,13 +12,6 @@ export default class extends Component {
     width: PropTypes.number,
   };
   static defaultProps = { label: 'Country', width: 16 };
-  componentDidMount() {
-    const selects = [...document.getElementsByTagName('select')];
-    selects.forEach(select => {
-      const { style } = select;
-      style.height = '37px';
-    });
-  }
   handleChange = value => {
     this.props.onChange(null, { name: this.props.name, value });
   };

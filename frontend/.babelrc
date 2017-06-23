@@ -1,4 +1,10 @@
 {
-  "plugins": ["transform-class-properties"],
+  "plugins": [
+    "transform-class-properties",
+    [
+      "wrap-in-js",
+      { "extensions": ["css$", "scss$"] }
+    ]
+  ],
   "presets": ["next/babel"]
 }

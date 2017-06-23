@@ -6,6 +6,7 @@ import { Segment, Form, Button, Header, Message, Select } from 'semantic-ui-reac
 import omit from 'lodash/omit';
 import get from 'lodash/get';
 import Router from 'next/router';
+import moment from 'moment';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { sleep, handleChange } from '../../lib/util';
@@ -15,6 +16,7 @@ import { createDealMutation } from '../../lib/mutations';
 import CompanyForm from './company-form';
 import AmountField from '../fields/amount-field';
 import FileField from '../fields/file-field';
+import DateField from '../fields/date-field';
 
 class CreateNewDeal extends Component {
   static propTypes = {
@@ -31,6 +33,11 @@ class CreateNewDeal extends Component {
       companyId: '',
       name: '',
       description: '',
+      deck: {
+        name: '',
+        url: '',
+        image: false,
+      },
       category: '',
       totalAmount: {
         amount: '',
@@ -44,13 +51,9 @@ class CreateNewDeal extends Component {
         amount: '',
         currency: this.props.organization.parametersSettings.investment.defaultCurrency,
       },
+      referenceClosingDate: moment().format('DD-MM-YYYY'),
       carried: '',
       hurdle: '',
-      deck: {
-        name: '',
-        url: '',
-        image: false,
-      },
     },
     companyIdError: false,
     categoryError: false,
@@ -137,6 +140,12 @@ class CreateNewDeal extends Component {
             placeholder="Description"
             autoHeight
           />
+          <FileField
+            field="deal.deck"
+            label="Deck"
+            file={this.state.deal.deck}
+            onChange={this.handleChange}
+          />
           <Form.Field
             name="deal.category"
             value={this.state.deal.category}
@@ -168,6 +177,12 @@ class CreateNewDeal extends Component {
             label="Max ticket"
             placeholder="No Limit"
           />
+          <DateField
+            name="deal.referenceClosingDate"
+            value={this.state.deal.referenceClosingDate}
+            onChange={this.handleChange}
+            label="Reference closing date"
+          />
           <Form.Input
             name="deal.carried"
             value={this.state.deal.carried}
@@ -189,12 +204,6 @@ class CreateNewDeal extends Component {
             min="1"
             max="100"
             required
-          />
-          <FileField
-            field="deal.deck"
-            label="Deck"
-            file={this.state.deal.deck}
-            onChange={this.handleChange}
           />
           {this.state.companyIdError &&
             <Message error header="Error!" content="Company is required." />}

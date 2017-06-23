@@ -110,11 +110,6 @@ module.exports.seedDatabase = async (req, res) => {
       },
       carried: '20',
       hurdle: '10',
-      deck: {
-        name: '',
-        url: '',
-        image: false,
-      },
       companyId: company.id,
     });
     const user = await UserService.findByEmail('simon.arvaux@gmail.com', organization.id);

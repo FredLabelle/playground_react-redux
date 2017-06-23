@@ -23,6 +23,15 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       defaultValue: '',
     },
+    deck: {
+      type: Sequelize.JSONB,
+      defaultValue: {
+        name: '',
+        url: '',
+        image: false,
+      },
+      allowNull: false,
+    },
     category: {
       type: Sequelize.STRING,
     },
@@ -35,20 +44,14 @@ module.exports = sequelize.define(
     maxTicket: {
       type: Sequelize.JSONB,
     },
+    referenceClosingDate: {
+      type: Sequelize.STRING,
+    },
     carried: {
       type: Sequelize.STRING,
     },
     hurdle: {
       type: Sequelize.STRING,
-    },
-    deck: {
-      type: Sequelize.JSONB,
-      defaultValue: {
-        name: '',
-        url: '',
-        image: false,
-      },
-      allowNull: false,
     },
   },
   {

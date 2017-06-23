@@ -100,7 +100,7 @@ class Company extends Component {
                 />
                 <div className="field">
                   <label htmlFor="name">&nbsp;</label>
-                  <div style={{ lineHeight: '37px' }}>
+                  <div className="company-name-hint">
                     Enter a new company or an existing one.
                   </div>
                 </div>
@@ -137,6 +137,11 @@ class Company extends Component {
             labelPosition="left"
           />
         </Segment>
+        <style jsx>{`
+          .company-name-hint {
+            line-height: 37px;
+          }
+        `}</style>
       </div>
     );
   }

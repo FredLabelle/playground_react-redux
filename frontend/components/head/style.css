@@ -1,0 +1,7 @@
+.react-date-field--theme-default, .react-date-field--focused {
+  border: 0 !important;
+}
+
+select {
+  height: 37px !important;
+}

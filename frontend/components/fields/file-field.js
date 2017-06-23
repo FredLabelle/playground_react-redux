@@ -109,9 +109,9 @@ export default class extends Component {
     return (
       <div>
         <div className="fields">
-          <div className="field" style={{ width: '100%' }}>
+          <div className="field">
             <label htmlFor="image">{this.props.label}</label>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div>
               <Button
                 type="button"
                 primary
@@ -136,6 +136,15 @@ export default class extends Component {
         {this.uploading()
           ? <Progress percent={this.state.progress * 100} indicating />
           : this.state.file.url && <File file={this.state.file} processed={this.state.processed} />}
+        <style jsx>{`
+          .field {
+            width: 100%;
+          }
+          .field div {
+            display: flex;
+            justify-content: center;
+          }
+        `}</style>
       </div>
     );
   }

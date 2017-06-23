@@ -11,14 +11,6 @@ export default class extends Component {
     value: AddressPropType.isRequired,
     onChange: PropTypes.func.isRequired,
   };
-  componentDidMount() {
-    // TODO fix this with css
-    const selects = [...document.getElementsByTagName('select')];
-    selects.forEach(select => {
-      const { style } = select;
-      style.height = '37px';
-    });
-  }
   handleChange = (event, { name, value }) => {
     const newValue = {
       ...this.props.value,

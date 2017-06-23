@@ -138,13 +138,14 @@ input CreateDealInput {
   companyId: ID!
   name: String!
   description: String!
+  deck: FileInput!
   category: String!
   totalAmount: AmountInput!
   minTicket: AmountInput!
   maxTicket: AmountInput!
+  referenceClosingDate: String!
   carried: String!
   hurdle: String!
-  deck: FileInput!
 }
 
 input CreateTicketInput {

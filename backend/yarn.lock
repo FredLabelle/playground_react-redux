@@ -633,9 +633,9 @@ dataloader@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/dataloader/-/dataloader-1.3.0.tgz#6fec5be4b30a712e4afd30b86b4334566b97673b"
 
-debug@2, debug@2.6.7, debug@^2.1.1, debug@^2.2.0, debug@^2.3.0:
-  version "2.6.7"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.7.tgz#92bad1f6d05bbb6bba22cca88bcd0ec894c2861e"
+debug@2, debug@^2.2.0, debug@^2.6.8:
+  version "2.6.8"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
     ms "2.0.0"
 
@@ -645,9 +645,9 @@ debug@2.2.0, debug@~2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@^2.6.8:
-  version "2.6.8"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
+debug@2.6.7, debug@^2.1.1, debug@^2.3.0:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.7.tgz#92bad1f6d05bbb6bba22cca88bcd0ec894c2861e"
   dependencies:
     ms "2.0.0"
 
@@ -1229,19 +1229,19 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
-forest-express-sequelize@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/forest-express-sequelize/-/forest-express-sequelize-1.1.7.tgz#8d17143313f5ac85e6ad3b347a3bcffa1187b784"
+forest-express-sequelize@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/forest-express-sequelize/-/forest-express-sequelize-1.1.8.tgz#7398389873f5c74c6b0c58669e35bf7c7d79a9e6"
   dependencies:
     bluebird "2.9.25"
-    forest-express "1.1.7"
+    forest-express "1.1.8"
     http-errors "1.6.1"
     lodash "3.9.3"
     moment "2.10.6"
 
-forest-express@1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/forest-express/-/forest-express-1.1.7.tgz#c0295e5526e728d43639e473a15736ccab924c37"
+forest-express@1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/forest-express/-/forest-express-1.1.8.tgz#bb98755916a22cfccb5e86bdc63a272d9113c481"
   dependencies:
     bcryptjs "2.4.3"
     bluebird "3.3.4"
@@ -2316,7 +2316,7 @@ moment@2.x.x, "moment@>= 2.9.0", moment@^2.13.0:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
-ms@0.7.1:
+ms@0.7.1, ms@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
 
@@ -2327,10 +2327,6 @@ ms@0.7.2:
 ms@2.0.0, ms@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
-
-ms@^0.7.1:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
 
 mute-stream@0.0.5:
   version "0.0.5"
