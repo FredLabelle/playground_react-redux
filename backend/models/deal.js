@@ -25,11 +25,7 @@ module.exports = sequelize.define(
     },
     deck: {
       type: Sequelize.JSONB,
-      defaultValue: {
-        name: '',
-        url: '',
-        image: false,
-      },
+      defaultValue: [],
       allowNull: false,
     },
     category: {

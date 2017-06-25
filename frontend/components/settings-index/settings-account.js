@@ -10,9 +10,9 @@ import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { FormPropType, MePropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
 import { meQuery, organizationQuery } from '../../lib/queries';
-import { updateInvestorMutation, updateInvestorFileMutation } from '../../lib/mutations';
+import { updateInvestorMutation, updateInvestorFilesMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
-import FileField from '../fields/file-field';
+import FilesField from '../fields/files-field';
 import CheckboxesField from '../fields/checkboxes-field';
 import AmountField from '../fields/amount-field';
 import MechanismField from '../fields/mechanism-field';
@@ -25,7 +25,7 @@ class SettingsAccount extends Component {
     me: MePropType,
     organization: OrganizationPropType.isRequired,
     updateInvestor: PropTypes.func.isRequired,
-    updateInvestorFile: PropTypes.func.isRequired,
+    updateInvestorFiles: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   static defaultProps = { me: null };
@@ -41,6 +41,14 @@ class SettingsAccount extends Component {
   componentDidMount() {
     const inputs = [...document.querySelectorAll('[type="email"], [type="password"]')];
     inputs.forEach(input => Object.assign(input, { disabled: true }));
+  }
+  componentWillReceiveProps({ me }) {
+    this.setState({
+      me: {
+        ...this.state.me,
+        picture: me.picture,
+      },
+    });
   }
   onChangeEmailModalClose = () => {
     this.setState({ changeEmailModalOpen: false });
@@ -96,12 +104,12 @@ class SettingsAccount extends Component {
             action={{ type: 'button', content: 'Change it?', onClick: this.changePassword }}
             type="password"
           />
-          <FileField
+          <FilesField
             field="picture"
             label="Profile picture"
-            file={this.state.me.picture}
-            mutation={this.props.updateInvestorFile}
-            mutationName="updateInvestorFile"
+            files={this.state.me.picture}
+            mutation={this.props.updateInvestorFiles}
+            mutationName="updateInvestorFiles"
             imagesOnly
             tabs={['camera', 'file', 'gdrive', 'dropbox', 'url']}
             crop="192x192 upscale"
@@ -171,9 +179,9 @@ export default compose(
         }),
     }),
   }),
-  graphql(updateInvestorFileMutation, {
+  graphql(updateInvestorFilesMutation, {
     props: ({ mutate }) => ({
-      updateInvestorFile: input =>
+      updateInvestorFiles: input =>
         mutate({
           variables: { input },
           refetchQueries: [{ query: meQuery }],

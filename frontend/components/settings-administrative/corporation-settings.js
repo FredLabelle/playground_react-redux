@@ -4,9 +4,9 @@ import { Header, Form } from 'semantic-ui-react';
 import { MePropType } from '../../lib/prop-types';
 import NameField from '../fields/name-field';
 import AddressField from '../fields/address-field';
-import FileField from '../fields/file-field';
+import FilesField from '../fields/files-field';
 
-const CorporationSettings = ({ me, handleChange, updateInvestorFile }) =>
+const CorporationSettings = ({ me, handleChange, updateInvestorFiles }) =>
   <div>
     <Header as="h3" dividing>Legal representative</Header>
     <NameField name="me.name" value={me.name} onChange={handleChange} />
@@ -30,18 +30,18 @@ const CorporationSettings = ({ me, handleChange, updateInvestorFile }) =>
       value={me.corporationSettings.companyAddress}
       onChange={handleChange}
     />
-    <FileField
+    <FilesField
       field="corporationSettings.incProof"
       label="Inc. Proof"
       file={me.corporationSettings.incProof}
-      mutation={updateInvestorFile}
-      mutationName="updateInvestorFile"
+      mutation={updateInvestorFiles}
+      mutationName="updateInvestorFiles"
     />
   </div>;
 CorporationSettings.propTypes = {
   me: MePropType.isRequired,
   handleChange: PropTypes.func.isRequired,
-  updateInvestorFile: PropTypes.func.isRequired,
+  updateInvestorFiles: PropTypes.func.isRequired,
 };
 
 export default CorporationSettings;

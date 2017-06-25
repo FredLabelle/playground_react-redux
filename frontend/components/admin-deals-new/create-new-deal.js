@@ -15,7 +15,7 @@ import { organizationQuery, dealsQuery } from '../../lib/queries';
 import { createDealMutation } from '../../lib/mutations';
 import CompanyForm from './company-form';
 import AmountField from '../fields/amount-field';
-import FileField from '../fields/file-field';
+import FilesField from '../fields/files-field';
 import DateField from '../fields/date-field';
 
 class CreateNewDeal extends Component {
@@ -33,11 +33,7 @@ class CreateNewDeal extends Component {
       companyId: '',
       name: '',
       description: '',
-      deck: {
-        name: '',
-        url: '',
-        image: false,
-      },
+      deck: [],
       category: '',
       totalAmount: {
         amount: '',
@@ -140,10 +136,10 @@ class CreateNewDeal extends Component {
             placeholder="Description"
             autoHeight
           />
-          <FileField
+          <FilesField
             field="deal.deck"
             label="Deck"
-            file={this.state.deal.deck}
+            files={this.state.deal.deck}
             onChange={this.handleChange}
           />
           <Form.Field

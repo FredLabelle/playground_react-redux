@@ -118,7 +118,7 @@ module.exports.seedDatabase = async (req, res) => {
       dealId: deal.id,
       amount: {
         amount: '50000',
-        currency: 'usd',
+        currency: 'eur',
       },
     });
     return res.json({ success: 'Done!' });

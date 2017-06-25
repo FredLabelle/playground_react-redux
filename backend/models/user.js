@@ -49,11 +49,7 @@ module.exports = sequelize.define(
     },
     picture: {
       type: Sequelize.JSONB,
-      defaultValue: {
-        name: '',
-        url: '',
-        image: false,
-      },
+      defaultValue: [],
       allowNull: false,
     },
   },

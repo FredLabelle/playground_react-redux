@@ -80,9 +80,9 @@ input FileInput {
   image: Boolean!
 }
 
-input UpdateInvestorFileInput {
+input UpdateInvestorFilesInput {
   field: String!
-  file: FileInput!
+  files: [FileInput]!
 }
 
 input GeneralSettingsInput {
@@ -138,7 +138,7 @@ input CreateDealInput {
   companyId: ID!
   name: String!
   description: String!
-  deck: FileInput!
+  deck: [FileInput]!
   category: String!
   totalAmount: AmountInput!
   minTicket: AmountInput!
@@ -163,7 +163,7 @@ type Mutation {
   changeEmail(input: String!): Boolean!
   changePassword(input: String!): Boolean!
   updateInvestor(input: UpdateInvestorInput!): Boolean!
-  updateInvestorFile(input: UpdateInvestorFileInput!): Boolean!
+  updateInvestorFiles(input: UpdateInvestorFilesInput!): Boolean!
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   createInvestor(input: CreateInvestorInput!): Boolean!
@@ -217,8 +217,8 @@ exports.resolvers = {
     updateInvestor(root, { input }, context) {
       return context.User.updateInvestor(context.user, input);
     },
-    updateInvestorFile(root, { input }, context) {
-      return context.User.updateInvestorFile(context.user, input);
+    updateInvestorFiles(root, { input }, context) {
+      return context.User.updateInvestorFiles(context.user, input);
     },
     adminLoginAck() {
       return true;

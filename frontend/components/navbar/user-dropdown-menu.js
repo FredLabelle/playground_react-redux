@@ -41,7 +41,7 @@ class UserDropdownMenu extends Component {
   render() {
     const trigger = (
       <span>
-        <Image avatar src={this.props.me.picture.url} /> {this.props.me.name.firstName}
+        <Image avatar src={this.props.me.picture[0].url} /> {this.props.me.name.firstName}
       </span>
     );
     return (

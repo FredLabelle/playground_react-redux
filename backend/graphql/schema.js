@@ -48,7 +48,7 @@ type InvestmentSettings {
 type IndividualSettings {
   birthdate: String!
   nationality: String!
-  idDocument: File!
+  idDocuments: [File]!
   fiscalAddress: Address!
 }
 
@@ -56,7 +56,7 @@ type CorporationSettings {
   position: String!
   companyName: String
   companyAddress: Address!
-  incProof: File!
+  incProof: [File]!
 }
 
 type Advisor {
@@ -70,7 +70,7 @@ type User {
   name: Name!
   email: String!
   role: String!
-  picture: File
+  picture: [File]
   investmentSettings: InvestmentSettings
   individualSettings: IndividualSettings
   corporationSettings: CorporationSettings
@@ -137,7 +137,7 @@ type Deal {
   maxTicket: Amount!
   carried: String!
   hurdle: String!
-  deck: File!
+  deck: [File]!
   tickets: Tickets!
   createdAt: Date!
 }

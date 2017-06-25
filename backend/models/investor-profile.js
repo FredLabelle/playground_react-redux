@@ -18,11 +18,7 @@ module.exports = sequelize.define('InvestorProfile', {
     defaultValue: {
       birthdate: '01-01-1970',
       nationality: '',
-      idDocument: {
-        name: '',
-        url: '',
-        image: false,
-      },
+      idDocuments: [],
       fiscalAddress: {
         address1: '',
         address2: '',
@@ -47,11 +43,7 @@ module.exports = sequelize.define('InvestorProfile', {
         country: '',
         state: '',
       },
-      incProof: {
-        name: '',
-        url: '',
-        image: false,
-      },
+      incProof: [],
     },
   },
   advisor: {

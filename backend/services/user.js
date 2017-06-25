@@ -9,7 +9,7 @@ const defaultsDeep = require('lodash/defaultsDeep');
 const { User, Organization } = require('../models');
 const { gravatarPicture } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
-const { uploadFileFromUrl, deleteFile } = require('../lib/gcs');
+const { uploadFileFromUrl, deleteFiles } = require('../lib/gcs');
 
 const sign = promisify(jwt.sign);
 
@@ -46,7 +46,7 @@ const UserService = {
       if (!canSignup) {
         return null;
       }
-      const picture = gravatarPicture(input.email);
+      const picture = [gravatarPicture(input.email)];
       const investor = Object.assign({ role: 'investor', picture }, input);
       const user = await organization.createUser(investor);
       await user.createInvestorProfile(investor);
@@ -179,22 +179,28 @@ const UserService = {
       return false;
     }
   },
-  async updateInvestorFile(user, { field, file }) {
+  async updateInvestorFiles(user, { field, files }) {
     try {
-      const folderName = field.split('.').pop();
+      const fieldName = field.split('.').pop();
       const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-      const name = `${folderName}s${env}/${user.shortId}`;
-      const newFile = Object.assign({}, file);
-      if (file.url) {
-        newFile.url = await uploadFileFromUrl(file.url, name);
+      const folderName = `${fieldName}${env}/${user.shortId}`;
+      const newFiles = files.map(file => Object.assign({}, file));
+      if (files.length) {
+        const promises = files.map((file, index) =>
+          uploadFileFromUrl(file.url, `${folderName}/${index}`)
+        );
+        const urls = await Promise.all(promises);
+        urls.forEach((url, index) => {
+          newFiles[index].url = url;
+        });
       } else {
-        await deleteFile(name);
-        if (folderName === 'picture') {
-          Object.assign(newFile, gravatarPicture(user.email));
+        await deleteFiles(folderName);
+        if (fieldName === 'picture') {
+          newFiles.push(gravatarPicture(user.email));
         }
       }
-      const record = folderName === 'picture' ? user : await user.getInvestorProfile();
-      record.set(field, newFile);
+      const record = fieldName === 'picture' ? user : await user.getInvestorProfile();
+      record.set(field, newFiles);
       await record.save();
       return true;
     } catch (error) {

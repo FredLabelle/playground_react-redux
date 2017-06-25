@@ -33,6 +33,6 @@ const uploadFileFromUrl = (url, name) =>
     });
   });
 
-const deleteFile = name => bucket.file(name).delete();
+const deleteFiles = name => bucket.deleteFiles({ prefix: name, force: true });
 
-module.exports = { uploadFileFromUrl, deleteFile };
+module.exports = { uploadFileFromUrl, deleteFiles };

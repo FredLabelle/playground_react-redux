@@ -69,7 +69,7 @@ const OrganizationService = {
       });
       return investors.map(investor =>
         Object.assign({}, investor.toJSON(), omit(investor.InvestorProfile.toJSON(), 'id'), {
-          pictureUrl: investor.picture.url,
+          pictureUrl: investor.picture[0].url,
           companyName: investor.InvestorProfile.corporationSettings.companyName,
           tickets: {
             count: investor.Tickets.length,
@@ -196,12 +196,11 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const deal = await organization.createDeal(input);
-      if (input.deck.url) {
+      if (input.deck.length) {
         const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-        const name = `decks${env}/${deal.shortId}`;
-        const newDeck = Object.assign({}, input.deck);
-        uploadFileFromUrl(input.deck.url, name).then(url => {
-          newDeck.url = url;
+        const folderName = `deck${env}/${deal.shortId}`;
+        uploadFileFromUrl(input.deck[0].url, `${folderName}/0`).then(url => {
+          const newDeck = [Object.assign({}, input.deck[0], { url })];
           deal.update({ deck: newDeck });
         });
       }
@@ -230,7 +229,7 @@ const OrganizationService = {
       return tickets.map(ticket =>
         Object.assign({}, ticket.toJSON(), {
           investor: Object.assign({}, ticket.User.toJSON(), ticket.User.InvestorProfile.toJSON(), {
-            pictureUrl: ticket.User.picture.url,
+            pictureUrl: ticket.User.picture[0].url,
             companyName: ticket.User.InvestorProfile.corporationSettings.companyName,
           }),
           deal: Object.assign({}, ticket.Deal.toJSON(), { company: ticket.Deal.Company.toJSON() }),

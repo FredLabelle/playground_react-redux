@@ -52,7 +52,7 @@ export const meQuery = gql`
       individualSettings {
         birthdate
         nationality
-        idDocument {
+        idDocuments {
           name
           url
           image

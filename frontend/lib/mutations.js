@@ -36,9 +36,9 @@ export const updateInvestorMutation = gql`
   }
 `;
 
-export const updateInvestorFileMutation = gql`
-  mutation updateInvestorFile($input: UpdateInvestorFileInput!) {
-    updateInvestorFile(input: $input)
+export const updateInvestorFilesMutation = gql`
+  mutation updateInvestorFiles($input: UpdateInvestorFilesInput!) {
+    updateInvestorFiles(input: $input)
   }
 `;
 

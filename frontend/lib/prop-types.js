@@ -23,6 +23,7 @@ export const FilePropType = PropTypes.shape({
   name: PropTypes.string,
   url: PropTypes.string.isRequired,
   image: PropTypes.bool,
+  processed: PropTypes.bool,
 });
 
 export const TicketsPropType = PropTypes.shape({
@@ -97,10 +98,10 @@ export const OrganizationPropType = PropTypes.shape({
 });
 
 export const MePropType = PropTypes.shape({
-  name: NamePropType, // .isRequired,
-  email: PropTypes.string, // required?
-  role: PropTypes.string, // .isRequired,
-  picture: FilePropType, // .isRequired,
+  name: NamePropType,
+  email: PropTypes.string,
+  role: PropTypes.string,
+  picture: PropTypes.arrayOf(FilePropType),
   investmentSettings: PropTypes.shape({
     type: PropTypes.string.isRequired,
     dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -110,14 +111,14 @@ export const MePropType = PropTypes.shape({
   individualSettings: PropTypes.shape({
     birthdate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     nationality: PropTypes.string.isRequired,
-    idDocument: FilePropType.isRequired,
+    idDocuments: PropTypes.arrayOf(FilePropType).isRequired,
     fiscalAddress: AddressPropType.isRequired,
   }),
   corporationSettings: PropTypes.shape({
     position: PropTypes.string.isRequired,
     companyName: PropTypes.string.isRequired,
     companyAddress: AddressPropType.isRequired,
-    incProof: FilePropType.isRequired,
+    incProof: PropTypes.arrayOf(FilePropType).isRequired,
   }),
   advisor: PropTypes.shape({
     name: NamePropType.isRequired,
