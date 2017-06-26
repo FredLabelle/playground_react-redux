@@ -1,18 +1,17 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
 import pick from 'lodash/pick';
-import { stringify } from 'querystring';
 
-import { FRONTEND_URL } from '../../lib/env';
-import { sleep, handleChange, generateInvitationEmailContent } from '../../lib/util';
+import { sleep, handleChange, omitDeep } from '../../lib/util';
 import { NamePropType, OrganizationPropType } from '../../lib/prop-types';
-import { inviteInvestorMutation } from '../../lib/mutations';
+import { invitationStatusMutation, inviteInvestorMutation } from '../../lib/mutations';
+import { investorsQuery } from '../../lib/queries';
 import NameField from '../fields/name-field';
 
-const InviteInvestorForm = ({ onSubmit, success, investor, onChange }) =>
-  <Form id="invite-investor" onSubmit={onSubmit} success={success}>
+const InviteInvestorForm = ({ onSubmit, investor, onChange, warning, error }) =>
+  <Form id="invite-investor" onSubmit={onSubmit} warning={warning} error={error}>
     <Form.Input
       name="investor.email"
       value={investor.email}
@@ -23,20 +22,22 @@ const InviteInvestorForm = ({ onSubmit, success, investor, onChange }) =>
       required
     />
     <NameField name="investor.name" value={investor.name} onChange={onChange} />
-    <Message success header="Success!" content="Your invite has been sent." />
+    <Message warning header="Warning!" content="This user has already joined!" />
+    <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvestorForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  success: PropTypes.bool.isRequired,
   investor: PropTypes.shape({
     name: NamePropType,
     email: PropTypes.string,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
+  warning: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
 };
 
-const InviteInvitationEmailForm = ({ onSubmit, success, invitationEmail, onChange }) =>
-  <Form id="invite-invitation-email" onSubmit={onSubmit} success={success}>
+const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, success, info, error }) =>
+  <Form id="invite-invitation-email" onSubmit={onSubmit} success={success} error={error}>
     <Form.Input
       name="invitationEmail.subject"
       value={invitationEmail.subject}
@@ -54,71 +55,86 @@ const InviteInvitationEmailForm = ({ onSubmit, success, invitationEmail, onChang
       required
       autoHeight
     />
+    <p>
+      You can use <strong>{'{{organization}}'}</strong>,{' '}
+      <strong>{'{{firstname}}'}</strong>, <strong>{'{{lastname}}'}</strong>{' '}
+      and <strong>{'{{url}}'}</strong>.
+    </p>
+    {info &&
+      <Message
+        info
+        header="Information!"
+        content="This user has already been invited, send a reminder email?"
+      />}
     <Message success header="Success!" content="Your invite has been sent." />
+    <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvitationEmailForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  success: PropTypes.bool.isRequired,
   invitationEmail: PropTypes.shape({
     subject: PropTypes.string,
     body: PropTypes.string,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
+  success: PropTypes.bool.isRequired,
+  info: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
 };
 
-const initialState = {
+const initialState = organization => ({
   investor: {
     name: { firstName: '', lastName: '' },
     email: '',
   },
-  invitationEmail: { subject: '', body: '' },
+  invitationEmail: organization.parametersSettings.invitationEmail,
   form: 'invite-investor',
   success: false,
-};
+  info: false,
+  warning: false,
+  error: false,
+});
 
 class InviteModal extends Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     organization: OrganizationPropType.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
+    invitationStatus: PropTypes.func.isRequired,
     inviteInvestor: PropTypes.func.isRequired,
   };
-  state = initialState;
+  state = initialState(this.props.organization);
   onCancel = () => {
-    this.setState(initialState);
+    this.setState(initialState(this.props.organization));
     this.props.onClose();
   };
   onBack = () => {
     this.setState({ form: 'invite-investor' });
   };
-  onInvestorSubmit = event => {
+  onInvestorSubmit = async event => {
     event.preventDefault();
-    const user = { name: this.state.investor.name };
-    const { shortId } = this.props.organization;
-    const queryString = stringify({
-      firstName: this.state.investor.name.firstName,
-      lastName: this.state.investor.name.lastName,
-      email: this.state.investor.email,
-    });
-    const url = `${FRONTEND_URL}/organization/${shortId}/signup?${queryString}`;
-    this.setState({
-      form: 'invite-invitation-email',
-      invitationEmail: generateInvitationEmailContent(this.props.organization, user, url),
-    });
+    const { email } = this.state.investor;
+    const { data: { invitationStatus } } = await this.props.invitationStatus(email);
+    if (invitationStatus === 'invitable' || invitationStatus === 'invited') {
+      this.setState({
+        form: 'invite-invitation-email',
+        info: invitationStatus === 'invited',
+      });
+    } else {
+      this.setState({
+        warning: invitationStatus === 'joined',
+        error: invitationStatus === 'error',
+      });
+    }
   };
   onInvitationEmailSubmit = async event => {
     event.preventDefault();
     const newInvestor = pick(this.state, 'investor', 'invitationEmail');
-    const { data: { inviteInvestor } } = await this.props.inviteInvestor(newInvestor);
-    if (inviteInvestor) {
-      this.setState({ success: true });
-      await sleep(2000);
-      this.onCancel();
-    } else {
-      console.error('INVITE INVESTOR ERROR');
-    }
+    const newInvestorOmitted = omitDeep(newInvestor, '__typename');
+    const { data: { inviteInvestor } } = await this.props.inviteInvestor(newInvestorOmitted);
+    const state = inviteInvestor ? 'success' : 'error';
+    this.setState({ [state]: true });
+    await sleep(2000);
+    this.onCancel();
   };
   handleChange = handleChange().bind(this);
   render() {
@@ -129,15 +145,18 @@ class InviteModal extends Component {
           {this.state.form === 'invite-investor'
             ? <InviteInvestorForm
                 onSubmit={this.onInvestorSubmit}
-                success={this.state.success}
                 investor={this.state.investor}
                 onChange={this.handleChange}
+                warning={this.state.warning}
+                error={this.state.error}
               />
             : <InviteInvitationEmailForm
                 onSubmit={this.onInvitationEmailSubmit}
-                success={this.state.success}
                 invitationEmail={this.state.invitationEmail}
                 onChange={this.handleChange}
+                info={this.state.info}
+                success={this.state.success}
+                error={this.state.error}
               />}
         </Modal.Content>
         <Modal.Actions>
@@ -153,7 +172,7 @@ class InviteModal extends Component {
             type="submit"
             form={this.state.form}
             color="green"
-            disabled={this.state.success}
+            disabled={this.state.error || this.state.success}
             content={this.state.form === 'invite-investor' ? 'Continue' : 'Send invite'}
             icon={this.state.form === 'invite-investor' ? 'checkmark' : 'mail'}
             labelPosition="left"
@@ -164,8 +183,19 @@ class InviteModal extends Component {
   }
 }
 
-export default graphql(inviteInvestorMutation, {
-  props: ({ mutate }) => ({
-    inviteInvestor: input => mutate({ variables: { input } }),
+export default compose(
+  graphql(invitationStatusMutation, {
+    props: ({ mutate }) => ({
+      invitationStatus: input => mutate({ variables: { input } }),
+    }),
   }),
-})(InviteModal);
+  graphql(inviteInvestorMutation, {
+    props: ({ mutate }) => ({
+      inviteInvestor: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: investorsQuery }],
+        }),
+    }),
+  }),
+)(InviteModal);

@@ -40,16 +40,3 @@ export const numberFormatter = currency =>
     currency,
     minimumFractionDigits: 0,
   });
-
-export const generateInvitationEmailContent = (organization, { name }, url) => {
-  const replace = string =>
-    string
-      .replace(/{{firstname}}/g, name.firstName)
-      .replace(/{{lastname}}/g, name.lastName)
-      .replace(/{{organization}}/g, organization.generalSettings.name)
-      .replace(/{{url}}/g, url);
-  return {
-    subject: replace(organization.parametersSettings.invitationEmail.subject),
-    body: replace(organization.parametersSettings.invitationEmail.body),
-  };
-};

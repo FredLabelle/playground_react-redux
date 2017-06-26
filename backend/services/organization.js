@@ -1,6 +1,8 @@
 const { stringify } = require('querystring');
+const { promisify } = require('util');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
+const jwt = require('jsonwebtoken');
 const omit = require('lodash/omit');
 
 const { Organization, InvestorProfile, Company, User, Deal, Ticket } = require('../models');
@@ -9,6 +11,8 @@ const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util
 const { sendEmail } = require('../lib/mailjet');
 const { uploadFileFromUrl } = require('../lib/gcs');
 
+const sign = promisify(jwt.sign);
+
 const OrganizationService = {
   shortIdLoader() {
     return new DataLoader(shortIds =>
@@ -16,9 +20,9 @@ const OrganizationService = {
         shortIds.map(shortId =>
           Organization.findOne({
             where: { shortId },
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   },
   findById(id) {
@@ -74,7 +78,7 @@ const OrganizationService = {
           tickets: {
             count: investor.Tickets.length,
           },
-        })
+        }),
       );
     } catch (error) {
       console.error(error);
@@ -84,12 +88,12 @@ const OrganizationService = {
   async createInvestor(user, input) {
     try {
       const organization = await user.getOrganization();
-      const canSignup = await UserService.canSignup(input.email, organization.id);
-      if (!canSignup) {
+      const invitationStatus = await OrganizationService.invitationStatus(user, input.email);
+      if (invitationStatus !== 'invitable') {
         return false;
       }
       const resetPasswordToken = uuid();
-      const picture = gravatarPicture(input.email);
+      const picture = [gravatarPicture(input.email)];
       const investor = Object.assign({ role: 'investor', picture, resetPasswordToken }, input);
       const newUser = await organization.createUser(investor);
       await newUser.createInvestorProfile(investor);
@@ -97,14 +101,19 @@ const OrganizationService = {
       const { shortId } = organization;
       const queryString = stringify({ resetPasswordToken });
       const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
-      const { subject, body } = generateInvitationEmailContent(organization, newUser, url);
+      const { subject, body } = generateInvitationEmailContent(
+        organization.parametersSettings.invitationEmail,
+        organization.name,
+        newUser.name,
+        url,
+      );
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: newUser.email,
         subject,
         templateId: 166944,
-        vars: { content: body },
+        vars: { content: body.replace(/\n/g, '<br />') },
       });
       return true;
     } catch (error) {
@@ -112,20 +121,52 @@ const OrganizationService = {
       return false;
     }
   },
+  async invitationStatus(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const foundUser = await UserService.findByEmail(input, organization.id);
+      if (foundUser && foundUser.role !== 'investor') {
+        return 'error';
+      }
+      if (foundUser) {
+        return foundUser.status;
+      }
+      return 'invitable';
+    } catch (error) {
+      console.error(error);
+      return 'error';
+    }
+  },
   async inviteInvestor(user, input) {
     try {
       const organization = await user.getOrganization();
-      const canSignup = await UserService.canSignup(input.investor.email, organization.id);
-      if (!canSignup) {
-        return false;
+      const foundUser = await UserService.findByEmail(input.investor.email, organization.id);
+      if (!foundUser) {
+        const picture = [gravatarPicture(input.investor.email)];
+        const investor = Object.assign({ role: 'investor', picture }, input.investor);
+        const newUser = await organization.createUser(investor);
+        await newUser.createInvestorProfile();
       }
+      const backendUrl = process.env.BACKEND_URL;
+      const payload = Object.assign({}, input.investor, {
+        organizationShortId: organization.shortId,
+      });
+      const token = await sign(payload, process.env.FOREST_ENV_SECRET);
+      const queryString = stringify({ token });
+      const url = `${backendUrl}/signup?${queryString}`;
+      const { subject, body } = generateInvitationEmailContent(
+        input.invitationEmail,
+        organization.name,
+        input.investor.name,
+        url,
+      );
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: input.investor.email,
-        subject: input.invitationEmail.subject,
+        subject,
         templateId: 166944,
-        vars: { content: input.invitationEmail.body },
+        vars: { content: body.replace(/\n/g, '<br />') },
       });
       return true;
     } catch (error) {
@@ -180,12 +221,12 @@ const OrganizationService = {
             sum: {
               amount: deal.Tickets.reduce(
                 (result, { amount }) => parseInt(amount.amount, 10) + result,
-                0
+                0,
               ),
               currency: deal.totalAmount.currency,
             },
           },
-        })
+        }),
       );
     } catch (error) {
       console.error(error);
@@ -233,7 +274,7 @@ const OrganizationService = {
             companyName: ticket.User.InvestorProfile.corporationSettings.companyName,
           }),
           deal: Object.assign({}, ticket.Deal.toJSON(), { company: ticket.Deal.Company.toJSON() }),
-        })
+        }),
       );
     } catch (error) {
       console.error(error);

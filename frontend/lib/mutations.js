@@ -60,6 +60,12 @@ export const createInvestorMutation = gql`
   }
 `;
 
+export const invitationStatusMutation = gql`
+  mutation invitationStatus($input: String!) {
+    invitationStatus(input: $input)
+  }
+`;
+
 export const inviteInvestorMutation = gql`
   mutation inviteInvestor($input: InviteInvestorInput!) {
     inviteInvestor(input: $input)

@@ -1,6 +1,6 @@
 const sequelize = require('../../models/sequelize');
 const { Organization } = require('../../models');
-const UserService = require('../../services/user');
+const { gravatarPicture } = require('../../lib/util');
 
 module.exports.seedDatabase = async (req, res) => {
   if (process.env.NODE_ENV !== 'development') {
@@ -35,13 +35,19 @@ module.exports.seedDatabase = async (req, res) => {
         },
       },
     });
-    await UserService.signup({
+    const email = 'simon.arvaux@gmail.com';
+    const user = await organization.createUser({
       name: {
         firstName: 'Simon',
         lastName: 'Arvaux',
       },
-      email: 'simon.arvaux@gmail.com',
+      email,
       password: 'password',
+      picture: [gravatarPicture(email)],
+      role: 'investor',
+    });
+    await user.createInvestorProfile({
+      status: 'joined',
       investmentSettings: {
         type: 'individual',
         dealCategories: [],
@@ -51,7 +57,6 @@ module.exports.seedDatabase = async (req, res) => {
         },
         mechanism: 'dealByDeal',
       },
-      organizationId: organization.id,
     });
     await organization.createCompany({
       name: 'Mailjet',
@@ -112,7 +117,6 @@ module.exports.seedDatabase = async (req, res) => {
       hurdle: '10',
       companyId: company.id,
     });
-    const user = await UserService.findByEmail('simon.arvaux@gmail.com', organization.id);
     await organization.createTicket({
       userId: user.id,
       dealId: deal.id,

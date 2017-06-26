@@ -105,7 +105,9 @@ export const investorsQuery = gql`
       }
       pictureUrl
       companyName
+      status
       createdAt
+      updatedAt
     }
   }
 `;

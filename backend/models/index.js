@@ -13,7 +13,7 @@ Organization.hasMany(User, { foreignKey: 'organizationId' });
 // adds fk
 InvestorProfile.belongsTo(User, { foreignKey: 'userId' });
 // provides createInvestorProfile
-User.hasOne(InvestorProfile, { foreignKey: 'userId' });
+User.hasOne(InvestorProfile, { foreignKey: 'userId' /* , as: 'profile'*/ });
 
 // adds fk
 Company.belongsTo(Organization, { foreignKey: 'organizationId' });

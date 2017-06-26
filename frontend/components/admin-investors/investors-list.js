@@ -23,15 +23,21 @@ const InvestorsListRow = ({ investor }) =>
     <InvestorCell investor={investor} />
     <TicketsCell tickets={investor.tickets} />
     <Table.Cell>
-      <strong>Created</strong><br />
-      {moment(investor.createdAt).format('DD/MM/YYYY')}
+      <strong className={investor.status}>{investor.status}</strong><br />
+      {moment(investor.updatedAt).format('DD/MM/YYYY')}
     </Table.Cell>
     <Table.Cell>
       <a href={`mailto:${investor.email}`}>Contact</a>
     </Table.Cell>
     <style jsx>{`
-      strong {
+      strong.invited {
+        color: #f2711c;
+      }
+      strong.joined {
         color: #21ba45;
+      }
+      strong {
+        text-transform: capitalize;
       }
     `}</style>
   </Table.Row>;
@@ -55,6 +61,7 @@ export default graphql(investorsQuery, {
       ? investors.map(investor => ({
           ...investor,
           createdAt: new Date(investor.createdAt),
+          updatedAt: new Date(investor.updatedAt),
         }))
       : [],
   }),

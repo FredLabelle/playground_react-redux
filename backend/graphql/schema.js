@@ -85,7 +85,9 @@ type Investor {
   tickets: Tickets!
   pictureUrl: String!
   companyName: String!
+  status: String!
   createdAt: Date!
+  updatedAt: Date!
 }
 
 type GeneralSettings {

@@ -9,16 +9,20 @@ module.exports.gravatarPicture = email => {
   };
 };
 
-module.exports.generateInvitationEmailContent = (organization, { name }, url) => {
+module.exports.generateInvitationEmailContent = (
+  { subject, body },
+  organizationName,
+  userName,
+  url,
+) => {
   const replace = string =>
     string
-      .replace(/{{firstname}}/g, name.firstName)
-      .replace(/{{lastname}}/g, name.lastName)
-      .replace(/{{organization}}/g, organization.generalSettings.name)
-      .replace(/{{url}}/g, url)
-      .replace(/\n/g, '<br />');
+      .replace(/{{organization}}/g, organizationName)
+      .replace(/{{firstname}}/g, userName.firstName)
+      .replace(/{{lastname}}/g, userName.lastName)
+      .replace(/{{url}}/g, url);
   return {
-    subject: replace(organization.parametersSettings.invitationEmail.subject),
-    body: replace(organization.parametersSettings.invitationEmail.body),
+    subject: replace(subject),
+    body: replace(body),
   };
 };

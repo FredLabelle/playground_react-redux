@@ -61,5 +61,5 @@ module.exports = sequelize.define(
         return parse(this.website).hostname;
       },
     },
-  }
+  },
 );

@@ -5,13 +5,15 @@ const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
+const omit = require('lodash/omit');
 
-const { User, Organization } = require('../models');
+const { User, Organization, InvestorProfile } = require('../models');
 const { gravatarPicture } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
 const { uploadFileFromUrl, deleteFiles } = require('../lib/gcs');
 
 const sign = promisify(jwt.sign);
+const verify = promisify(jwt.verify);
 
 const UserService = {
   idLoader() {
@@ -20,10 +22,16 @@ const UserService = {
   /* findById(id) {
     return this.loader.load(id);
   },*/
-  findByEmail(email, organizationId) {
-    return User.findOne({
+  async findByEmail(email, organizationId) {
+    const user = await User.findOne({
       where: { email, organizationId },
+      include: [{ model: InvestorProfile /* , as: 'profile'*/ }],
     });
+    if (!user) {
+      return null;
+    }
+    const profile = user.role === 'investor' ? user.InvestorProfile.toJSON() : {};
+    return Object.assign(user, omit(profile, 'id'));
   },
   findByResetPasswordToken(resetPasswordToken) {
     return User.findOne({
@@ -41,15 +49,15 @@ const UserService = {
   },
   async signup(input) {
     try {
-      const organization = await Organization.findById(input.organizationId);
-      const canSignup = await UserService.canSignup(input.email, organization.id);
-      if (!canSignup) {
-        return null;
-      }
-      const picture = [gravatarPicture(input.email)];
-      const investor = Object.assign({ role: 'investor', picture }, input);
-      const user = await organization.createUser(investor);
-      await user.createInvestorProfile(investor);
+      const { email, organizationShortId } = await verify(
+        input.token,
+        process.env.FOREST_ENV_SECRET,
+      );
+      const organization = await Organization.findOne({
+        where: { shortId: organizationShortId },
+      });
+      const user = await UserService.findByEmail(email, organization.id);
+      await user.InvestorProfile.update(Object.assign({ status: 'joined' }, input));
       return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
@@ -152,14 +160,15 @@ const UserService = {
   },
   async me(user) {
     try {
-      const result = Object.assign({}, user.toJSON());
+      return UserService.findByEmail(user.email, user.organizationId);
+      /* const result = Object.assign({}, user.toJSON());
       if (user.role === 'admin') {
         //
       } else if (user.role === 'investor') {
         const investorProfile = await user.getInvestorProfile();
         Object.assign(result, investorProfile.toJSON());
       }
-      return result;
+      return result;*/
     } catch (error) {
       console.error(error);
       return null;
@@ -187,7 +196,7 @@ const UserService = {
       const newFiles = files.map(file => Object.assign({}, file));
       if (files.length) {
         const promises = files.map((file, index) =>
-          uploadFileFromUrl(file.url, `${folderName}/${index}`)
+          uploadFileFromUrl(file.url, `${folderName}/${index}`),
         );
         const urls = await Promise.all(promises);
         urls.forEach((url, index) => {

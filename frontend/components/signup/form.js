@@ -23,10 +23,7 @@ class SignupForm extends Component {
   }
   onSubmit = async investor => {
     this.setState({ loading: true });
-    const { data: { investorSignup } } = await this.props.signup({
-      ...investor,
-      organizationId: this.props.organization.id,
-    });
+    const { data: { investorSignup } } = await this.props.signup(investor);
     if (investorSignup) {
       this.props.cookies.set('token', investorSignup, { path: '/' });
       const { shortId } = this.props.organization;

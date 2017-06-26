@@ -9,7 +9,7 @@ import Router from 'next/router';
 import { linkHref, linkAs } from '../../lib/url';
 import { sleep } from '../../lib/util';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { organizationQuery } from '../../lib/queries';
+import { organizationQuery, investorsQuery } from '../../lib/queries';
 import { createInvestorMutation } from '../../lib/mutations';
 import NewInvestorForm from '../common/new-investor-form';
 import InviteModal from './invite-modal';
@@ -40,7 +40,8 @@ class CreateNewInvestor extends Component {
         linkAs('/investors', this.props.router),
       );
     } else {
-      console.error('CREATE INVESTOR ERROR');
+      // eslint-disable-next-line no-alert
+      alert(`Cannot invite <${investor.email}>`);
       this.setState({ loading: false });
     }
   };
@@ -91,7 +92,11 @@ export default compose(
   }),
   graphql(createInvestorMutation, {
     props: ({ mutate }) => ({
-      createInvestor: input => mutate({ variables: { input } }),
+      createInvestor: input =>
+        mutate({
+          variables: { input },
+          refetchQueries: [{ query: investorsQuery }],
+        }),
     }),
   }),
 )(CreateNewInvestor);

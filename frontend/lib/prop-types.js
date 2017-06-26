@@ -35,9 +35,11 @@ export const InvestorPropType = PropTypes.shape({
   pictureUrl: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   companyName: PropTypes.string.isRequired,
-  createdAt: PropTypes.instanceOf(Date),
   email: PropTypes.string,
+  status: PropTypes.string,
   tickets: TicketsPropType,
+  createdAt: PropTypes.instanceOf(Date),
+  updatedAt: PropTypes.instanceOf(Date),
 });
 
 export const RouterPropType = PropTypes.shape({

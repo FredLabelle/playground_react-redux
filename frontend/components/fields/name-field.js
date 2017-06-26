@@ -10,8 +10,9 @@ export default class extends Component {
     value: NamePropType.isRequired,
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
+    disabled: PropTypes.bool,
   };
-  static defaultProps = { required: false };
+  static defaultProps = { required: false, disabled: false };
   handleChange = (event, { name, value }) => {
     const newValue = {
       ...this.props.value,
@@ -29,6 +30,7 @@ export default class extends Component {
           label="First name"
           placeholder="First Name"
           required={this.props.required}
+          disabled={this.props.disabled}
           width={8}
         />
         <Form.Input
@@ -38,6 +40,7 @@ export default class extends Component {
           label="Last Name"
           placeholder="Last Name"
           required={this.props.required}
+          disabled={this.props.disabled}
           width={8}
         />
       </Form.Group>

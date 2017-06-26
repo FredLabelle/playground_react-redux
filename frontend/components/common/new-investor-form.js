@@ -43,7 +43,10 @@ class NewInvestorForm extends Component {
   };
   onSubmit = event => {
     event.preventDefault();
-    this.props.onSubmit(this.state.investor);
+    this.props.onSubmit({
+      ...this.state.investor,
+      token: this.props.router.query.token,
+    });
   };
   handleChange = handleChange().bind(this);
   render() {
@@ -61,6 +64,7 @@ class NewInvestorForm extends Component {
           placeholder="Email"
           type="email"
           required
+          disabled={this.props.signup}
         />
         <NameField
           name="investor.name"

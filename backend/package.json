@@ -10,7 +10,7 @@
   "scripts": {
     "setup-dev": "npm install --only=dev",
     "eslint": "eslint .;exit 0",
-    "prettier": "prettier --print-width 100 --single-quote --trailing-comma es5 --write \"*.js\" \"{forest,graphql,lib,models,routes,services}/**/*.js\"",
+    "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{forest,graphql,lib,models,routes,services}/**/*.js\"",
     "dev": "NODE_ENV='development' nodemon",
     "deploy-staging": "now -E .env/staging.env && now alias investorx-staging-backend.efounders.co",
     "deploy": "now -E .env/production.env && now alias investorx-backend.efounders.co",

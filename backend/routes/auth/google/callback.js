@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
         ],
         emailDomain: profile.hd,
       },
-      organization
+      organization,
     );
     const frontendUrl = process.env.FRONTEND_URL;
     const { shortId } = organization;
