@@ -23,7 +23,9 @@ export default class extends Component {
   render() {
     return (
       <Form.Group grouped>
-        <label htmlFor={this.props.name}>{this.props.label}</label>
+        <label htmlFor={this.props.name}>
+          {this.props.label}
+        </label>
         {this.props.radio.map(({ value, label }) =>
           <Form.Radio
             key={value}

@@ -140,7 +140,9 @@ class CreateNewTicket extends Component {
           success={this.state.success}
           error={this.state.dealIdError || this.state.userIdError}
         >
-          <Header as="h2" dividing>Create new ticket</Header>
+          <Header as="h2" dividing>
+            Create new ticket
+          </Header>
           <Form.Group>
             <Form.Field
               label="Deal"
@@ -177,7 +179,8 @@ class CreateNewTicket extends Component {
             <Message warning>
               <Message.Header>Ticket amount boundaries</Message.Header>
               <Message.Content>
-                Min: {this.getDealMinBoundary(selectedDeal)}<br />
+                Min: {this.getDealMinBoundary(selectedDeal)}
+                <br />
                 Max: {this.getDealMaxBoundary(selectedDeal)}
               </Message.Content>
             </Message>}

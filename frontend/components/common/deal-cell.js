@@ -5,7 +5,8 @@ import { numberFormatter } from '../../lib/util';
 
 const DealCell = ({ deal }) =>
   <Table.Cell>
-    {deal.name} - {deal.category}<br />
+    {deal.name} - {deal.category.name}
+    <br />
     {numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount)}
   </Table.Cell>;
 DealCell.propTypes = { deal: DealPropType.isRequired };

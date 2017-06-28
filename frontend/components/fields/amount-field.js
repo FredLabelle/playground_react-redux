@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Select } from 'semantic-ui-react';
 
 import { AmountPropType } from '../../lib/prop-types';
 
@@ -9,7 +9,7 @@ export default class extends Component {
     name: PropTypes.string.isRequired,
     value: AmountPropType.isRequired,
     onChange: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     min: PropTypes.string,
@@ -17,6 +17,7 @@ export default class extends Component {
     currencyDisabled: PropTypes.bool,
   };
   static defaultProps = {
+    label: '',
     placeholder: '',
     required: false,
     min: '',
@@ -44,30 +45,29 @@ export default class extends Component {
       },
     ];
     return (
-      <Form.Group>
-        <Form.Input
-          name="amount"
-          value={this.props.value.amount}
-          onChange={this.handleChange}
-          label={this.props.label}
-          type="number"
-          placeholder={this.props.placeholder}
-          required={this.props.required}
-          min={this.props.min}
-          max={this.props.max}
-          width={12}
-        />
-        <Form.Select
-          name="currency"
-          value={this.props.value.currency}
-          onChange={this.handleChange}
-          label="Currency"
-          options={options}
-          placeholder="Currency"
-          disabled={this.props.currencyDisabled}
-          width={4}
-        />
-      </Form.Group>
+      <Form.Input
+        name="amount"
+        value={this.props.value.amount}
+        onChange={this.handleChange}
+        label={this.props.label}
+        type="number"
+        placeholder={this.props.placeholder}
+        required={this.props.required}
+        min={this.props.min}
+        max={this.props.max}
+        action={
+          <Select
+            style={{ minWidth: 0 }}
+            name="currency"
+            value={this.props.value.currency}
+            onChange={this.handleChange}
+            label="Currency"
+            options={options}
+            placeholder="Currency"
+            disabled={this.props.currencyDisabled}
+          />
+        }
+      />
     );
   }
 }

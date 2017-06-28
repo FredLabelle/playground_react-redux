@@ -112,9 +112,13 @@ class CreateNewDeal extends Component {
     return (
       this.props.organization &&
       <Segment attached="bottom" className="tab active">
-        <Header as="h2" dividing>Create new deal</Header>
+        <Header as="h2" dividing>
+          Create new deal
+        </Header>
         <CompanyForm onChange={this.handleCompanyChange} />
-        <Header as="h3" dividing>Details</Header>
+        <Header as="h3" dividing>
+          Details
+        </Header>
         <Form
           onSubmit={this.onSubmit}
           success={this.state.success}

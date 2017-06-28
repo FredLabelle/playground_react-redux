@@ -63,7 +63,9 @@ class AdminSettingsGeneral extends Component {
       this.props.organization &&
       <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
-          <Header as="h3" dividing>Organization information</Header>
+          <Header as="h3" dividing>
+            Organization information
+          </Header>
           <Image
             src={`//logo.clearbit.com/${this.props.organization.domain}?size=192`}
             alt={`${this.props.organization.generalSettings.name} logo`}

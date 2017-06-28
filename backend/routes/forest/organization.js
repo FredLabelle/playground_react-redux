@@ -17,10 +17,6 @@ module.exports.seedDatabase = async (req, res) => {
         emailDomains: ['e-founders.com', 'efounders.co'],
       },
       parametersSettings: {
-        investment: {
-          dealCategories: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
-          defaultCurrency: 'eur',
-        },
         invitationEmail: {
           subject: "You've been invited to join {{organization}}!",
           body: [
@@ -33,7 +29,15 @@ module.exports.seedDatabase = async (req, res) => {
             'Best,',
           ].join('\n'),
         },
+        investment: {
+          defaultCurrency: 'eur',
+        },
       },
+    });
+    await organization.createDealCategory({ name: 'Pre-seed / Seed' });
+    const category = await organization.createDealCategory({
+      name: 'Later stage (Series A, B, etc.)',
+      investmentMethods: ['DealByDeal'],
     });
     const email = 'simon.arvaux@gmail.com';
     const user = await organization.createUser({
@@ -49,13 +53,7 @@ module.exports.seedDatabase = async (req, res) => {
     await user.createInvestorProfile({
       status: 'joined',
       investmentSettings: {
-        type: 'individual',
-        dealCategories: [],
-        averageTicket: {
-          amount: '5000',
-          currency: 'usd',
-        },
-        mechanism: 'dealByDeal',
+        [category.id]: { interested: true },
       },
     });
     await organization.createCompany({
@@ -99,8 +97,9 @@ module.exports.seedDatabase = async (req, res) => {
       description: 'The plug and play Admin Interface',
     });
     const deal = await organization.createDeal({
+      companyId: company.id,
+      categoryId: category.id,
       name: 'Follow',
-      category: 'Serie A',
       totalAmount: {
         amount: '3000000',
         currency: 'eur',
@@ -115,7 +114,6 @@ module.exports.seedDatabase = async (req, res) => {
       },
       carried: '20',
       hurdle: '10',
-      companyId: company.id,
     });
     await organization.createTicket({
       userId: user.id,

@@ -38,13 +38,6 @@ type Tickets {
   sum: Amount
 }
 
-type InvestmentSettings {
-  type: String!
-  dealCategories: [String]!
-  averageTicket: Amount!
-  mechanism: String!
-}
-
 type IndividualSettings {
   birthdate: String!
   nationality: String!
@@ -71,7 +64,8 @@ type User {
   email: String!
   role: String!
   picture: [File]
-  investmentSettings: InvestmentSettings
+  type: String
+  investmentSettings: JSON
   individualSettings: IndividualSettings
   corporationSettings: CorporationSettings
   advisor: Advisor
@@ -112,12 +106,19 @@ type ParametersSettings {
   invitationEmail: InvitationEmail!
 }
 
+type DealCategory {
+  id: ID!
+  name: String!
+  investmentMethods: [String]!
+}
+
 type Organization {
   id: ID!
   shortId: ID!
   generalSettings: GeneralSettings!
   parametersSettings: ParametersSettings!
   domain: String
+  dealCategories: [DealCategory]!
 }
 
 type Company {
@@ -131,9 +132,9 @@ type Company {
 type Deal {
   id: ID!
   company: Company!
+  category: DealCategory!
   name: String!
   description: String!
-  category: String!
   totalAmount: Amount!
   minTicket: Amount!
   maxTicket: Amount!

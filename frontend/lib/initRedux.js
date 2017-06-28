@@ -7,9 +7,10 @@ import reducers from '../reducers';
 import { onRouteChangeStart } from '../actions/router';
 import { setUnsavedChanges } from '../actions/form';
 
-const devTools = process.browser && window.__REDUX_DEVTOOLS_EXTENSION__
-  ? window.__REDUX_DEVTOOLS_EXTENSION__()
-  : f => f;
+const devTools =
+  process.browser && window.__REDUX_DEVTOOLS_EXTENSION__
+    ? window.__REDUX_DEVTOOLS_EXTENSION__()
+    : f => f;
 
 const create = (apollo, initialState = {}) => {
   const middlewares = [apollo.middleware() /* , promiseMiddleware()*/];

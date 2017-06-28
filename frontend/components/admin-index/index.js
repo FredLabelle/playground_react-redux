@@ -6,7 +6,7 @@ import { Cookies, withCookies } from 'react-cookie';
 import Router from 'next/router';
 
 import { RouterPropType } from '../../lib/prop-types';
-import { meQuery } from '../../lib/queries';
+import { meQuery, dealsQuery } from '../../lib/queries';
 import { adminLoginAckMutation } from '../../lib/mutations';
 import { linkHref, linkAs } from '../../lib/url';
 import AdminMenu from '../common/admin-menu';
@@ -43,7 +43,7 @@ export default compose(
     props: ({ mutate }) => ({
       adminLoginAck: () =>
         mutate({
-          refetchQueries: [{ query: meQuery }],
+          refetchQueries: [{ query: meQuery }, { query: dealsQuery }],
         }),
     }),
   }),

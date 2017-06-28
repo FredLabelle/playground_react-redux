@@ -23,7 +23,10 @@ const InvestorsListRow = ({ investor }) =>
     <InvestorCell investor={investor} />
     <TicketsCell tickets={investor.tickets} />
     <Table.Cell>
-      <strong className={investor.status}>{investor.status}</strong><br />
+      <strong className={investor.status}>
+        {investor.status}
+      </strong>
+      <br />
       {moment(investor.updatedAt).format('DD/MM/YYYY')}
     </Table.Cell>
     <Table.Cell>

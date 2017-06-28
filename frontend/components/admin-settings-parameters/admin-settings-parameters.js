@@ -40,7 +40,8 @@ class AdminSettingsParameters extends Component {
               onClick={this.onClick}
             >
               <Icon name="tag" size="big" style={{ pointerEvents: 'none' }} />
-              Deal categories<br /><br />
+              Deal categories<br />
+              <br />
               <em>{dealCategories.length} categories</em>
             </Menu.Item>
             <Menu.Item
@@ -49,7 +50,8 @@ class AdminSettingsParameters extends Component {
               onClick={this.onClick}
             >
               <Icon name="mail" size="big" style={{ pointerEvents: 'none' }} />
-              Invitation email<br /><br />
+              Invitation email<br />
+              <br />
               <em>Customize content</em>
             </Menu.Item>
             <Menu.Item
@@ -58,7 +60,8 @@ class AdminSettingsParameters extends Component {
               onClick={this.onClick}
             >
               <Icon name="money" size="big" style={{ pointerEvents: 'none' }} />
-              Investment mechanism<br /><br />
+              Investment mechanism<br />
+              <br />
               <em>Systematic with opt-out</em>
             </Menu.Item>
             <Menu.Item
@@ -67,7 +70,8 @@ class AdminSettingsParameters extends Component {
               onClick={this.onClick}
             >
               <Icon name="percent" size="big" style={{ pointerEvents: 'none' }} />
-              Carried management<br /><br />
+              Carried management<br />
+              <br />
               <em>Deal & investor carried</em>
             </Menu.Item>
             <Menu.Item
@@ -76,7 +80,8 @@ class AdminSettingsParameters extends Component {
               onClick={this.onClick}
             >
               <Icon name="unhide" size="big" style={{ pointerEvents: 'none' }} />
-              Transparency<br /><br />
+              Transparency<br />
+              <br />
               <em>Full transparency</em>
             </Menu.Item>
           </Sidebar>

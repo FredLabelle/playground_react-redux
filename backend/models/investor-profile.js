@@ -13,8 +13,14 @@ module.exports = sequelize.define('InvestorProfile', {
     type: Sequelize.STRING,
     defaultValue: 'invited',
   },
+  type: {
+    type: Sequelize.STRING,
+    defaultValue: 'individual',
+  },
   investmentSettings: {
     type: Sequelize.JSONB,
+    defaultValue: {},
+    allowNull: false,
   },
   individualSettings: {
     type: Sequelize.JSONB,

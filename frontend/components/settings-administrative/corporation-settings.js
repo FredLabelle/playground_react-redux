@@ -8,7 +8,9 @@ import FilesField from '../fields/files-field';
 
 const CorporationSettings = ({ me, handleChange, updateInvestorFiles }) =>
   <div>
-    <Header as="h3" dividing>Legal representative</Header>
+    <Header as="h3" dividing>
+      Legal representative
+    </Header>
     <NameField name="me.name" value={me.name} onChange={handleChange} />
     <Form.Input
       name="me.corporationSettings.position"
@@ -17,7 +19,9 @@ const CorporationSettings = ({ me, handleChange, updateInvestorFiles }) =>
       label="Position"
       placeholder="Position"
     />
-    <Header as="h3" dividing>Company information</Header>
+    <Header as="h3" dividing>
+      Company information
+    </Header>
     <Form.Input
       name="me.corporationSettings.companyName"
       value={me.corporationSettings.companyName}
@@ -33,7 +37,7 @@ const CorporationSettings = ({ me, handleChange, updateInvestorFiles }) =>
     <FilesField
       field="corporationSettings.incProof"
       label="Inc. Proof"
-      file={me.corporationSettings.incProof}
+      files={me.corporationSettings.incProof}
       mutation={updateInvestorFiles}
       mutationName="updateInvestorFiles"
     />

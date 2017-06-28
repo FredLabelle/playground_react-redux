@@ -28,6 +28,7 @@ class SettingsAdministrative extends Component {
   state = {
     me: {
       ...pick(this.props.me, [
+        'type',
         'name',
         'investmentSettings',
         'individualSettings',
@@ -69,6 +70,7 @@ class SettingsAdministrative extends Component {
   };
   handleChange = handleChange(() => {
     const me = pick(this.props.me, [
+      'type',
       'name',
       'investmentSettings',
       'individualSettings',
@@ -86,8 +88,8 @@ class SettingsAdministrative extends Component {
       <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <RadioField
-            name="me.investmentSettings.type"
-            value={this.state.me.investmentSettings.type}
+            name="me.type"
+            value={this.state.me.type}
             onChange={this.handleChange}
             radio={[
               { value: 'individual', label: 'Individual' },
@@ -95,7 +97,7 @@ class SettingsAdministrative extends Component {
             ]}
             label="Type of Investor"
           />
-          {this.state.me.investmentSettings.type === 'individual'
+          {this.state.me.type === 'individual'
             ? <IndividualSettings
                 me={this.state.me}
                 handleChange={this.handleChange}
@@ -106,10 +108,12 @@ class SettingsAdministrative extends Component {
                 handleChange={this.handleChange}
                 updateInvestorFiles={this.props.updateInvestorFiles}
               />}
-          <Header as="h3" dividing>Advisor</Header>
+          <Header as="h3" dividing>
+            Advisor
+          </Header>
           <p>
-            You can mention the information of an advisor
-            that will be in copy of every correspondence.
+            You can mention the information of an advisor that will be in copy of every
+            correspondence.
           </p>
           <NameField
             name="me.advisor.name"

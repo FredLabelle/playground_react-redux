@@ -5,7 +5,15 @@ const uuid = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const omit = require('lodash/omit');
 
-const { Organization, InvestorProfile, Company, User, Deal, Ticket } = require('../models');
+const {
+  Organization,
+  InvestorProfile,
+  Company,
+  User,
+  Deal,
+  Ticket,
+  DealCategory,
+} = require('../models');
 const UserService = require('./user');
 const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
@@ -31,6 +39,7 @@ const OrganizationService = {
   findByShortId(shortId) {
     return Organization.findOne({
       where: { shortId },
+      include: [{ model: DealCategory }],
     });
   },
   findByEmailDomain(emailDomain) {
@@ -45,7 +54,9 @@ const OrganizationService = {
   async organization(shortId) {
     try {
       const organization = await OrganizationService.findByShortId(shortId);
-      return organization.toJSON();
+      return Object.assign({}, organization.toJSON(), {
+        dealCategories: organization.DealCategories.map(dealCategory => dealCategory.toJSON()),
+      });
     } catch (error) {
       console.error(error);
       return null;
@@ -205,6 +216,7 @@ const OrganizationService = {
       const deals = await organization.getDeals({
         include: [
           { model: Company },
+          { model: DealCategory },
           {
             model: Ticket,
             required: false,
@@ -216,6 +228,7 @@ const OrganizationService = {
       return deals.filter(filter).map(deal =>
         Object.assign({}, deal.toJSON(), {
           company: deal.Company.toJSON(),
+          category: deal.DealCategory.toJSON(),
           tickets: {
             count: deal.Tickets.length,
             sum: {
@@ -263,7 +276,7 @@ const OrganizationService = {
           },
           {
             model: Deal,
-            include: [{ model: Company }],
+            include: [{ model: Company }, { model: DealCategory }],
           },
         ],
       });
@@ -273,7 +286,10 @@ const OrganizationService = {
             pictureUrl: ticket.User.picture[0].url,
             companyName: ticket.User.InvestorProfile.corporationSettings.companyName,
           }),
-          deal: Object.assign({}, ticket.Deal.toJSON(), { company: ticket.Deal.Company.toJSON() }),
+          deal: Object.assign({}, ticket.Deal.toJSON(), {
+            company: ticket.Deal.Company.toJSON(),
+            category: ticket.Deal.DealCategory.toJSON(),
+          }),
         }),
       );
     } catch (error) {

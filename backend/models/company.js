@@ -44,12 +44,10 @@ module.exports = sequelize.define(
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
     },
     website: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
     },
     description: {
       type: Sequelize.STRING,

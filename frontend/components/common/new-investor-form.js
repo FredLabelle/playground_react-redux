@@ -7,9 +7,7 @@ import { handleChange } from '../../lib/util';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import NameField from '../fields/name-field';
 import PasswordField from '../fields/password-field';
-import CheckboxesField from '../fields/checkboxes-field';
-import AmountField from '../fields/amount-field';
-import MechanismField from '../fields/mechanism-field';
+import InvestmentField from '../fields/investment-field';
 
 class NewInvestorForm extends Component {
   static propTypes = {
@@ -30,15 +28,7 @@ class NewInvestorForm extends Component {
       },
       email: this.props.router.query.email || '',
       password: '',
-      investmentSettings: {
-        type: 'individual',
-        dealCategories: [],
-        averageTicket: {
-          amount: '',
-          currency: this.props.organization.parametersSettings.investment.defaultCurrency,
-        },
-        mechanism: 'systematic',
-      },
+      investmentSettings: {},
     },
   };
   onSubmit = event => {
@@ -55,7 +45,9 @@ class NewInvestorForm extends Component {
         <Header as="h2" dividing>
           {this.props.signup ? 'Create your Investor account' : 'Create new investor'}
         </Header>
-        <Header as="h3" dividing>Investor identity</Header>
+        <Header as="h3" dividing>
+          Investor identity
+        </Header>
         <Form.Input
           name="investor.email"
           value={this.state.investor.email}
@@ -78,26 +70,18 @@ class NewInvestorForm extends Component {
             value={this.state.investor.password}
             onChange={this.handleChange}
           />}
-        <Header as="h3" dividing>Investor profile</Header>
-        <CheckboxesField
-          name="investor.investmentSettings.dealCategories"
-          value={this.state.investor.investmentSettings.dealCategories}
+        <Header as="h3" dividing>
+          Investment methods & criteria
+        </Header>
+        <p>
+          For <strong>Systematic with opt-out</strong>, the opt-out time is 5 days.
+        </p>
+        <InvestmentField
+          name="investor.investmentSettings"
+          value={this.state.investor.investmentSettings}
           onChange={this.handleChange}
-          checkboxes={this.props.organization.parametersSettings.investment.dealCategories}
-          label="Deal categories interested in"
-        />
-        <AmountField
-          name="investor.investmentSettings.averageTicket"
-          value={this.state.investor.investmentSettings.averageTicket}
-          onChange={this.handleChange}
-          label="Average ticket"
-          required
-        />
-        <MechanismField
-          name="investor.investmentSettings.mechanism"
-          value={this.state.investor.investmentSettings.mechanism}
-          onChange={this.handleChange}
-          label="Investment mechanism interested in"
+          dealCategories={this.props.organization.dealCategories}
+          defaultCurrency={this.props.organization.parametersSettings.investment.defaultCurrency}
         />
         <Message success header="Success!" content="New investor created." />
         <Segment basic textAlign="center">

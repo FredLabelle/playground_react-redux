@@ -56,9 +56,8 @@ const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, succes
       autoHeight
     />
     <p>
-      You can use <strong>{'{{organization}}'}</strong>,{' '}
-      <strong>{'{{firstname}}'}</strong>, <strong>{'{{lastname}}'}</strong>{' '}
-      and <strong>{'{{url}}'}</strong>.
+      You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
+      <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
     </p>
     {info &&
       <Message

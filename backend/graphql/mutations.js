@@ -9,18 +9,11 @@ input AmountInput {
   currency: String!
 }
 
-input InvestmentSettingsInput {
-  type: String!
-  dealCategories: [String]!
-  averageTicket: AmountInput!
-  mechanism: String!
-}
-
 input InvestorSignupInput {
   name: NameInput!
   email: String!
   password: String!
-  investmentSettings: InvestmentSettingsInput!
+  investmentSettings: JSON!
   token: ID!
 }
 
@@ -68,7 +61,8 @@ input AdvisorInput {
 
 input UpdateInvestorInput {
   name: NameInput!
-  investmentSettings: InvestmentSettingsInput
+  type: String
+  investmentSettings: JSON
   individualSettings: IndividualSettingsInput
   corporationSettings: CorporationSettingsInput
   advisor: AdvisorInput
@@ -115,7 +109,7 @@ input UpdateOrganizationInput {
 input CreateInvestorInput {
   name: NameInput!
   email: String!
-  investmentSettings: InvestmentSettingsInput!
+  investmentSettings: JSON!
 }
 
 input InvestorInfoInput {

@@ -13,9 +13,7 @@ import { meQuery, organizationQuery } from '../../lib/queries';
 import { updateInvestorMutation, updateInvestorFilesMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FilesField from '../fields/files-field';
-import CheckboxesField from '../fields/checkboxes-field';
-import AmountField from '../fields/amount-field';
-import MechanismField from '../fields/mechanism-field';
+import InvestmentField from '../fields/investment-field';
 import ChangeEmailModal from './change-email-modal';
 import ChangePasswordModal from './change-password-modal';
 
@@ -43,6 +41,9 @@ class SettingsAccount extends Component {
     inputs.forEach(input => Object.assign(input, { disabled: true }));
   }
   componentWillReceiveProps({ me }) {
+    if (!me) {
+      return;
+    }
     this.setState({
       me: {
         ...this.state.me,
@@ -88,9 +89,12 @@ class SettingsAccount extends Component {
   render() {
     return (
       this.props.me &&
+      this.props.organization &&
       <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
-          <Header as="h3" dividing>Investor identity</Header>
+          <Header as="h3" dividing>
+            Investor identity
+          </Header>
           <NameField name="me.name" value={this.state.me.name} onChange={this.handleChange} />
           <Form.Input
             defaultValue={this.props.me.email}
@@ -114,25 +118,18 @@ class SettingsAccount extends Component {
             tabs={['camera', 'file', 'gdrive', 'dropbox', 'url']}
             crop="192x192 upscale"
           />
-          <Header as="h3" dividing>Investor profile</Header>
-          <CheckboxesField
-            name="me.investmentSettings.dealCategories"
-            value={this.state.me.investmentSettings.dealCategories}
+          <Header as="h3" dividing>
+            Investment methods & criteria
+          </Header>
+          <p>
+            For <strong>Systematic with opt-out</strong>, the opt-out time is 5 days.
+          </p>
+          <InvestmentField
+            name="me.investmentSettings"
+            value={this.state.me.investmentSettings}
             onChange={this.handleChange}
-            checkboxes={this.props.organization.parametersSettings.investment.dealCategories}
-            label="Deal categories interested in"
-          />
-          <AmountField
-            name="me.investmentSettings.averageTicket"
-            value={this.state.me.investmentSettings.averageTicket}
-            onChange={this.handleChange}
-            label="Average ticket"
-          />
-          <MechanismField
-            name="me.investmentSettings.mechanism"
-            value={this.state.me.investmentSettings.mechanism}
-            onChange={this.handleChange}
-            label="Investment mechanism interested in"
+            dealCategories={this.props.organization.dealCategories}
+            defaultCurrency={this.props.organization.parametersSettings.investment.defaultCurrency}
           />
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">

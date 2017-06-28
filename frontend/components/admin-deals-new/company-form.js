@@ -72,7 +72,9 @@ class Company extends Component {
   render() {
     return (
       <div>
-        <Header as="h3" dividing>Company</Header>
+        <Header as="h3" dividing>
+          Company
+        </Header>
         <Grid>
           <Grid.Column width={4}>
             <Image
@@ -100,9 +102,7 @@ class Company extends Component {
                 />
                 <div className="field">
                   <label htmlFor="name">&nbsp;</label>
-                  <div className="company-name-hint">
-                    Enter a new company or an existing one.
-                  </div>
+                  <div className="company-name-hint">Enter a new company or an existing one.</div>
                 </div>
               </Form.Group>
               <Form.Input

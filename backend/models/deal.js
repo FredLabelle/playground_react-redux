@@ -28,9 +28,6 @@ module.exports = sequelize.define(
       defaultValue: [],
       allowNull: false,
     },
-    category: {
-      type: Sequelize.STRING,
-    },
     totalAmount: {
       type: Sequelize.JSONB,
     },

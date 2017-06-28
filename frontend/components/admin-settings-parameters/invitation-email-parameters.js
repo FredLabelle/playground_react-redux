@@ -48,7 +48,9 @@ class InvitationEmailParameters extends Component {
   render() {
     return (
       <Segment basic>
-        <Header as="h3" dividing>Invitation email</Header>
+        <Header as="h3" dividing>
+          Invitation email
+        </Header>
         <p>You can personalize the invitation email sent to investors.</p>
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Form.Input
@@ -67,9 +69,8 @@ class InvitationEmailParameters extends Component {
             autoHeight
           />
           <p>
-            You can use <strong>{'{{organization}}'}</strong>,{' '}
-            <strong>{'{{firstname}}'}</strong>, <strong>{'{{lastname}}'}</strong>{' '}
-            and <strong>{'{{url}}'}</strong>.
+            You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
+            <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
           </p>
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">

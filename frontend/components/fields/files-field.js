@@ -11,8 +11,12 @@ const File = ({ file: { name, url, image, processed } }) =>
     ? <Image src={url} alt={name} size="medium" centered />
     : <Segment basic textAlign="center">
         {processed
-          ? <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
-          : <p>{name}</p>}
+          ? <a href={url} target="_blank" rel="noopener noreferrer">
+              {name}
+            </a>
+          : <p>
+              {name}
+            </p>}
       </Segment>;
 File.propTypes = { file: FilePropType.isRequired };
 
@@ -127,7 +131,9 @@ export default class extends Component {
       <div>
         <div className="fields">
           <div className="field">
-            <label htmlFor="image">{this.props.label}</label>
+            <label htmlFor="image">
+              {this.props.label}
+            </label>
             <div>
               <Button
                 type="button"
@@ -153,7 +159,9 @@ export default class extends Component {
         {this.uploading()
           ? <Progress percent={this.state.progress * 100} indicating />
           : this.state.files.map(file =>
-              <div key={file.url} className="divider"><File file={file} /></div>,
+              <div key={file.url} className="divider">
+                <File file={file} />
+              </div>,
             )}
         <style jsx>{`
           .field {

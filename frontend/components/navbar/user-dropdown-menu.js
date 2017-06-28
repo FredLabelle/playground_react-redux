@@ -56,7 +56,9 @@ class UserDropdownMenu extends Component {
               <a>Settings</a>
             </Dropdown.Item>
           </Link>
-          <Dropdown.Item onClick={this.onLogout}><a>Logout</a></Dropdown.Item>
+          <Dropdown.Item onClick={this.onLogout}>
+            <a>Logout</a>
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );

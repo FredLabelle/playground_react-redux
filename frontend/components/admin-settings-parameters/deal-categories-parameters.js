@@ -48,7 +48,9 @@ class DealCategoriesParameters extends Component {
   render() {
     return (
       <Segment basic>
-        <Header as="h3" dividing>Deal categories</Header>
+        <Header as="h3" dividing>
+          Deal categories
+        </Header>
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">

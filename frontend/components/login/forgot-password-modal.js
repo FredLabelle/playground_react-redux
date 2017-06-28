@@ -50,8 +50,8 @@ class ForgotPasswordModal extends Component {
         <Header icon="privacy" content="Forgot password?" />
         <Modal.Content>
           <p>
-            Please enter the email address you signed up with and we{"'"}ll send you a link
-            to reset your password.
+            Please enter the email address you signed up with and we{"'"}ll send you a link to reset
+            your password.
           </p>
           <Form id="forgot-password" onSubmit={this.onSubmit} success={this.state.success}>
             <Form.Input

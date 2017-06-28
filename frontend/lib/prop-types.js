@@ -68,10 +68,15 @@ export const CompanyPropType = PropTypes.shape({
   domain: PropTypes.string.isRequired,
 });
 
+export const DealCategoryPropType = PropTypes.shape({
+  name: PropTypes.string.isRequired,
+  investmentMethods: PropTypes.arrayOf(PropTypes.string),
+});
+
 export const DealPropType = PropTypes.shape({
   company: CompanyPropType.isRequired,
+  category: DealCategoryPropType.isRequired,
   name: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
   totalAmount: AmountPropType.isRequired,
   tickets: TicketsPropType,
   createdAt: PropTypes.instanceOf(Date),
@@ -104,12 +109,8 @@ export const MePropType = PropTypes.shape({
   email: PropTypes.string,
   role: PropTypes.string,
   picture: PropTypes.arrayOf(FilePropType),
-  investmentSettings: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-    averageTicket: AmountPropType.isRequired,
-    mechanism: PropTypes.string.isRequired,
-  }),
+  type: PropTypes.string,
+  investmentSettings: PropTypes.shape(),
   individualSettings: PropTypes.shape({
     birthdate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     nationality: PropTypes.string.isRequired,

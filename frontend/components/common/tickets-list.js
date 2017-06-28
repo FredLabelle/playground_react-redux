@@ -39,16 +39,14 @@ const TicketsListRow = ({ admin, ticket }) =>
     <TicketsCell tickets={{ sum: ticket.amount }} />
     {admin &&
       <Table.Cell>
-        <strong>Pending</strong><br />
+        <strong>Pending</strong>
+        <br />
         {moment(ticket.createdAt).format('DD/MM/YYYY')}
       </Table.Cell>}
-    {admin &&
-      <Table.Cell>
-        Accept | Reject | Edit
-      </Table.Cell>}
+    {admin && <Table.Cell>Accept | Reject | Edit</Table.Cell>}
     <style jsx>{`
       strong {
-        color: #FE9A76;
+        color: #fe9a76;
       }
     `}</style>
   </Table.Row>;

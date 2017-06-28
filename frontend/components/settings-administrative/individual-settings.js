@@ -10,7 +10,9 @@ import AddressField from '../fields/address-field';
 
 const IndividualSettings = ({ me, handleChange, updateInvestorFiles }) =>
   <div>
-    <Header as="h3" dividing>Individual information</Header>
+    <Header as="h3" dividing>
+      Individual information
+    </Header>
     <NameField name="me.name" value={me.name} onChange={handleChange} />
     <Form.Group>
       <CountryField
@@ -36,7 +38,9 @@ const IndividualSettings = ({ me, handleChange, updateInvestorFiles }) =>
       mutation={updateInvestorFiles}
       mutationName="updateInvestorFiles"
     />
-    <Header as="h3" dividing>Fiscal Address</Header>
+    <Header as="h3" dividing>
+      Fiscal Address
+    </Header>
     <AddressField
       name="me.individualSettings.fiscalAddress"
       value={me.individualSettings.fiscalAddress}

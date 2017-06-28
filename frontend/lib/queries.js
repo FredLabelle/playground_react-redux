@@ -22,6 +22,11 @@ export const organizationQuery = gql`
         }
       }
       domain
+      dealCategories {
+        id
+        name
+        investmentMethods
+      }
     }
   }
 `;
@@ -40,15 +45,8 @@ export const meQuery = gql`
         image
       }
       role
-      investmentSettings {
-        type
-        dealCategories
-        averageTicket {
-          amount
-          currency
-        }
-        mechanism
-      }
+      type
+      investmentSettings
       individualSettings {
         birthdate
         nationality
@@ -134,9 +132,11 @@ export const dealsQuery = gql`
         description
         domain
       }
+      category {
+        name
+      }
       name
       description
-      category
       totalAmount {
         amount
         currency
@@ -181,8 +181,10 @@ export const ticketsQuery = gql`
           description
           domain
         }
+        category {
+          name
+        }
         name
-        category
         totalAmount {
           amount
           currency

@@ -8,7 +8,9 @@ const InvestorCell = ({ investor }) =>
       <Image src={investor.pictureUrl} shape="rounded" size="mini" />
       <Header.Content>
         {investor.fullName}
-        <Header.Subheader>{investor.companyName}</Header.Subheader>
+        <Header.Subheader>
+          {investor.companyName}
+        </Header.Subheader>
       </Header.Content>
     </Header>
   </Table.Cell>;

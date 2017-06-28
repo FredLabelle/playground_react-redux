@@ -42,8 +42,8 @@ class ChangeEmailModal extends Component {
         <Header icon="mail" content="Change email" />
         <Modal.Content>
           <p>
-            Enter the new email address you want to use and we{"'"}ll send you a link
-            to confirm you have access to it.
+            Enter the new email address you want to use and we{"'"}ll send you a link to confirm you
+            have access to it.
           </p>
           <Form id="change-email" onSubmit={this.onSubmit} success={this.state.success}>
             <Form.Input

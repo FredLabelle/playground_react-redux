@@ -9,9 +9,8 @@ const radio = [
         <div>
           <p>Systematic with opt-out</p>
           <em>
-            You invest a systematic amount in every deal.
-            This guarantees your allocation in the deal.
-            You can opt-out if you feel not attracted by the deal.
+            You invest a systematic amount in every deal. This guarantees your allocation in the
+            deal. You can opt-out if you feel not attracted by the deal.
           </em>
         </div>
       ),
@@ -24,9 +23,8 @@ const radio = [
         <div>
           <p>Deal-by-Deal</p>
           <em>
-            You will be presented the deal, and decide to invest on a case-by-case basis.
-            Your allocation in the deal cannot be guaranteed
-            but is based on first come first serve.
+            You will be presented the deal, and decide to invest on a case-by-case basis. Your
+            allocation in the deal cannot be guaranteed but is based on first come first serve.
           </em>
         </div>
       ),

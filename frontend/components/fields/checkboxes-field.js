@@ -19,7 +19,9 @@ export default class extends Component {
   render() {
     return (
       <Form.Group grouped>
-        <label htmlFor={this.props.name}>{this.props.label}</label>
+        <label htmlFor={this.props.name}>
+          {this.props.label}
+        </label>
         {this.props.checkboxes.map(checkbox =>
           <Form.Field
             key={checkbox}
