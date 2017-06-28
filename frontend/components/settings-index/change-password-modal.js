@@ -76,10 +76,10 @@ class ChangePasswordModal extends Component {
 }
 
 export default compose(
-  connect(({ form }) => ({ form }), null, ({ form }, dispatchProps, ownProps) => {
-    const error = form.passwordsMismatch || form.passwordTooWeak;
-    return Object.assign({ error }, ownProps);
-  }),
+  connect(({ form }) => ({ form }), null, ({ form }, dispatchProps, ownProps) => ({
+    ...ownProps,
+    error: form.passwordsMismatch || form.passwordTooWeak,
+  })),
   graphql(changePasswordMutation, {
     props: ({ mutate }) => ({
       changePassword: input => mutate({ variables: { input } }),

@@ -28,12 +28,12 @@ class AdminSettingsParameters extends Component {
     if (!this.props.organization) {
       return null;
     }
-    const { dealCategories } = this.props.organization.parametersSettings.investment;
+    const { dealCategories } = this.props.organization;
     const active = item => item === (this.props.router.query.item || 'deal-categories');
     return (
       <Segment attached="bottom" className="tab active" style={{ width: '99.9999%' }}>
         <Sidebar.Pushable as={Segment}>
-          <Sidebar as={Menu} width="wide" visible vertical>
+          <Sidebar as={Menu} visible vertical style={{ width: 240 }}>
             <Menu.Item
               data-item="deal-categories"
               active={active('deal-categories')}
@@ -85,7 +85,7 @@ class AdminSettingsParameters extends Component {
               <em>Full transparency</em>
             </Menu.Item>
           </Sidebar>
-          <Sidebar.Pusher style={{ width: '68%', minHeight: 540 }}>
+          <Sidebar.Pusher style={{ width: '74%', minHeight: 540 }}>
             {active('deal-categories') &&
               <DealCategoriesParameters organization={this.props.organization} />}
             {active('invitation-email') &&

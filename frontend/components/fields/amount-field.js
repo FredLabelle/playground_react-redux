@@ -29,7 +29,7 @@ export default class extends Component {
       ...this.props.value,
       [name]: value,
     };
-    this.props.onChange(null, { name: this.props.name, value: newValue });
+    this.props.onChange(event, { name: this.props.name, value: newValue });
   };
   render() {
     const options = [

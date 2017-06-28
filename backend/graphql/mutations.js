@@ -133,7 +133,7 @@ input CreateDealInput {
   name: String!
   description: String!
   deck: [FileInput]!
-  category: String!
+  categoryId: ID!
   totalAmount: AmountInput!
   minTicket: AmountInput!
   maxTicket: AmountInput!
@@ -148,6 +148,12 @@ input CreateTicketInput {
   amount: AmountInput!
 }
 
+input DealCategoryInput {
+  id: ID!
+  name: String!
+  investmentMethods: [String]!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -160,6 +166,7 @@ type Mutation {
   updateInvestorFiles(input: UpdateInvestorFilesInput!): Boolean!
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
+  updateDealCategories(input: [DealCategoryInput]!): Boolean!
   createInvestor(input: CreateInvestorInput!): Boolean!
   invitationStatus(input: String!): String!
   inviteInvestor(input: InviteInvestorInput!): String!
@@ -220,6 +227,9 @@ exports.resolvers = {
     },
     updateOrganization(root, { input }, context) {
       return adminMutation(context.Organization.update, false)(context.user, input);
+    },
+    updateDealCategories(root, { input }, context) {
+      return adminMutation(context.Organization.updateDealCategories, false)(context.user, input);
     },
     createInvestor(root, { input }, context) {
       return adminMutation(context.Organization.createInvestor, false)(context.user, input);

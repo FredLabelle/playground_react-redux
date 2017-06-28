@@ -71,9 +71,10 @@ DealsList.propTypes = {
 DealsList.defaultProps = { deals: [] };
 
 export default compose(
-  connect(({ router }) => ({ router }), null, ({ router }, dispatchProps, ownProps) =>
-    Object.assign({ admin: router.admin === '/admin' }, ownProps),
-  ),
+  connect(({ router }) => ({ router }), null, ({ router }, dispatchProps, ownProps) => ({
+    ...ownProps,
+    admin: router.admin === '/admin',
+  })),
   graphql(dealsQuery, {
     props: ({ data: { deals } }) => ({
       deals: deals

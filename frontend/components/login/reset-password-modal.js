@@ -89,10 +89,10 @@ class ResetPasswordModal extends Component {
 
 export default compose(
   withCookies,
-  connect(({ form }) => ({ form }), null, ({ form }, dispatchProps, ownProps) => {
-    const error = form.passwordsMismatch || form.passwordTooWeak;
-    return Object.assign({ error }, ownProps);
-  }),
+  connect(({ form }) => ({ form }), null, ({ form }, dispatchProps, ownProps) => ({
+    ...ownProps,
+    error: form.passwordsMismatch || form.passwordTooWeak,
+  })),
   graphql(resetPasswordMutation, {
     props: ({ mutate }) => ({
       resetPassword: input =>

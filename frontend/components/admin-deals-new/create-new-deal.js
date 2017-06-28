@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Form, Button, Header, Message, Select } from 'semantic-ui-react';
+import { Segment, Form, Button, Header, Message } from 'semantic-ui-react';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
 import Router from 'next/router';
@@ -31,10 +31,10 @@ class CreateNewDeal extends Component {
   state = {
     deal: {
       companyId: '',
+      categoryId: '',
       name: '',
       description: '',
       deck: [],
-      category: '',
       totalAmount: {
         amount: '',
         currency: this.props.organization.parametersSettings.investment.defaultCurrency,
@@ -52,7 +52,7 @@ class CreateNewDeal extends Component {
       hurdle: '',
     },
     companyIdError: false,
-    categoryError: false,
+    categoryIdError: false,
     carriedError: false,
     loading: false,
     success: false,
@@ -60,9 +60,9 @@ class CreateNewDeal extends Component {
   onSubmit = async event => {
     event.preventDefault();
     const companyIdError = !this.state.deal.companyId;
-    const categoryError = !this.state.deal.category;
-    this.setState({ companyIdError, categoryError });
-    if (companyIdError || categoryError) {
+    const categoryIdError = !this.state.deal.categoryId;
+    this.setState({ companyIdError, categoryIdError });
+    if (companyIdError || categoryIdError) {
       return;
     }
     this.setState({ loading: true });
@@ -101,11 +101,11 @@ class CreateNewDeal extends Component {
     });
   }).bind(this);
   dealCategoriesOptions = () => {
-    const { dealCategories } = this.props.organization.parametersSettings.investment;
+    const { dealCategories } = this.props.organization;
     return dealCategories.map(dealCategory => ({
-      key: dealCategory,
-      text: dealCategory,
-      value: dealCategory,
+      key: dealCategory.id,
+      text: dealCategory.name,
+      value: dealCategory.id,
     }));
   };
   render() {
@@ -122,7 +122,7 @@ class CreateNewDeal extends Component {
         <Form
           onSubmit={this.onSubmit}
           success={this.state.success}
-          error={this.state.companyIdError || this.state.categoryError}
+          error={this.state.companyIdError || this.state.categoryIdError}
         >
           <Form.Input
             name="deal.name"
@@ -146,11 +146,10 @@ class CreateNewDeal extends Component {
             files={this.state.deal.deck}
             onChange={this.handleChange}
           />
-          <Form.Field
-            name="deal.category"
-            value={this.state.deal.category}
+          <Form.Select
+            name="deal.categoryId"
+            value={this.state.deal.categoryId}
             onChange={this.handleChange}
-            control={Select}
             options={this.dealCategoriesOptions()}
             label="Category"
             placeholder="Category"
@@ -207,7 +206,7 @@ class CreateNewDeal extends Component {
           />
           {this.state.companyIdError &&
             <Message error header="Error!" content="Company is required." />}
-          {this.state.categoryError &&
+          {this.state.categoryIdError &&
             <Message error header="Error!" content="Category is required." />}
           <Message success header="Success!" content="New deal created." />
           <Segment basic textAlign="center">

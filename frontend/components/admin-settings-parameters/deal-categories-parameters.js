@@ -3,48 +3,70 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Header, Form, Message, Button } from 'semantic-ui-react';
-import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { sleep, handleChange, omitDeep } from '../../lib/util';
-import { OrganizationPropType } from '../../lib/prop-types';
+import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
-import { updateOrganizationMutation } from '../../lib/mutations';
+import { updateDealCategoriesMutation } from '../../lib/mutations';
 import { setUnsavedChanges } from '../../actions/form';
+import DealCategoryField from './deal-category-field';
 
 class DealCategoriesParameters extends Component {
   static propTypes = {
+    form: FormPropType.isRequired,
     organization: OrganizationPropType.isRequired,
+    updateDealCategories: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   state = {
-    organization: {
-      ...pick(this.props.organization, 'parametersSettings'),
-    },
+    dealCategories: this.props.organization.dealCategories,
     saving: false,
     saved: false,
   };
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ saving: true });
-    const { data: { updateOrganization } } = await this.props.updateOrganization(this.update());
+    const { data: { updateDealCategories } } = await this.props.updateDealCategories(this.update());
     this.setState({ saving: false });
-    if (updateOrganization) {
+    if (updateDealCategories) {
       this.props.setUnsavedChanges(false);
       this.setState({ success: true });
       await sleep(2000);
       this.setState({ success: false });
     } else {
-      console.error('UPDATE ORGANIZATION ERROR');
+      console.error('UPDATE DEAL CATEGORIES ERROR');
     }
   };
-  handleChange = handleChange(() => {
-    const organization = pick(this.props.organization, 'parametersSettings');
-    const organizationOmitted = omitDeep(organization, '__typename');
-    const unsavedChanges = !isEqual(this.update(), organizationOmitted);
+  onNewDealCategoryClick = event => {
+    event.preventDefault();
+    const dealCategories = cloneDeep(this.state.dealCategories);
+    dealCategories.push({
+      id: Date.now(),
+      name: '',
+      investmentMethods: ['DealByDeal'],
+    });
+    this.setState({ dealCategories }, this.setUnsavedChanges);
+  };
+  setUnsavedChanges = () => {
+    const { dealCategories } = this.props.organization;
+    const dealCategoriesOmitted = omitDeep(dealCategories, '__typename');
+    const unsavedChanges = !isEqual(this.update(), dealCategoriesOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
-  }).bind(this);
-  update = () => omitDeep(this.state.organization, '__typename');
+  };
+  handleChange = (event, { name, value }) => {
+    if (!value) {
+      const dealCategories = cloneDeep(this.state.dealCategories);
+      const [, index] = name.split('.');
+      dealCategories.splice(index, 1);
+      this.setState({ dealCategories }, this.setUnsavedChanges);
+      return;
+    }
+    const handler = handleChange(this.setUnsavedChanges).bind(this);
+    handler(event, { name, value });
+  };
+  update = () => omitDeep(this.state.dealCategories, '__typename');
   render() {
     return (
       <Segment basic>
@@ -52,12 +74,21 @@ class DealCategoriesParameters extends Component {
           Deal categories
         </Header>
         <Form onSubmit={this.onSubmit} success={this.state.success}>
+          {this.state.dealCategories.map((dealCategory, index) =>
+            <DealCategoryField
+              key={dealCategory.id}
+              name={`dealCategories.${index}`}
+              value={dealCategory}
+              onChange={this.handleChange}
+            />,
+          )}
+          <Button type="button" primary icon="plus" onClick={this.onNewDealCategoryClick} />
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
               type="submit"
               primary
-              disabled={this.state.saving}
+              disabled={this.state.saving || !this.props.form.unsavedChanges}
               content={this.state.saving ? 'Saving…' : 'Save'}
               icon="save"
               labelPosition="left"
@@ -70,10 +101,10 @@ class DealCategoriesParameters extends Component {
 }
 
 export default compose(
-  connect(null, { setUnsavedChanges }),
-  graphql(updateOrganizationMutation, {
+  connect(({ form }) => ({ form }), { setUnsavedChanges }),
+  graphql(updateDealCategoriesMutation, {
     props: ({ mutate, ownProps: { organization } }) => ({
-      updateOrganization: input =>
+      updateDealCategories: input =>
         mutate({
           variables: { input },
           refetchQueries: [

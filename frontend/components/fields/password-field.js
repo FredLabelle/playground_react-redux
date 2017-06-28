@@ -72,7 +72,7 @@ class PasswordField extends Component {
   };
   handleChange = (event, { name, value }) => {
     if (name === 'password') {
-      this.props.onChange(null, { name: this.props.name, value });
+      this.props.onChange(event, { name: this.props.name, value });
     } else {
       this.setState({ repeatPassword: value });
     }

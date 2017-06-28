@@ -111,7 +111,7 @@ export default class extends Component {
   onDeleteClick = async event => {
     event.preventDefault();
     this.setState({ files: [] });
-    this.props.onChange(null, { name: this.props.field, value: [] });
+    this.props.onChange(event, { name: this.props.field, value: [] });
     if (!this.props.mutationName) {
       return;
     }

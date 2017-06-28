@@ -18,7 +18,7 @@ export default class extends Component {
     label: PropTypes.string.isRequired,
   };
   handleChange = (event, { value }) => {
-    this.props.onChange(null, { name: this.props.name, value });
+    this.props.onChange(event, { name: this.props.name, value });
   };
   render() {
     return (

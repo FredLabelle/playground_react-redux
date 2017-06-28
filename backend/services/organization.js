@@ -75,6 +75,29 @@ const OrganizationService = {
       return false;
     }
   },
+  async updateDealCategories(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const dealCategories = await organization.getDealCategories();
+      const promises = input.map(inputDealCategory => {
+        const dealCategory = dealCategories.find(category => category.id === inputDealCategory.id);
+        const values = omit(inputDealCategory, 'id');
+        if (dealCategory) {
+          return dealCategory.update(values);
+        }
+        return organization.createDealCategory(values);
+      });
+      const updatedDealCategories = await Promise.all(promises);
+      const dealCategoriesIds = updatedDealCategories.map(dealCategory => dealCategory.id);
+      await DealCategory.destroy({
+        where: { id: { $notIn: dealCategoriesIds } },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
   async investors(user) {
     try {
       const organization = await user.getOrganization();

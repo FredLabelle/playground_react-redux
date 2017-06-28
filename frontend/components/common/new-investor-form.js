@@ -101,7 +101,7 @@ class NewInvestorForm extends Component {
 
 const mapStateToProps = ({ router, form }) => ({ router, form });
 
-export default connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => {
-  const error = form.passwordsMismatch || form.passwordTooWeak;
-  return Object.assign({ router, error }, ownProps);
-})(NewInvestorForm);
+export default connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => ({
+  ...ownProps,
+  error: form.passwordsMismatch || form.passwordTooWeak,
+}))(NewInvestorForm);

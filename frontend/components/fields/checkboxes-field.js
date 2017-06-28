@@ -14,7 +14,7 @@ export default class extends Component {
   handleChange = (event, { name }) => {
     const checked = this.props.value.includes(name);
     const value = checked ? without(this.props.value, name) : [...this.props.value, name];
-    this.props.onChange(null, { name: this.props.name, value });
+    this.props.onChange(event, { name: this.props.name, value });
   };
   render() {
     return (

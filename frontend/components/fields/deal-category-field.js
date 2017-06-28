@@ -17,26 +17,26 @@ export default class extends Component {
     dealCategory: DealCategoryPropType.isRequired,
     defaultCurrency: PropTypes.string.isRequired,
   };
-  handleCheckboxChange = () => {
+  handleCheckboxChange = event => {
     const newValue = {
       ...this.props.value,
       interested: !this.props.value.interested,
     };
-    this.props.onChange(null, { name: this.props.name, value: newValue });
+    this.props.onChange(event, { name: this.props.name, value: newValue });
   };
   handleRadioChange = (event, { value }) => {
     const newValue = {
       ...this.props.value,
       method: value,
     };
-    this.props.onChange(null, { name: this.props.name, value: newValue });
+    this.props.onChange(event, { name: this.props.name, value: newValue });
   };
   handleAmountChange = (event, { value }) => {
     const newValue = {
       ...this.props.value,
       averageTicket: value,
     };
-    this.props.onChange(null, { name: this.props.name, value: newValue });
+    this.props.onChange(event, { name: this.props.name, value: newValue });
   };
   render() {
     const { dealCategory } = this.props;
@@ -86,7 +86,7 @@ export default class extends Component {
           systematicWithOptOut &&
           <Grid.Column width={5}>
             <AmountField
-              name="amount"
+              name="averageTicket"
               value={this.props.value.averageTicket || averageTicketDefaultValue}
               onChange={this.handleAmountChange}
               label="Average ticket"

@@ -21,7 +21,7 @@ export default class extends Component {
     if (!value.interested) {
       delete newValue[name];
     }
-    this.props.onChange(null, { name: this.props.name, value: newValue });
+    this.props.onChange(event, { name: this.props.name, value: newValue });
   };
   render() {
     const defaultValue = name => {
