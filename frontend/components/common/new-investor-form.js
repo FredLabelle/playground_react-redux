@@ -103,5 +103,6 @@ const mapStateToProps = ({ router, form }) => ({ router, form });
 
 export default connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => ({
   ...ownProps,
+  router,
   error: form.passwordsMismatch || form.passwordTooWeak,
 }))(NewInvestorForm);

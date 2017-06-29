@@ -70,7 +70,7 @@ export const CompanyPropType = PropTypes.shape({
 
 export const DealCategoryPropType = PropTypes.shape({
   name: PropTypes.string.isRequired,
-  investmentMethods: PropTypes.arrayOf(PropTypes.string),
+  investmentMechanisms: PropTypes.arrayOf(PropTypes.string),
 });
 
 export const DealPropType = PropTypes.shape({

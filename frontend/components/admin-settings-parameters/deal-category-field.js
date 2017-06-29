@@ -7,7 +7,7 @@ export default class extends Component {
     name: PropTypes.string.isRequired,
     value: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      investmentMethods: PropTypes.arrayOf(PropTypes.string).isRequired,
+      investmentMechanisms: PropTypes.arrayOf(PropTypes.string).isRequired,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
   };
@@ -52,12 +52,12 @@ export default class extends Component {
           width={6}
         />
         <Form.Select
-          name="investmentMethods"
-          value={this.props.value.investmentMethods.join(',')}
+          name="investmentMechanisms"
+          value={this.props.value.investmentMechanisms.join(',')}
           onChange={this.handleChange}
-          label="Investment methods"
+          label="Investment mechanisms"
           options={options}
-          placeholder="Investment methods"
+          placeholder="Investment mechanisms"
           width={8}
         />
         <Form.Field

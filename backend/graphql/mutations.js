@@ -151,7 +151,7 @@ input CreateTicketInput {
 input DealCategoryInput {
   id: ID!
   name: String!
-  investmentMethods: [String]!
+  investmentMechanisms: [String]!
 }
 
 type Mutation {

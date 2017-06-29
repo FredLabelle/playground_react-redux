@@ -10,7 +10,7 @@ export default class extends Component {
     name: PropTypes.string.isRequired,
     value: PropTypes.shape({
       interested: PropTypes.bool.isRequired,
-      method: PropTypes.string,
+      mechanism: PropTypes.string,
       averageTicket: AmountPropType,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
@@ -27,7 +27,7 @@ export default class extends Component {
   handleRadioChange = (event, { value }) => {
     const newValue = {
       ...this.props.value,
-      method: value,
+      mechanism: value,
     };
     this.props.onChange(event, { name: this.props.name, value: newValue });
   };
@@ -41,10 +41,10 @@ export default class extends Component {
   render() {
     const { dealCategory } = this.props;
     const dealByDeal =
-      this.props.value.interested && dealCategory.investmentMethods.includes('DealByDeal');
+      this.props.value.interested && dealCategory.investmentMechanisms.includes('DealByDeal');
     const systematicWithOptOut =
       this.props.value.interested &&
-      dealCategory.investmentMethods.includes('SystematicWithOptOut');
+      dealCategory.investmentMechanisms.includes('SystematicWithOptOut');
     const averageTicketDefaultValue = { amount: '', currency: this.props.defaultCurrency };
     return (
       <Grid.Row style={{ minHeight: 70 }}>
@@ -61,9 +61,9 @@ export default class extends Component {
             <Form.Radio
               value="DealByDeal"
               checked={
-                dealCategory.investmentMethods.length === 1
+                dealCategory.investmentMechanisms.length === 1
                   ? true
-                  : this.props.value.method === 'DealByDeal'
+                  : this.props.value.mechanism === 'DealByDeal'
               }
               onChange={this.handleRadioChange}
               label="Deal by deal"
@@ -74,15 +74,15 @@ export default class extends Component {
             <Form.Radio
               value="SystematicWithOptOut"
               checked={
-                dealCategory.investmentMethods.length === 1
+                dealCategory.investmentMechanisms.length === 1
                   ? true
-                  : this.props.value.method === 'SystematicWithOptOut'
+                  : this.props.value.mechanism === 'SystematicWithOptOut'
               }
               onChange={this.handleRadioChange}
               label="Systematic with opt-out"
             />
           </Grid.Column>}
-        {this.props.value.method === 'SystematicWithOptOut' &&
+        {this.props.value.mechanism === 'SystematicWithOptOut' &&
           systematicWithOptOut &&
           <Grid.Column width={5}>
             <AmountField

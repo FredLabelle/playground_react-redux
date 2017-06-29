@@ -28,7 +28,7 @@ export default class extends Component {
       const dealCategory = this.props.dealCategories.find(category => category.name === name);
       return {
         interested: false,
-        method: dealCategory.investmentMethods[0],
+        mechanism: dealCategory.investmentMechanisms[0],
         averageTicket: { amount: '', currency: 'eur' },
       };
     };

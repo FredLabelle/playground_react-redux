@@ -13,7 +13,7 @@ module.exports = sequelize.define('DealCategory', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  investmentMethods: {
+  investmentMechanisms: {
     type: Sequelize.ARRAY(Sequelize.STRING),
     defaultValue: ['DealByDeal', 'SystematicWithOptOut'],
     allowNull: false,

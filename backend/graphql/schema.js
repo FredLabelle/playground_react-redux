@@ -108,7 +108,7 @@ type ParametersSettings {
 type DealCategory {
   id: ID!
   name: String!
-  investmentMethods: [String]!
+  investmentMechanisms: [String]!
 }
 
 type Organization {

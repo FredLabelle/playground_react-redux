@@ -45,7 +45,7 @@ class DealCategoriesParameters extends Component {
     dealCategories.push({
       id: Date.now(),
       name: '',
-      investmentMethods: ['DealByDeal'],
+      investmentMechanisms: ['DealByDeal'],
     });
     this.setState({ dealCategories }, this.setUnsavedChanges);
   };

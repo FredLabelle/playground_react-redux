@@ -24,7 +24,7 @@ export const organizationQuery = gql`
       dealCategories {
         id
         name
-        investmentMethods
+        investmentMechanisms
       }
     }
   }
