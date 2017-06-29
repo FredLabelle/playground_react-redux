@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Header, Form, Message, Button } from 'semantic-ui-react';
+import { Segment, Header, Form, Message, Button, Grid } from 'semantic-ui-react';
+import { SortableContainer, arrayMove } from 'react-sortable-hoc';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
+import uniqueId from 'lodash/uniqueId';
 
 import { sleep, handleChange, omitDeep } from '../../lib/util';
 import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
@@ -12,6 +14,33 @@ import { organizationQuery } from '../../lib/queries';
 import { updateDealCategoriesMutation } from '../../lib/mutations';
 import { setUnsavedChanges } from '../../actions/form';
 import DealCategoryField from './deal-category-field';
+
+const DealCategoryFields = ({ dealCategories, onChange }) =>
+  <div>
+    {dealCategories.map((dealCategory, index) =>
+      <DealCategoryField
+        key={dealCategory.id}
+        index={index}
+        name={`dealCategories.${index}`}
+        value={dealCategory}
+        onChange={onChange}
+      />,
+    )}
+  </div>;
+DealCategoryFields.propTypes = {
+  dealCategories: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+const DealCategoryFieldsSortable = SortableContainer(DealCategoryFields);
+
+const AddDealCategoryField = ({ onNewDealCategoryClick }) =>
+  <Grid>
+    <Grid.Column width={2} style={{ textAlign: 'center' }}>
+      <Button type="button" primary icon="plus" onClick={onNewDealCategoryClick} />
+    </Grid.Column>
+  </Grid>;
+AddDealCategoryField.propTypes = { onNewDealCategoryClick: PropTypes.func.isRequired };
 
 class DealCategoriesParameters extends Component {
   static propTypes = {
@@ -39,11 +68,15 @@ class DealCategoriesParameters extends Component {
       console.error('UPDATE DEAL CATEGORIES ERROR');
     }
   };
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    const dealCategories = arrayMove(this.state.dealCategories, oldIndex, newIndex);
+    this.setState({ dealCategories }, this.setUnsavedChanges);
+  };
   onNewDealCategoryClick = event => {
     event.preventDefault();
     const dealCategories = cloneDeep(this.state.dealCategories);
     dealCategories.push({
-      id: Date.now(),
+      id: uniqueId(),
       name: '',
       investmentMechanisms: ['DealByDeal'],
     });
@@ -74,15 +107,15 @@ class DealCategoriesParameters extends Component {
           Deal categories
         </Header>
         <Form onSubmit={this.onSubmit} success={this.state.success}>
-          {this.state.dealCategories.map((dealCategory, index) =>
-            <DealCategoryField
-              key={dealCategory.id}
-              name={`dealCategories.${index}`}
-              value={dealCategory}
-              onChange={this.handleChange}
-            />,
-          )}
-          <Button type="button" primary icon="plus" onClick={this.onNewDealCategoryClick} />
+          <DealCategoryFieldsSortable
+            dealCategories={this.state.dealCategories}
+            onChange={this.handleChange}
+            onSortEnd={this.onSortEnd}
+            useDragHandle
+            lockToContainerEdges
+            helperClass="sortable-helper"
+          />
+          <AddDealCategoryField onNewDealCategoryClick={this.onNewDealCategoryClick} />
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button

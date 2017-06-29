@@ -54,9 +54,10 @@ const OrganizationService = {
   async organization(shortId) {
     try {
       const organization = await OrganizationService.findByShortId(shortId);
-      return Object.assign({}, organization.toJSON(), {
-        dealCategories: organization.DealCategories.map(dealCategory => dealCategory.toJSON()),
-      });
+      const dealCategories = organization.DealCategories.map(dealCategory => dealCategory.toJSON());
+      const orderSorter = ({ order: orderA }, { order: orderB }) => orderA - orderB;
+      dealCategories.sort(orderSorter);
+      return Object.assign({}, organization.toJSON(), { dealCategories });
     } catch (error) {
       console.error(error);
       return null;
@@ -79,9 +80,9 @@ const OrganizationService = {
     try {
       const organization = await user.getOrganization();
       const dealCategories = await organization.getDealCategories();
-      const promises = input.map(inputDealCategory => {
+      const promises = input.map((inputDealCategory, index) => {
         const dealCategory = dealCategories.find(category => category.id === inputDealCategory.id);
-        const values = omit(inputDealCategory, 'id');
+        const values = Object.assign({ order: index }, omit(inputDealCategory, 'id'));
         if (dealCategory) {
           return dealCategory.update(values);
         }

@@ -9,6 +9,10 @@ module.exports = sequelize.define('DealCategory', {
     primaryKey: true,
     allowNull: false,
   },
+  order: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
   name: {
     type: Sequelize.STRING,
     allowNull: false,

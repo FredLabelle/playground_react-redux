@@ -47,7 +47,7 @@ export default class extends Component {
       dealCategory.investmentMechanisms.includes('SystematicWithOptOut');
     const averageTicketDefaultValue = { amount: '', currency: this.props.defaultCurrency };
     return (
-      <Grid.Row style={{ minHeight: 70 }}>
+      <Grid.Row style={{ minHeight: 89 }}>
         <Grid.Column width={4}>
           <Form.Field
             checked={this.props.value.interested}

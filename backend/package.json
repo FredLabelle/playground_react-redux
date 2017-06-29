@@ -27,7 +27,7 @@
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "forest-express-sequelize": "^1.1.9",
-    "googleapis": "^19.0.0",
+    "googleapis": "^20.0.1",
     "graphql": "^0.10.3",
     "graphql-date": "^1.0.3",
     "graphql-server-express": "^1.0.0",
@@ -47,7 +47,7 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-config-prettier": "^2.2.0",
-    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-import": "^2.6.1",
     "nodemon": "^1.11.0",
     "prettier": "^1.5.2"
   }

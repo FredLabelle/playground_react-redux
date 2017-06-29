@@ -45,6 +45,16 @@ class AdminSettingsParameters extends Component {
               <em>{dealCategories.length} categories</em>
             </Menu.Item>
             <Menu.Item
+              data-item="investment-mechanism"
+              active={active('investment-mechanism')}
+              onClick={this.onClick}
+            >
+              <Icon name="money" size="big" style={{ pointerEvents: 'none' }} />
+              Investment mechanisms<br />
+              <br />
+              <em>Options for mechanisms</em>
+            </Menu.Item>
+            <Menu.Item
               data-item="invitation-email"
               active={active('invitation-email')}
               onClick={this.onClick}
@@ -53,16 +63,6 @@ class AdminSettingsParameters extends Component {
               Invitation email<br />
               <br />
               <em>Customize content</em>
-            </Menu.Item>
-            <Menu.Item
-              data-item="investment-mechanism"
-              active={active('investment-mechanism')}
-              onClick={this.onClick}
-            >
-              <Icon name="money" size="big" style={{ pointerEvents: 'none' }} />
-              Investment mechanism<br />
-              <br />
-              <em>Systematic with opt-out</em>
             </Menu.Item>
             <Menu.Item
               data-item="carried-management"

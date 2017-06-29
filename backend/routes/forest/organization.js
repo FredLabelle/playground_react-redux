@@ -34,8 +34,12 @@ module.exports.seedDatabase = async (req, res) => {
         },
       },
     });
-    await organization.createDealCategory({ name: 'Pre-seed / Seed' });
+    await organization.createDealCategory({
+      order: 0,
+      name: 'Pre-seed / Seed',
+    });
     const category = await organization.createDealCategory({
+      order: 1,
       name: 'Later stage (Series A, B, etc.)',
       investmentMechanisms: ['DealByDeal'],
     });

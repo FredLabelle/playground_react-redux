@@ -5,3 +5,7 @@
 select {
   height: 37px !important;
 }
+
+.sortable-helper {
+  pointer-events: auto !important;
+}
