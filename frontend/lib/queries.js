@@ -13,7 +13,6 @@ export const organizationQuery = gql`
       }
       parametersSettings {
         investment {
-          dealCategories
           defaultCurrency
         }
         invitationEmail {

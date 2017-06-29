@@ -19,7 +19,7 @@ const TicketsListHeader = ({ admin }) =>
       <Table.HeaderCell>Deal</Table.HeaderCell>
       <Table.HeaderCell>Ticket</Table.HeaderCell>
       {admin && <Table.HeaderCell>Status</Table.HeaderCell>}
-      {admin && <Table.HeaderCell>Actions</Table.HeaderCell>}
+      {/* admin && <Table.HeaderCell>Actions</Table.HeaderCell>*/}
     </Table.Row>
   </Table.Header>;
 TicketsListHeader.propTypes = { admin: PropTypes.bool.isRequired };
@@ -43,7 +43,7 @@ const TicketsListRow = ({ admin, ticket }) =>
         <br />
         {moment(ticket.createdAt).format('DD/MM/YYYY')}
       </Table.Cell>}
-    {admin && <Table.Cell>Accept | Reject | Edit</Table.Cell>}
+    {/* admin && <Table.Cell>Accept | Reject | Edit</Table.Cell>*/}
     <style jsx>{`
       strong {
         color: #fe9a76;

@@ -92,7 +92,6 @@ type GeneralSettings {
 }
 
 type OrganizationInvestmentSettings {
-  dealCategories: [String]!
   defaultCurrency: String!
 }
 

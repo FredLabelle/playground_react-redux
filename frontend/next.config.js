@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   webpack(config) {
     config.module.rules.push(
@@ -15,6 +17,9 @@ module.exports = {
       test: /\.gql$/,
       loader: 'graphql-tag/loader',
     }*/,
+    );
+    config.plugins.push(
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     );
     return config;
   },

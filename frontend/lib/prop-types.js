@@ -93,7 +93,6 @@ export const OrganizationPropType = PropTypes.shape({
   }).isRequired,
   parametersSettings: PropTypes.shape({
     investment: PropTypes.shape({
-      dealCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
       defaultCurrency: PropTypes.string.isRequired,
     }).isRequired,
     invitationEmail: PropTypes.shape({
