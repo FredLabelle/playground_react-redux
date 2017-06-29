@@ -38,34 +38,41 @@ InviteInvestorForm.propTypes = {
 
 const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, success, info, error }) =>
   <Form id="invite-invitation-email" onSubmit={onSubmit} success={success} error={error}>
-    <Form.Input
-      name="invitationEmail.subject"
-      value={invitationEmail.subject}
-      onChange={onChange}
-      label="Subject"
-      placeholder="Subject"
-      required
+    {!success &&
+      <div>
+        <Form.Input
+          name="invitationEmail.subject"
+          value={invitationEmail.subject}
+          onChange={onChange}
+          label="Subject"
+          placeholder="Subject"
+          required
+        />
+        <Form.TextArea
+          name="invitationEmail.body"
+          value={invitationEmail.body}
+          onChange={onChange}
+          label="Body"
+          placeholder="Body"
+          required
+          autoHeight
+        />
+        <p>
+          You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
+          <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
+        </p>
+        {info &&
+          <Message
+            info
+            header="Information!"
+            content="This user has already been invited, send a reminder email?"
+          />}
+      </div>}
+    <Message
+      success
+      header="Success!"
+      content={info ? 'Your reminder has been sent.' : 'Your invite has been sent.'}
     />
-    <Form.TextArea
-      name="invitationEmail.body"
-      value={invitationEmail.body}
-      onChange={onChange}
-      label="Body"
-      placeholder="Body"
-      required
-      autoHeight
-    />
-    <p>
-      You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
-      <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
-    </p>
-    {info &&
-      <Message
-        info
-        header="Information!"
-        content="This user has already been invited, send a reminder email?"
-      />}
-    <Message success header="Success!" content="Your invite has been sent." />
     <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvitationEmailForm.propTypes = {
@@ -172,7 +179,12 @@ class InviteModal extends Component {
             form={this.state.form}
             color="green"
             disabled={this.state.error || this.state.success}
-            content={this.state.form === 'invite-investor' ? 'Continue' : 'Send invite'}
+            content={
+              // eslint-disable-next-line no-nested-ternary
+              this.state.form === 'invite-investor'
+                ? 'Continue'
+                : this.state.info ? 'Send reminder' : 'Send invite'
+            }
             icon={this.state.form === 'invite-investor' ? 'checkmark' : 'mail'}
             labelPosition="left"
           />

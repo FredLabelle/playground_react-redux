@@ -112,98 +112,104 @@ class CreateNewDeal extends Component {
     return (
       this.props.organization &&
       <Segment attached="bottom" className="tab active">
-        <Header as="h2" dividing>
-          Create new deal
-        </Header>
-        <CompanyForm onChange={this.handleCompanyChange} />
-        <Header as="h3" dividing>
-          Details
-        </Header>
+        {!this.state.success &&
+          <div>
+            <Header as="h2" dividing>
+              Create new deal
+            </Header>
+            <CompanyForm onChange={this.handleCompanyChange} />
+            <Header as="h3" dividing>
+              Details
+            </Header>
+          </div>}
         <Form
           onSubmit={this.onSubmit}
           success={this.state.success}
           error={this.state.companyIdError || this.state.categoryIdError}
         >
-          <Form.Input
-            name="deal.name"
-            value={this.state.deal.name}
-            onChange={this.handleChange}
-            label="Name"
-            placeholder="Name"
-            required
-          />
-          <Form.TextArea
-            name="deal.description"
-            value={this.state.deal.description}
-            onChange={this.handleChange}
-            label="Description"
-            placeholder="Description"
-            autoHeight
-          />
-          <FilesField
-            field="deal.deck"
-            label="Deck"
-            files={this.state.deal.deck}
-            onChange={this.handleChange}
-          />
-          <Form.Select
-            name="deal.categoryId"
-            value={this.state.deal.categoryId}
-            onChange={this.handleChange}
-            options={this.dealCategoriesOptions()}
-            label="Category"
-            placeholder="Category"
-            required
-          />
-          <AmountField
-            name="deal.totalAmount"
-            value={this.state.deal.totalAmount}
-            onChange={this.handleChange}
-            label="Total amount"
-            required
-          />
-          <AmountField
-            name="deal.minTicket"
-            value={this.state.deal.minTicket}
-            onChange={this.handleChange}
-            label="Min ticket"
-            required
-          />
-          <AmountField
-            name="deal.maxTicket"
-            value={this.state.deal.maxTicket}
-            onChange={this.handleChange}
-            label="Max ticket"
-            placeholder="No Limit"
-          />
-          <DateField
-            name="deal.referenceClosingDate"
-            value={this.state.deal.referenceClosingDate}
-            onChange={this.handleChange}
-            label="Reference closing date"
-          />
-          <Form.Input
-            name="deal.carried"
-            value={this.state.deal.carried}
-            onChange={this.handleChange}
-            label="Carried"
-            placeholder="Carried"
-            type="number"
-            min="1"
-            max="100"
-            required
-          />
-          <Form.Input
-            name="deal.hurdle"
-            value={this.state.deal.hurdle}
-            onChange={this.handleChange}
-            label="Hurdle"
-            placeholder="Hurdle"
-            type="number"
-            min="1"
-            max="100"
-            required
-          />
+          {!this.state.success &&
+            <div>
+              <Form.Input
+                name="deal.name"
+                value={this.state.deal.name}
+                onChange={this.handleChange}
+                label="Name"
+                placeholder="Name"
+                required
+              />
+              <Form.TextArea
+                name="deal.description"
+                value={this.state.deal.description}
+                onChange={this.handleChange}
+                label="Description"
+                placeholder="Description"
+                autoHeight
+              />
+              <FilesField
+                field="deal.deck"
+                label="Deck"
+                files={this.state.deal.deck}
+                onChange={this.handleChange}
+              />
+              <Form.Select
+                name="deal.categoryId"
+                value={this.state.deal.categoryId}
+                onChange={this.handleChange}
+                options={this.dealCategoriesOptions()}
+                label="Category"
+                placeholder="Category"
+                required
+              />
+              <AmountField
+                name="deal.totalAmount"
+                value={this.state.deal.totalAmount}
+                onChange={this.handleChange}
+                label="Total amount"
+                required
+              />
+              <AmountField
+                name="deal.minTicket"
+                value={this.state.deal.minTicket}
+                onChange={this.handleChange}
+                label="Min ticket"
+                required
+              />
+              <AmountField
+                name="deal.maxTicket"
+                value={this.state.deal.maxTicket}
+                onChange={this.handleChange}
+                label="Max ticket"
+                placeholder="No Limit"
+              />
+              <DateField
+                name="deal.referenceClosingDate"
+                value={this.state.deal.referenceClosingDate}
+                onChange={this.handleChange}
+                label="Reference closing date"
+              />
+              <Form.Input
+                name="deal.carried"
+                value={this.state.deal.carried}
+                onChange={this.handleChange}
+                label="Carried"
+                placeholder="Carried"
+                type="number"
+                min="1"
+                max="100"
+                required
+              />
+              <Form.Input
+                name="deal.hurdle"
+                value={this.state.deal.hurdle}
+                onChange={this.handleChange}
+                label="Hurdle"
+                placeholder="Hurdle"
+                type="number"
+                min="1"
+                max="100"
+                required
+              />
+            </div>}
           {this.state.companyIdError &&
             <Message error header="Error!" content="Company is required." />}
           {this.state.categoryIdError &&
