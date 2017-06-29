@@ -30,8 +30,8 @@ const Organization = sequelize.define(
     parametersSettings: {
       type: Sequelize.JSONB,
       defaultValue: {
-        investment: {
-          dealCategories: ['Seed', 'Serie A', 'Serie B', 'Later Stage'],
+        investmentMechanisms: {
+          optOutTime: '5',
           defaultCurrency: 'usd',
         },
         invitationEmail: {

@@ -86,8 +86,8 @@ input GeneralSettingsInput {
   emailDomains: [String]!
 }
 
-input OrganizationInvestmentSettingsInput {
-  dealCategories: [String]!
+input OrganizationInvestmentMechanismsInput {
+  optOutTime: String!
   defaultCurrency: String!
 }
 
@@ -97,7 +97,7 @@ input InvitationEmailInput {
 }
 
 input ParametersSettingsInput {
-  investment: OrganizationInvestmentSettingsInput!
+  investmentMechanisms: OrganizationInvestmentMechanismsInput!
   invitationEmail: InvitationEmailInput!
 }
 

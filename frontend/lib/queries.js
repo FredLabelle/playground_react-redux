@@ -12,7 +12,8 @@ export const organizationQuery = gql`
         emailDomains
       }
       parametersSettings {
-        investment {
+        investmentMechanisms {
+          optOutTime
           defaultCurrency
         }
         invitationEmail {

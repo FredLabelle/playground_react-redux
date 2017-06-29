@@ -11,7 +11,7 @@ export default class extends Component {
     value: PropTypes.shape({
       interested: PropTypes.bool.isRequired,
       mechanism: PropTypes.string,
-      averageTicket: AmountPropType,
+      commitedTicket: AmountPropType,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
     dealCategory: DealCategoryPropType.isRequired,
@@ -34,7 +34,7 @@ export default class extends Component {
   handleAmountChange = (event, { value }) => {
     const newValue = {
       ...this.props.value,
-      averageTicket: value,
+      commitedTicket: value,
     };
     this.props.onChange(event, { name: this.props.name, value: newValue });
   };
@@ -45,7 +45,7 @@ export default class extends Component {
     const systematicWithOptOut =
       this.props.value.interested &&
       dealCategory.investmentMechanisms.includes('SystematicWithOptOut');
-    const averageTicketDefaultValue = { amount: '', currency: this.props.defaultCurrency };
+    const commitedTicketDefaultValue = { amount: '', currency: this.props.defaultCurrency };
     return (
       <Grid.Row style={{ minHeight: 89 }}>
         <Grid.Column width={4}>
@@ -86,11 +86,11 @@ export default class extends Component {
           systematicWithOptOut &&
           <Grid.Column width={5}>
             <AmountField
-              name="averageTicket"
-              value={this.props.value.averageTicket || averageTicketDefaultValue}
+              name="commitedTicket"
+              value={this.props.value.commitedTicket || commitedTicketDefaultValue}
               onChange={this.handleAmountChange}
-              label="Average ticket"
-              placeholder="Average ticket"
+              label="Commited ticket per deal"
+              placeholder="Commited ticket"
               required
             />
           </Grid.Column>}

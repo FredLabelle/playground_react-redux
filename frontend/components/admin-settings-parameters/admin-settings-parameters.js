@@ -7,6 +7,7 @@ import Router from 'next/router';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import DealCategoriesParameters from './deal-categories-parameters';
+import InvestmentMechanismsParameters from './investment-mechanisms-parameters';
 import InvitationEmailParameters from './invitation-email-parameters';
 
 class AdminSettingsParameters extends Component {
@@ -45,8 +46,8 @@ class AdminSettingsParameters extends Component {
               <em>{dealCategories.length} categories</em>
             </Menu.Item>
             <Menu.Item
-              data-item="investment-mechanism"
-              active={active('investment-mechanism')}
+              data-item="investment-mechanisms"
+              active={active('investment-mechanisms')}
               onClick={this.onClick}
             >
               <Icon name="money" size="big" style={{ pointerEvents: 'none' }} />
@@ -88,6 +89,8 @@ class AdminSettingsParameters extends Component {
           <Sidebar.Pusher style={{ width: '74%', minHeight: 540 }}>
             {active('deal-categories') &&
               <DealCategoriesParameters organization={this.props.organization} />}
+            {active('investment-mechanisms') &&
+              <InvestmentMechanismsParameters organization={this.props.organization} />}
             {active('invitation-email') &&
               <InvitationEmailParameters organization={this.props.organization} />}
           </Sidebar.Pusher>

@@ -17,6 +17,10 @@ module.exports.seedDatabase = async (req, res) => {
         emailDomains: ['e-founders.com', 'efounders.co'],
       },
       parametersSettings: {
+        investmentMechanisms: {
+          optOutTime: '5',
+          defaultCurrency: 'eur',
+        },
         invitationEmail: {
           subject: "You've been invited to join {{organization}}!",
           body: [
@@ -28,9 +32,6 @@ module.exports.seedDatabase = async (req, res) => {
             '',
             'Best,',
           ].join('\n'),
-        },
-        investment: {
-          defaultCurrency: 'eur',
         },
       },
     });

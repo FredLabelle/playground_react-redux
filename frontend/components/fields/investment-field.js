@@ -29,7 +29,7 @@ export default class extends Component {
       return {
         interested: false,
         mechanism: dealCategory.investmentMechanisms[0],
-        averageTicket: { amount: '', currency: 'eur' },
+        commitedTicket: { amount: '', currency: 'eur' },
       };
     };
     return (

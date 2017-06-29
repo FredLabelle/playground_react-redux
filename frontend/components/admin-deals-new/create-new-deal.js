@@ -37,15 +37,15 @@ class CreateNewDeal extends Component {
       deck: [],
       totalAmount: {
         amount: '',
-        currency: this.props.organization.parametersSettings.investment.defaultCurrency,
+        currency: this.props.organization.parametersSettings.investmentMechanisms.defaultCurrency,
       },
       minTicket: {
         amount: '',
-        currency: this.props.organization.parametersSettings.investment.defaultCurrency,
+        currency: this.props.organization.parametersSettings.investmentMechanisms.defaultCurrency,
       },
       maxTicket: {
         amount: '',
-        currency: this.props.organization.parametersSettings.investment.defaultCurrency,
+        currency: this.props.organization.parametersSettings.investmentMechanisms.defaultCurrency,
       },
       referenceClosingDate: moment().format('DD-MM-YYYY'),
       carried: '',

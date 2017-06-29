@@ -92,7 +92,8 @@ export const OrganizationPropType = PropTypes.shape({
     emailDomains: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   parametersSettings: PropTypes.shape({
-    investment: PropTypes.shape({
+    investmentMechanisms: PropTypes.shape({
+      optOutTime: PropTypes.string.isRequired,
       defaultCurrency: PropTypes.string.isRequired,
     }).isRequired,
     invitationEmail: PropTypes.shape({

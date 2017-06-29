@@ -87,9 +87,12 @@ class SettingsAccount extends Component {
     this.setState({ changePasswordModalOpen: true });
   };
   render() {
+    if (!this.props.me || !this.props.organization) {
+      return null;
+    }
+    const { dealCategories, parametersSettings } = this.props.organization;
+    const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
-      this.props.me &&
-      this.props.organization &&
       <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <Header as="h3" dividing>
@@ -122,14 +125,14 @@ class SettingsAccount extends Component {
             Investment methods & criteria
           </Header>
           <p>
-            For <strong>Systematic with opt-out</strong>, the opt-out time is 5 days.
+            For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
           </p>
           <InvestmentField
             name="me.investmentSettings"
             value={this.state.me.investmentSettings}
             onChange={this.handleChange}
-            dealCategories={this.props.organization.dealCategories}
-            defaultCurrency={this.props.organization.parametersSettings.investment.defaultCurrency}
+            dealCategories={dealCategories}
+            defaultCurrency={defaultCurrency}
           />
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">

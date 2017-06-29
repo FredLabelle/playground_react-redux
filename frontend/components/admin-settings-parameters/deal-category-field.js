@@ -3,36 +3,6 @@ import { Component } from 'react';
 import { Input, Select, Button, Segment, Grid, Icon } from 'semantic-ui-react';
 import { SortableElement, SortableHandle } from 'react-sortable-hoc';
 
-/* <Form.Group>
-  <Form.Input
-    name="name"
-    value={this.props.value.name}
-    onChange={this.handleChange}
-    label="Name"
-    placeholder="Name"
-    required
-    width={6}
-  />
-  <Form.Select
-    name="investmentMechanisms"
-    value={this.props.value.investmentMechanisms.join(',')}
-    onChange={this.handleChange}
-    label="Investment mechanisms"
-    options={options}
-    placeholder="Investment mechanisms"
-    width={8}
-  />
-  <Form.Field
-    style={{ height: 38, marginTop: 23 }}
-    control={Button}
-    type="button"
-    color="red"
-    icon="trash"
-    width={2}
-    onClick={this.onDeleteClick}
-  />
-</Form.Group>*/
-
 const DragHandle = SortableHandle(() =>
   <div>
     <Icon fitted name="resize vertical" />
@@ -111,13 +81,7 @@ class DealCategoryField extends Component {
           </Segment>
         </Grid.Column>
         <Grid.Column width={3}>
-          <Button
-            // style={{ height: 38, marginTop: 23 }}
-            type="button"
-            color="red"
-            icon="trash"
-            onClick={this.onDeleteClick}
-          />
+          <Button type="button" color="red" icon="trash" onClick={this.onDeleteClick} />
         </Grid.Column>
       </Grid>
     );

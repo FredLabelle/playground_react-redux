@@ -40,6 +40,8 @@ class NewInvestorForm extends Component {
   };
   handleChange = handleChange().bind(this);
   render() {
+    const { dealCategories, parametersSettings } = this.props.organization;
+    const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
       <Form onSubmit={this.onSubmit} error={this.props.error} success={this.props.success}>
         <Header as="h2" dividing>
@@ -74,14 +76,14 @@ class NewInvestorForm extends Component {
           Investment methods & criteria
         </Header>
         <p>
-          For <strong>Systematic with opt-out</strong>, the opt-out time is 5 days.
+          For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
         </p>
         <InvestmentField
           name="investor.investmentSettings"
           value={this.state.investor.investmentSettings}
           onChange={this.handleChange}
-          dealCategories={this.props.organization.dealCategories}
-          defaultCurrency={this.props.organization.parametersSettings.investment.defaultCurrency}
+          dealCategories={dealCategories}
+          defaultCurrency={defaultCurrency}
         />
         <Message success header="Success!" content="New investor created." />
         <Segment basic textAlign="center">

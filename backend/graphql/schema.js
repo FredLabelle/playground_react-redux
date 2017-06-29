@@ -91,7 +91,8 @@ type GeneralSettings {
   emailDomains: [String]!
 }
 
-type OrganizationInvestmentSettings {
+type OrganizationInvestmentMechanisms {
+  optOutTime: String!
   defaultCurrency: String!
 }
 
@@ -101,7 +102,7 @@ type InvitationEmail {
 }
 
 type ParametersSettings {
-  investment: OrganizationInvestmentSettings!
+  investmentMechanisms: OrganizationInvestmentMechanisms!
   invitationEmail: InvitationEmail!
 }
 
