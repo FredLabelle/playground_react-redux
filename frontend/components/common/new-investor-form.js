@@ -30,9 +30,16 @@ class NewInvestorForm extends Component {
       password: '',
       investmentSettings: {},
     },
+    investmentSettingsError: false,
   };
   onSubmit = event => {
     event.preventDefault();
+    const { investmentSettings } = this.state.investor;
+    const investmentSettingsError = Object.values(investmentSettings).length === 0;
+    this.setState({ investmentSettingsError });
+    if (investmentSettingsError) {
+      return;
+    }
     this.props.onSubmit({
       ...this.state.investor,
       token: this.props.router.query.token,
@@ -43,7 +50,12 @@ class NewInvestorForm extends Component {
     const { dealCategories, parametersSettings } = this.props.organization;
     const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
-      <Form onSubmit={this.onSubmit} warning={this.props.warning} success={this.props.success}>
+      <Form
+        onSubmit={this.onSubmit}
+        warning={this.props.warning}
+        success={this.props.success}
+        error={this.state.investmentSettingsError}
+      >
         <Header as="h2" dividing>
           {this.props.signup ? 'Create your Investor account' : 'Create new investor'}
         </Header>
@@ -85,6 +97,7 @@ class NewInvestorForm extends Component {
           dealCategories={dealCategories}
           defaultCurrency={defaultCurrency}
         />
+        <Message error header="Error!" content="You must chose at least one investment method." />
         <Message success header="Success!" content="New investor created." />
         <Segment basic textAlign="center">
           <Button

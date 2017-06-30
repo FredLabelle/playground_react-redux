@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const sequelize = require('../../models/sequelize');
 const { Organization } = require('../../models');
 const { gravatarPicture } = require('../../lib/util');
@@ -45,13 +47,14 @@ module.exports.seedDatabase = async (req, res) => {
       investmentMechanisms: ['DealByDeal'],
     });
     const email = 'simon.arvaux@gmail.com';
+    const password = await bcrypt.hash('password', 10);
     const user = await organization.createUser({
       name: {
         firstName: 'Simon',
         lastName: 'Arvaux',
       },
       email,
-      password: 'password',
+      password,
       picture: [gravatarPicture(email)],
       role: 'investor',
     });

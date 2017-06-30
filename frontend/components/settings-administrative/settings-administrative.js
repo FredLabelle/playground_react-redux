@@ -40,6 +40,9 @@ class SettingsAdministrative extends Component {
     success: false,
   };
   componentWillReceiveProps({ me }) {
+    if (!me) {
+      return;
+    }
     this.setState({
       me: {
         ...this.state.me,

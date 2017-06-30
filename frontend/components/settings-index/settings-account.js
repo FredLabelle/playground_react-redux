@@ -31,6 +31,7 @@ class SettingsAccount extends Component {
     me: {
       ...pick(this.props.me, 'name', 'picture', 'investmentSettings'),
     },
+    investmentSettingsError: false,
     saving: false,
     saved: false,
     changeEmailModalOpen: false,
@@ -59,6 +60,12 @@ class SettingsAccount extends Component {
   };
   onSubmit = async event => {
     event.preventDefault();
+    const { investmentSettings } = this.state.me;
+    const investmentSettingsError = Object.values(investmentSettings).length === 0;
+    this.setState({ investmentSettingsError });
+    if (investmentSettingsError) {
+      return;
+    }
     this.setState({ saving: true });
     const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
     this.setState({ saving: false });
@@ -94,7 +101,11 @@ class SettingsAccount extends Component {
     const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
       <Segment attached="bottom" className="tab active">
-        <Form onSubmit={this.onSubmit} success={this.state.success}>
+        <Form
+          onSubmit={this.onSubmit}
+          success={this.state.success}
+          error={this.state.investmentSettingsError}
+        >
           <Header as="h3" dividing>
             Investor identity
           </Header>
@@ -134,6 +145,7 @@ class SettingsAccount extends Component {
             dealCategories={dealCategories}
             defaultCurrency={defaultCurrency}
           />
+          <Message error header="Error!" content="You must chose at least one investment method." />
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button

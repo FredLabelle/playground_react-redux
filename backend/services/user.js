@@ -57,6 +57,11 @@ const UserService = {
         where: { shortId: organizationShortId },
       });
       const user = await UserService.findByEmail(email, organization.id);
+      if (!user) {
+        return null;
+      }
+      const password = await bcrypt.hash(input.password, 10);
+      await user.update({ name: input.name, password });
       await user.InvestorProfile.update(Object.assign({ status: 'joined' }, input));
       return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
