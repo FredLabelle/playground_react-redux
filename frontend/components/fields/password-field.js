@@ -102,7 +102,7 @@ class PasswordField extends Component {
               />
             </div>}
         {this.props.form.passwordTooWeak &&
-          <Message error>
+          <Message warning>
             <Message.Header>Password too weak</Message.Header>
             <Message.Content>
               Password must be at least 8 characters in length and must contain:
@@ -118,7 +118,7 @@ class PasswordField extends Component {
         {!this.props.form.passwordTooWeak &&
           this.props.form.passwordsMismatch &&
           <Message
-            error
+            warning
             header="Password mismatch"
             content="Please double-check the passwords are matching."
           />}

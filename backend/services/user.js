@@ -129,7 +129,11 @@ const UserService = {
   },
   async changeEmail(user, input) {
     try {
-      const changeEmailToken = await sign({ email: input }, process.env.FOREST_ENV_SECRET);
+      const passwordsMatch = await UserService.passwordsMatch(input.password, user.password);
+      if (!passwordsMatch) {
+        return false;
+      }
+      const changeEmailToken = await sign({ email: input.email }, process.env.FOREST_ENV_SECRET);
       await user.update({ changeEmailToken });
       const queryString = stringify({ token: changeEmailToken });
       const backendUrl = process.env.BACKEND_URL;
@@ -137,7 +141,7 @@ const UserService = {
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
-        to: input,
+        to: input.email,
         subject: 'Change your email on InvestorX',
         templateId: 173370,
         vars: { firstName: user.name.firstName, link: url },
@@ -150,7 +154,11 @@ const UserService = {
   },
   async changePassword(user, input) {
     try {
-      const password = await bcrypt.hash(input, 10);
+      const passwordsMatch = await UserService.passwordsMatch(input.currentPassword, user.password);
+      if (!passwordsMatch) {
+        return false;
+      }
+      const password = await bcrypt.hash(input.password, 10);
       await user.update({ password });
       return true;
     } catch (error) {
@@ -161,14 +169,6 @@ const UserService = {
   async me(user) {
     try {
       return UserService.findByEmail(user.email, user.organizationId);
-      /* const result = Object.assign({}, user.toJSON());
-      if (user.role === 'admin') {
-        //
-      } else if (user.role === 'investor') {
-        const investorProfile = await user.getInvestorProfile();
-        Object.assign(result, investorProfile.toJSON());
-      }
-      return result;*/
     } catch (error) {
       console.error(error);
       return null;

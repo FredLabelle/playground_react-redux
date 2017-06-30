@@ -17,7 +17,7 @@ const initialState = { password: '', loading: false, success: false };
 
 class ResetPasswordModal extends Component {
   static propTypes = {
-    error: PropTypes.bool.isRequired,
+    warning: PropTypes.bool.isRequired,
     router: RouterPropType.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -60,7 +60,7 @@ class ResetPasswordModal extends Component {
           <Form
             id="reset-password"
             onSubmit={this.onSubmit}
-            error={this.props.error}
+            warning={this.props.warning}
             success={this.state.success}
           >
             <PasswordField
@@ -76,7 +76,7 @@ class ResetPasswordModal extends Component {
             type="submit"
             form="reset-password"
             color="green"
-            disabled={this.state.loading || this.props.error}
+            disabled={this.state.loading || this.props.warning}
             content="Reset password"
             icon="checkmark"
             labelPosition="left"
@@ -91,7 +91,7 @@ export default compose(
   withCookies,
   connect(({ form }) => ({ form }), null, ({ form }, dispatchProps, ownProps) => ({
     ...ownProps,
-    error: form.passwordsMismatch || form.passwordTooWeak,
+    warning: form.passwordsMismatch || form.passwordTooWeak,
   })),
   graphql(resetPasswordMutation, {
     props: ({ mutate }) => ({

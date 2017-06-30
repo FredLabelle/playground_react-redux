@@ -12,7 +12,7 @@ import InvestmentField from '../fields/investment-field';
 class NewInvestorForm extends Component {
   static propTypes = {
     signup: PropTypes.bool,
-    error: PropTypes.bool.isRequired,
+    warning: PropTypes.bool.isRequired,
     router: RouterPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -43,7 +43,7 @@ class NewInvestorForm extends Component {
     const { dealCategories, parametersSettings } = this.props.organization;
     const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
-      <Form onSubmit={this.onSubmit} error={this.props.error} success={this.props.success}>
+      <Form onSubmit={this.onSubmit} warning={this.props.warning} success={this.props.success}>
         <Header as="h2" dividing>
           {this.props.signup ? 'Create your Investor account' : 'Create new investor'}
         </Header>
@@ -90,7 +90,7 @@ class NewInvestorForm extends Component {
           <Button
             type="submit"
             primary
-            disabled={this.props.error || this.props.loading}
+            disabled={this.props.warning || this.props.loading}
             content={this.props.signup ? 'Create my account' : 'Create'}
             icon="add user"
             labelPosition="left"
@@ -106,5 +106,5 @@ const mapStateToProps = ({ router, form }) => ({ router, form });
 export default connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => ({
   ...ownProps,
   router,
-  error: form.passwordsMismatch || form.passwordTooWeak,
+  warning: form.passwordsMismatch || form.passwordTooWeak,
 }))(NewInvestorForm);

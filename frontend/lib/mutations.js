@@ -103,13 +103,13 @@ export const createTicketMutation = gql`
 `;
 
 export const changeEmailMutation = gql`
-  mutation changeEmail($input: String!) {
+  mutation changeEmail($input: ChangeEmailInput!) {
     changeEmail(input: $input)
   }
 `;
 
 export const changePasswordMutation = gql`
-  mutation changePassword($input: String!) {
+  mutation changePassword($input: ChangePasswordInput!) {
     changePassword(input: $input)
   }
 `;

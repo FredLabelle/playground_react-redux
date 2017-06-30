@@ -154,14 +154,24 @@ input DealCategoryInput {
   investmentMechanisms: [String]!
 }
 
+input ChangeEmailInput {
+  password: String!
+  email: String!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  password: String!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
   logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ID
-  changeEmail(input: String!): Boolean!
-  changePassword(input: String!): Boolean!
+  changeEmail(input: ChangeEmailInput!): Boolean!
+  changePassword(input: ChangePasswordInput!): Boolean!
   updateInvestor(input: UpdateInvestorInput!): Boolean!
   updateInvestorFiles(input: UpdateInvestorFilesInput!): Boolean!
   adminLoginAck: Boolean!

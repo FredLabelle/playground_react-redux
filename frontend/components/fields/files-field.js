@@ -62,7 +62,8 @@ export default class extends Component {
   }
   onUploadClick = event => {
     event.preventDefault();
-    const dialog = uploadcare.openDialog(null, {
+    const [tab] = this.props.tabs;
+    const dialog = uploadcare.openDialog(null, tab, {
       imagesOnly: this.props.imagesOnly,
       tabs: this.props.tabs,
       crop: this.props.crop,
