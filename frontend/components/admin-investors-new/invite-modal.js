@@ -38,6 +38,12 @@ InviteInvestorForm.propTypes = {
 
 const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, success, info, error }) =>
   <Form id="invite-invitation-email" onSubmit={onSubmit} success={success} error={error}>
+    {info &&
+      <Message
+        info
+        header="Information!"
+        content="This user has already been invited, send a reminder email?"
+      />}
     {!success &&
       <div>
         <Form.Input
@@ -61,12 +67,6 @@ const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, succes
           You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
           <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
         </p>
-        {info &&
-          <Message
-            info
-            header="Information!"
-            content="This user has already been invited, send a reminder email?"
-          />}
       </div>}
     <Message
       success
@@ -118,8 +118,10 @@ class InviteModal extends Component {
   };
   onInvestorSubmit = async event => {
     event.preventDefault();
-    const { email } = this.state.investor;
-    const { data: { invitationStatus } } = await this.props.invitationStatus(email);
+    const { data: { invitationStatus } } = await this.props.invitationStatus({
+      email: this.state.investor.email,
+      organizationId: this.props.organization.id,
+    });
     if (invitationStatus === 'invitable' || invitationStatus === 'invited') {
       this.setState({
         form: 'invite-invitation-email',
@@ -144,6 +146,7 @@ class InviteModal extends Component {
   };
   handleChange = handleChange().bind(this);
   render() {
+    const sendCaption = this.state.info ? 'Send reminder' : 'Send invite';
     return (
       <Modal open={this.props.open} onClose={this.onCancel} size="small">
         <Header icon="mail" content="Invite investor by mail" />
@@ -179,12 +182,7 @@ class InviteModal extends Component {
             form={this.state.form}
             color="green"
             disabled={this.state.error || this.state.success}
-            content={
-              // eslint-disable-next-line no-nested-ternary
-              this.state.form === 'invite-investor'
-                ? 'Continue'
-                : this.state.info ? 'Send reminder' : 'Send invite'
-            }
+            content={this.state.form === 'invite-investor' ? 'Continue' : sendCaption}
             icon={this.state.form === 'invite-investor' ? 'checkmark' : 'mail'}
             labelPosition="left"
           />

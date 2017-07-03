@@ -117,6 +117,11 @@ input InvestorInfoInput {
   email: String!
 }
 
+input InvitationStatusInput {
+  email: String!
+  organizationId: String!
+}
+
 input InviteInvestorInput {
   investor: InvestorInfoInput!
   invitationEmail: InvitationEmailInput!
@@ -178,7 +183,7 @@ type Mutation {
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   updateDealCategories(input: [DealCategoryInput]!): Boolean!
   createInvestor(input: CreateInvestorInput!): Boolean!
-  invitationStatus(input: String!): String!
+  invitationStatus(input: InvitationStatusInput!): String!
   inviteInvestor(input: InviteInvestorInput!): String!
   upsertCompany(input: UpsertCompanyInput!): Company
   createDeal(input: CreateDealInput!): Boolean!
@@ -245,7 +250,7 @@ exports.resolvers = {
       return adminMutation(context.Organization.createInvestor, false)(context.user, input);
     },
     invitationStatus(root, { input }, context) {
-      return adminMutation(context.Organization.invitationStatus, 'error')(context.user, input);
+      return context.Organization.invitationStatus(input);
     },
     inviteInvestor(root, { input }, context) {
       return adminMutation(context.Organization.inviteInvestor, false)(context.user, input);

@@ -3759,9 +3759,9 @@ react-class@2.0.0, react-class@^2.0.0:
   dependencies:
     object-assign "^4.0.1"
 
-react-cookie@^2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/react-cookie/-/react-cookie-2.0.7.tgz#edce07405fafac55f78ee51b7d8c53925786e0a6"
+react-cookie@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/react-cookie/-/react-cookie-2.0.8.tgz#2b551c8d80f8c1973ac9347aab61b152c6313398"
   dependencies:
     hoist-non-react-statics "^1.2.0"
     prop-types "^15.0.0"
@@ -3859,9 +3859,9 @@ react-redux@^5.0.5:
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
 
-react-sortable-hoc@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.3.tgz#ab9fa699607c5f5871d00889222fb52559242947"
+react-sortable-hoc@^0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.5.tgz#e6b5d414476d51a0b621931298855d4fd608c227"
   dependencies:
     babel-runtime "^6.11.6"
     invariant "^2.2.1"

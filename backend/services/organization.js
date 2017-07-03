@@ -156,10 +156,9 @@ const OrganizationService = {
       return false;
     }
   },
-  async invitationStatus(user, input) {
+  async invitationStatus(input) {
     try {
-      const organization = await user.getOrganization();
-      const foundUser = await UserService.findByEmail(input, organization.id);
+      const foundUser = await UserService.findByEmail(input.email, input.organizationId);
       if (foundUser && foundUser.role !== 'investor') {
         return 'error';
       }

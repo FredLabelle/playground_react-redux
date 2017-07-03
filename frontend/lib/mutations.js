@@ -67,7 +67,7 @@ export const createInvestorMutation = gql`
 `;
 
 export const invitationStatusMutation = gql`
-  mutation invitationStatus($input: String!) {
+  mutation invitationStatus($input: InvitationStatusInput!) {
     invitationStatus(input: $input)
   }
 `;

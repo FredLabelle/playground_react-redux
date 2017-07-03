@@ -194,7 +194,7 @@ class CreateNewDeal extends Component {
                 label="Carried"
                 placeholder="Carried"
                 type="number"
-                min="1"
+                min="0"
                 max="100"
                 required
               />
@@ -205,7 +205,7 @@ class CreateNewDeal extends Component {
                 label="Hurdle"
                 placeholder="Hurdle"
                 type="number"
-                min="1"
+                min="0"
                 max="100"
                 required
               />

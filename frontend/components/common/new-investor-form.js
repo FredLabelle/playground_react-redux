@@ -1,10 +1,12 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose, graphql } from 'react-apollo';
 import { Form, Header, Button, Segment, Message } from 'semantic-ui-react';
 
 import { handleChange } from '../../lib/util';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
+import { invitationStatusMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import PasswordField from '../fields/password-field';
 import InvestmentField from '../fields/investment-field';
@@ -31,13 +33,25 @@ class NewInvestorForm extends Component {
       investmentSettings: {},
     },
     investmentSettingsError: false,
+    info: false,
+    warning: false,
   };
-  onSubmit = event => {
+  onSubmit = async event => {
     event.preventDefault();
     const { investmentSettings } = this.state.investor;
     const investmentSettingsError = Object.values(investmentSettings).length === 0;
     this.setState({ investmentSettingsError });
     if (investmentSettingsError) {
+      return;
+    }
+    const { data: { invitationStatus } } = await this.props.invitationStatus({
+      email: this.state.investor.email,
+      organizationId: this.props.organization.id,
+    });
+    const info = !this.props.signup && invitationStatus === 'invited';
+    const warning = invitationStatus === 'joined';
+    this.setState({ info, warning });
+    if (info || warning) {
       return;
     }
     this.props.onSubmit({
@@ -52,7 +66,7 @@ class NewInvestorForm extends Component {
     return (
       <Form
         onSubmit={this.onSubmit}
-        warning={this.props.warning}
+        warning={this.props.warning || this.state.warning}
         success={this.props.success}
         error={this.state.investmentSettingsError}
       >
@@ -97,6 +111,14 @@ class NewInvestorForm extends Component {
           dealCategories={dealCategories}
           defaultCurrency={defaultCurrency}
         />
+        {this.state.info &&
+          <Message
+            info
+            header="Information!"
+            content="This user has already been invited."
+          />}
+        {this.state.warning &&
+          <Message warning header="Warning!" content="This user has already joined!" />}
         <Message error header="Error!" content="You must chose at least one investment method." />
         <Message success header="Success!" content="New investor created." />
         <Segment basic textAlign="center">
@@ -116,8 +138,15 @@ class NewInvestorForm extends Component {
 
 const mapStateToProps = ({ router, form }) => ({ router, form });
 
-export default connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => ({
-  ...ownProps,
-  router,
-  warning: form.passwordsMismatch || form.passwordTooWeak,
-}))(NewInvestorForm);
+export default compose(
+  connect(mapStateToProps, null, ({ router, form }, dispatchProps, ownProps) => ({
+    ...ownProps,
+    router,
+    warning: form.passwordsMismatch || form.passwordTooWeak,
+  })),
+  graphql(invitationStatusMutation, {
+    props: ({ mutate }) => ({
+      invitationStatus: input => mutate({ variables: { input } }),
+    }),
+  }),
+)(NewInvestorForm);
