@@ -13,16 +13,17 @@ module.exports.generateInvitationEmailContent = (
   { subject, body },
   organizationName,
   userName,
-  url,
 ) => {
   const replace = string =>
     string
       .replace(/{{organization}}/g, organizationName)
       .replace(/{{firstname}}/g, userName.firstName)
-      .replace(/{{lastname}}/g, userName.lastName)
-      .replace(/{{url}}/g, url);
+      .replace(/{{lastname}}/g, userName.lastName);
+  const replacedBody = replace(body);
+  const { index } = replacedBody.match(/{{signup_link}}/);
   return {
     subject: replace(subject),
-    body: replace(body),
+    beforeLink: replacedBody.substring(0, index).trim(),
+    afterLink: replacedBody.substring(index + '{{signup_link}}'.length, replacedBody.length).trim(),
   };
 };

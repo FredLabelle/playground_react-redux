@@ -22,11 +22,18 @@ class InvitationEmailParameters extends Component {
     organization: {
       ...pick(this.props.organization, 'parametersSettings'),
     },
+    warning: false,
     saving: false,
     saved: false,
   };
   onSubmit = async event => {
     event.preventDefault();
+    const { body } = this.state.organization.parametersSettings.invitationEmail;
+    const warning = body.indexOf('{{signup_link}}') === -1;
+    this.setState({ warning });
+    if (warning) {
+      return;
+    }
     this.setState({ saving: true });
     const { data: { updateOrganization } } = await this.props.updateOrganization(this.update());
     this.setState({ saving: false });
@@ -53,7 +60,7 @@ class InvitationEmailParameters extends Component {
           Invitation email
         </Header>
         <p>You can personalize the invitation email sent to investors.</p>
-        <Form onSubmit={this.onSubmit} success={this.state.success}>
+        <Form onSubmit={this.onSubmit} warning={this.state.warning} success={this.state.success}>
           <Form.Input
             name="organization.parametersSettings.invitationEmail.subject"
             value={this.state.organization.parametersSettings.invitationEmail.subject}
@@ -70,9 +77,14 @@ class InvitationEmailParameters extends Component {
             autoHeight
           />
           <p>
-            You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
-            <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
+            You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,
+            {' '}<strong>{'{{lastname}}'}</strong> and <strong>{'{{signup_link}}'}</strong>.
           </p>
+          <Message
+            warning
+            header="Warning!"
+            content="You must include {{signup_link}} in the body!"
+          />
           <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button

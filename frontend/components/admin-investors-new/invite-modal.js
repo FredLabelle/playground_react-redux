@@ -36,8 +36,22 @@ InviteInvestorForm.propTypes = {
   error: PropTypes.bool.isRequired,
 };
 
-const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, success, info, error }) =>
-  <Form id="invite-invitation-email" onSubmit={onSubmit} success={success} error={error}>
+const InviteInvitationEmailForm = ({
+  onSubmit,
+  invitationEmail,
+  onChange,
+  success,
+  info,
+  warning,
+  error,
+}) =>
+  <Form
+    id="invite-invitation-email"
+    onSubmit={onSubmit}
+    success={success}
+    warning={warning}
+    error={error}
+  >
     {info &&
       <Message
         info
@@ -56,7 +70,7 @@ const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, succes
         />
         <Form.TextArea
           name="invitationEmail.body"
-          value={invitationEmail.body}
+          defaultValue={invitationEmail.body}
           onChange={onChange}
           label="Body"
           placeholder="Body"
@@ -65,7 +79,7 @@ const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, succes
         />
         <p>
           You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
-          <strong>{'{{lastname}}'}</strong> and <strong>{'{{url}}'}</strong>.
+          <strong>{'{{lastname}}'}</strong> and <strong>{'{{signup_link}}'}</strong>.
         </p>
       </div>}
     <Message
@@ -73,6 +87,7 @@ const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, succes
       header="Success!"
       content={info ? 'Your reminder has been sent.' : 'Your invite has been sent.'}
     />
+    <Message warning header="Warning!" content="You must include {{signup_link}} in the body!" />
     <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvitationEmailForm.propTypes = {
@@ -84,6 +99,7 @@ InviteInvitationEmailForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   success: PropTypes.bool.isRequired,
   info: PropTypes.bool.isRequired,
+  warning: PropTypes.bool.isRequired,
   error: PropTypes.bool.isRequired,
 };
 
@@ -96,7 +112,8 @@ const initialState = organization => ({
   form: 'invite-investor',
   success: false,
   info: false,
-  warning: false,
+  investorWarning: false,
+  invitationEmailWarning: false,
   error: false,
 });
 
@@ -129,18 +146,24 @@ class InviteModal extends Component {
       });
     } else {
       this.setState({
-        warning: invitationStatus === 'joined',
+        inviteInvestorWarning: invitationStatus === 'joined',
         error: invitationStatus === 'error',
       });
     }
   };
   onInvitationEmailSubmit = async event => {
     event.preventDefault();
+    const { body } = this.state.invitationEmail;
+    const invitationEmailWarning = body.indexOf('{{signup_link}}') === -1;
+    this.setState({ invitationEmailWarning });
+    if (invitationEmailWarning) {
+      return;
+    }
     const newInvestor = pick(this.state, 'investor', 'invitationEmail');
     const newInvestorOmitted = omitDeep(newInvestor, '__typename');
     const { data: { inviteInvestor } } = await this.props.inviteInvestor(newInvestorOmitted);
     const state = inviteInvestor ? 'success' : 'error';
-    this.setState({ [state]: true });
+    this.setState({ info: false, [state]: true });
     await sleep(2000);
     this.onCancel();
   };
@@ -156,7 +179,7 @@ class InviteModal extends Component {
                 onSubmit={this.onInvestorSubmit}
                 investor={this.state.investor}
                 onChange={this.handleChange}
-                warning={this.state.warning}
+                warning={this.state.investorWarning}
                 error={this.state.error}
               />
             : <InviteInvitationEmailForm
@@ -165,6 +188,7 @@ class InviteModal extends Component {
                 onChange={this.handleChange}
                 info={this.state.info}
                 success={this.state.success}
+                warning={this.state.invitationEmailWarning}
                 error={this.state.error}
               />}
         </Modal.Content>

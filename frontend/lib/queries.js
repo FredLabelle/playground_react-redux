@@ -160,6 +160,7 @@ export const dealsQuery = gql`
           currency
         }
       }
+      investorsCommited
       createdAt
     }
   }

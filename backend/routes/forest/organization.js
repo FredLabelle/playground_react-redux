@@ -30,7 +30,7 @@ module.exports.seedDatabase = async (req, res) => {
             '',
             'Here is the link to signup to the club:',
             '',
-            '{{url}}',
+            '{{signup_link}}',
             '',
             'Best,',
           ].join('\n'),

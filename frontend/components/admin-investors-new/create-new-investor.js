@@ -40,8 +40,6 @@ class CreateNewInvestor extends Component {
         linkAs('/investors', this.props.router),
       );
     } else {
-      // eslint-disable-next-line no-alert
-      alert(`Cannot invite <${investor.email}>`);
       this.setState({ loading: false });
     }
   };

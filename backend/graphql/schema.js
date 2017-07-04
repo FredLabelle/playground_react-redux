@@ -142,6 +142,7 @@ type Deal {
   hurdle: String!
   deck: [File]!
   tickets: Tickets!
+  investorsCommited: Int!
   createdAt: Date!
 }
 

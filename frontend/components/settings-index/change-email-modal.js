@@ -51,24 +51,27 @@ class ChangeEmailModal extends Component {
             error={this.state.error}
             success={this.state.success}
           >
-            <Form.Input
-              name="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-              label="Password"
-              placeholder="Password"
-              type="password"
-              required
-            />
-            <Form.Input
-              name="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-              label="Email"
-              placeholder="Email"
-              type="email"
-              required
-            />
+            {!this.state.success &&
+              <div>
+                <Form.Input
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                  label="Password"
+                  placeholder="Password"
+                  type="password"
+                  required
+                />
+                <Form.Input
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.handleChange}
+                  label="Email"
+                  placeholder="Email"
+                  type="email"
+                  required
+                />
+              </div>}
             <Message error header="Error!" content="Something went wrong!" />
             <Message success header="Success!" content="Your email has been changed!" />
           </Form>

@@ -24,7 +24,7 @@ const Login = ({ organization, children }) =>
   </Grid>;
 Login.propTypes = {
   organization: OrganizationPropType.isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.arrayOf(PropTypes.element).isRequired,
 };
 
 export default Login;

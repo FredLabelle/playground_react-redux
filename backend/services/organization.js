@@ -123,7 +123,10 @@ const OrganizationService = {
   async createInvestor(user, input) {
     try {
       const organization = await user.getOrganization();
-      const invitationStatus = await OrganizationService.invitationStatus(user, input.email);
+      const invitationStatus = await OrganizationService.invitationStatus({
+        email: input.email,
+        organizationId: organization.id,
+      });
       if (invitationStatus !== 'invitable') {
         return false;
       }
@@ -132,15 +135,12 @@ const OrganizationService = {
       const investor = Object.assign({ role: 'investor', picture, resetPasswordToken }, input);
       const newUser = await organization.createUser(investor);
       await newUser.createInvestorProfile(investor);
-      const frontendUrl = process.env.FRONTEND_URL;
       const { shortId } = organization;
       const queryString = stringify({ resetPasswordToken });
-      const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
-      const { subject, body } = generateInvitationEmailContent(
+      const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
         organization.parametersSettings.invitationEmail,
-        organization.name,
+        organization.generalSettings.name,
         newUser.name,
-        url,
       );
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
@@ -148,7 +148,12 @@ const OrganizationService = {
         to: newUser.email,
         subject,
         templateId: 166944,
-        vars: { content: body.replace(/\n/g, '<br />') },
+        vars: {
+          beforeLink: beforeLink.replace(/\n/g, '<br />'),
+          linkText: `Join ${organization.generalSettings.name}`,
+          link: `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`,
+          afterLink: afterLink.replace(/\n/g, '<br />'),
+        },
       });
       return true;
     } catch (error) {
@@ -181,18 +186,15 @@ const OrganizationService = {
         const newUser = await organization.createUser(investor);
         await newUser.createInvestorProfile();
       }
-      const backendUrl = process.env.BACKEND_URL;
       const payload = Object.assign({}, input.investor, {
         organizationShortId: organization.shortId,
       });
       const token = await sign(payload, process.env.FOREST_ENV_SECRET);
       const queryString = stringify({ token });
-      const url = `${backendUrl}/signup?${queryString}`;
-      const { subject, body } = generateInvitationEmailContent(
+      const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
         input.invitationEmail,
-        organization.name,
+        organization.generalSettings.name,
         input.investor.name,
-        url,
       );
       await sendEmail({
         fromEmail: 'investorx@e-founders.com',
@@ -200,7 +202,12 @@ const OrganizationService = {
         to: input.investor.email,
         subject,
         templateId: 166944,
-        vars: { content: body.replace(/\n/g, '<br />') },
+        vars: {
+          beforeLink: beforeLink.replace(/\n/g, '<br />'),
+          linkText: `Join ${organization.generalSettings.name}`,
+          link: `${process.env.BACKEND_URL}/signup?${queryString}`,
+          afterLink: afterLink.replace(/\n/g, '<br />'),
+        },
       });
       return true;
     } catch (error) {
@@ -262,6 +269,9 @@ const OrganizationService = {
               currency: deal.totalAmount.currency,
             },
           },
+          investorsCommited: deal.Tickets.reduce((result, { userId }) => (
+            result.includes(userId) ? result : [...result, userId]
+          ), []).length,
         }),
       );
     } catch (error) {

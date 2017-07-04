@@ -70,47 +70,50 @@ class NewInvestorForm extends Component {
         success={this.props.success}
         error={this.state.investmentSettingsError}
       >
-        <Header as="h2" dividing>
-          {this.props.signup ? 'Create your Investor account' : 'Create new investor'}
-        </Header>
-        <Header as="h3" dividing>
-          Investor identity
-        </Header>
-        <Form.Input
-          name="investor.email"
-          value={this.state.investor.email}
-          onChange={this.handleChange}
-          label="Email"
-          placeholder="Email"
-          type="email"
-          required
-          disabled={this.props.signup}
-        />
-        <NameField
-          name="investor.name"
-          value={this.state.investor.name}
-          onChange={this.handleChange}
-        />
-        {this.props.signup &&
-          <PasswordField
-            grouped
-            name="investor.password"
-            value={this.state.investor.password}
-            onChange={this.handleChange}
-          />}
-        <Header as="h3" dividing>
-          Investment methods & criteria
-        </Header>
-        <p>
-          For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
-        </p>
-        <InvestmentField
-          name="investor.investmentSettings"
-          value={this.state.investor.investmentSettings}
-          onChange={this.handleChange}
-          dealCategories={dealCategories}
-          defaultCurrency={defaultCurrency}
-        />
+        {!this.props.success &&
+          <div>
+            <Header as="h2" dividing>
+              {this.props.signup ? 'Create your Investor account' : 'Create new investor'}
+            </Header>
+            <Header as="h3" dividing>
+              Investor identity
+            </Header>
+            <Form.Input
+              name="investor.email"
+              value={this.state.investor.email}
+              onChange={this.handleChange}
+              label="Email"
+              placeholder="Email"
+              type="email"
+              required
+              disabled={this.props.signup}
+            />
+            <NameField
+              name="investor.name"
+              value={this.state.investor.name}
+              onChange={this.handleChange}
+            />
+            {this.props.signup &&
+              <PasswordField
+                grouped
+                name="investor.password"
+                value={this.state.investor.password}
+                onChange={this.handleChange}
+              />}
+            <Header as="h3" dividing>
+              Investment methods & criteria
+            </Header>
+            <p>
+              For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
+            </p>
+            <InvestmentField
+              name="investor.investmentSettings"
+              value={this.state.investor.investmentSettings}
+              onChange={this.handleChange}
+              dealCategories={dealCategories}
+              defaultCurrency={defaultCurrency}
+            />
+          </div>}
         {this.state.info &&
           <Message
             info

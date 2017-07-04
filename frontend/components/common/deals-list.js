@@ -28,10 +28,7 @@ const DealsListRow = ({ admin, deal }) =>
   <Table.Row>
     <CompanyCell company={deal.company} />
     <DealCell deal={deal} />
-    <Table.Cell>
-      35 contacted<br />
-      23 commited
-    </Table.Cell>
+    <Table.Cell>{deal.investorsCommited} commited</Table.Cell>
     {admin && <TicketsCell tickets={deal.tickets} />}
     {/* <Table.Cell>
       35 contacted<br />

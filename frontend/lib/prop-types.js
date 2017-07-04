@@ -79,6 +79,7 @@ export const DealPropType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   totalAmount: AmountPropType.isRequired,
   tickets: TicketsPropType,
+  investorsCommited: PropTypes.number.isRequired,
   createdAt: PropTypes.instanceOf(Date),
 });
 

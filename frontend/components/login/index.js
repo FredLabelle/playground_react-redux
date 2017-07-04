@@ -39,24 +39,23 @@ class UserLogin extends Component {
   render() {
     return (
       <Login organization={this.props.organization}>
-        <div>
-          <Form
-            organization={this.props.organization}
-            forgotPassword={this.forgotPassword}
-            onEmailChange={this.onEmailChange}
-          />
-          <ForgotPasswordModal
-            open={this.state.forgotPasswordModalOpen}
-            onClose={this.onForgotPasswordModalClose}
-            email={this.state.email}
-            organization={this.props.organization}
-          />
-          <ResetPasswordModal
-            open={this.state.resetPasswordModalOpen}
-            onClose={this.onResetPasswordModalClose}
-            router={this.props.router}
-          />
-        </div>
+        <Form
+          organization={this.props.organization}
+          forgotPassword={this.forgotPassword}
+          onEmailChange={this.onEmailChange}
+        />
+        <ForgotPasswordModal
+          open={this.state.forgotPasswordModalOpen}
+          onClose={this.onForgotPasswordModalClose}
+          email={this.state.email}
+          organization={this.props.organization}
+        />
+        <ResetPasswordModal
+          defaultOpen
+          open// ={this.state.resetPasswordModalOpen}
+          onClose={this.onResetPasswordModalClose}
+          router={this.props.router}
+        />
       </Login>
     );
   }

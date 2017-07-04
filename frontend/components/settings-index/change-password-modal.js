@@ -58,20 +58,23 @@ class ChangePasswordModal extends Component {
             warning={this.props.warning}
             error={this.state.error}
           >
-            <Form.Input
-              name="currentPassword"
-              value={this.state.currentPassword}
-              onChange={this.handleChange}
-              label="Current password"
-              placeholder="Current password"
-              type="password"
-              required
-            />
-            <PasswordField
-              name="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
+            {!this.state.success &&
+              <div>
+                <Form.Input
+                  name="currentPassword"
+                  value={this.state.currentPassword}
+                  onChange={this.handleChange}
+                  label="Current password"
+                  placeholder="Current password"
+                  type="password"
+                  required
+                />
+                <PasswordField
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                />
+              </div>}
             <Message error header="Error!" content="Something went wrong!" />
             <Message success header="Success!" content="Your password has been changed!" />
           </Form>

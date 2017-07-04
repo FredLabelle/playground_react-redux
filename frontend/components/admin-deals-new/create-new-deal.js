@@ -146,6 +146,7 @@ class CreateNewDeal extends Component {
                 autoHeight
               />
               <FilesField
+                multiple
                 field="deal.deck"
                 label="Deck"
                 files={this.state.deal.deck}
