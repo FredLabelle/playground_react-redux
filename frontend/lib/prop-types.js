@@ -26,7 +26,7 @@ export const FilePropType = PropTypes.shape({
   processed: PropTypes.bool,
 });
 
-export const TicketsPropType = PropTypes.shape({
+export const TicketsSumPropType = PropTypes.shape({
   count: PropTypes.number,
   sum: AmountPropType,
 });
@@ -37,7 +37,7 @@ export const InvestorPropType = PropTypes.shape({
   companyName: PropTypes.string.isRequired,
   email: PropTypes.string,
   status: PropTypes.string,
-  tickets: TicketsPropType,
+  ticketsSum: TicketsSumPropType,
   createdAt: PropTypes.instanceOf(Date),
   updatedAt: PropTypes.instanceOf(Date),
 });
@@ -64,7 +64,7 @@ export const FormPropType = PropTypes.shape({
 
 export const CompanyPropType = PropTypes.shape({
   name: PropTypes.string.isRequired,
-  website: PropTypes.string.isRequired,
+  website: PropTypes.string,
   domain: PropTypes.string.isRequired,
 });
 
@@ -78,8 +78,15 @@ export const DealPropType = PropTypes.shape({
   category: DealCategoryPropType.isRequired,
   name: PropTypes.string.isRequired,
   totalAmount: AmountPropType.isRequired,
-  tickets: TicketsPropType,
-  investorsCommited: PropTypes.number.isRequired,
+  ticketsSum: TicketsSumPropType,
+  investorsCommited: PropTypes.number,
+  createdAt: PropTypes.instanceOf(Date),
+});
+
+export const TicketPropType = PropTypes.shape({
+  investor: InvestorPropType.isRequired,
+  deal: DealPropType,
+  amount: AmountPropType.isRequired,
   createdAt: PropTypes.instanceOf(Date),
 });
 

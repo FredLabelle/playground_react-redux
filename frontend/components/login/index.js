@@ -52,7 +52,7 @@ class UserLogin extends Component {
         />
         <ResetPasswordModal
           defaultOpen
-          open// ={this.state.resetPasswordModalOpen}
+          open={this.state.resetPasswordModalOpen}
           onClose={this.onResetPasswordModalClose}
           router={this.props.router}
         />

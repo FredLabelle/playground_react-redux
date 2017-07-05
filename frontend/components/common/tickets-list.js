@@ -4,12 +4,12 @@ import { compose, graphql } from 'react-apollo';
 import { Table } from 'semantic-ui-react';
 import moment from 'moment';
 
-import { AmountPropType, DealPropType, InvestorPropType } from '../../lib/prop-types';
+import { TicketPropType } from '../../lib/prop-types';
 import { ticketsQuery } from '../../lib/queries';
 import InvestorCell from '../common/investor-cell';
 import CompanyCell from '../common/company-cell';
 import DealCell from '../common/deal-cell';
-import TicketsCell from '../common/tickets-cell';
+import TicketsSumCell from '../common/tickets-sum-cell';
 
 const TicketsListHeader = ({ admin }) =>
   <Table.Header>
@@ -24,19 +24,12 @@ const TicketsListHeader = ({ admin }) =>
   </Table.Header>;
 TicketsListHeader.propTypes = { admin: PropTypes.bool.isRequired };
 
-const TicketPropType = PropTypes.shape({
-  investor: InvestorPropType.isRequired,
-  deal: DealPropType.isRequired,
-  amount: AmountPropType.isRequired,
-  createdAt: PropTypes.instanceOf(Date).isRequired,
-});
-
 const TicketsListRow = ({ admin, ticket }) =>
   <Table.Row>
     {admin && <InvestorCell investor={ticket.investor} />}
     <CompanyCell company={ticket.deal.company} />
     <DealCell deal={ticket.deal} />
-    <TicketsCell tickets={{ sum: ticket.amount }} />
+    <TicketsSumCell ticketsSum={{ sum: ticket.amount }} />
     {admin &&
       <Table.Cell>
         <strong>Pending</strong>
@@ -73,7 +66,7 @@ TicketsList.defaultProps = { tickets: [] };
 export default compose(
   connect(({ router }) => ({ router }), null, ({ router }, dispatchProps, ownProps) => ({
     ...ownProps,
-    admin: router.admin === '/admin',
+    admin: router.admin,
   })),
   graphql(ticketsQuery, {
     props: ({ data: { tickets } }) => ({

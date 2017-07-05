@@ -9,3 +9,11 @@ select {
 .sortable-helper {
   pointer-events: auto !important;
 }
+
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background-color: rgba(0, 0, 0, .05);
+}

@@ -19,24 +19,24 @@ class AdminMenu extends Component {
     Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
   };
   render() {
-    const active = (...pathnames) => pathnames.includes(this.props.router.pathname);
+    const { pathname } = this.props.router;
     return (
       <Menu attached="top" tabular widths={3}>
-        <Menu.Item name="/" active={active('/', '/deals/new')} onClick={this.onClick}>
+        <Menu.Item
+          name="/"
+          active={pathname === '/' || pathname.startsWith('/deals')}
+          onClick={this.onClick}
+        >
           Deals
         </Menu.Item>
         <Menu.Item
           name="/investors"
-          active={active('/investors', '/investors/new')}
+          active={pathname.startsWith('/investors')}
           onClick={this.onClick}
         >
           Investors
         </Menu.Item>
-        <Menu.Item
-          name="/tickets"
-          active={active('/tickets', '/tickets/new')}
-          onClick={this.onClick}
-        >
+        <Menu.Item name="/tickets" active={pathname.startsWith('/tickets')} onClick={this.onClick}>
           Tickets
         </Menu.Item>
         {/* <Menu.Item name="/reports" active={active('/reports')} onClick={this.onClick}>

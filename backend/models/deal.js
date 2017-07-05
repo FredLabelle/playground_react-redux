@@ -49,10 +49,10 @@ module.exports = sequelize.define(
   },
   {
     hooks: {
-      beforeCreate(organization) {
-        if (!organization.shortId) {
+      beforeCreate(deal) {
+        if (!deal.shortId) {
           const shortId = shortid.generate();
-          Object.assign(organization, { shortId });
+          Object.assign(deal, { shortId });
         }
       },
     },

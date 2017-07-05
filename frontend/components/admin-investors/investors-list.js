@@ -6,7 +6,7 @@ import moment from 'moment';
 import { InvestorPropType } from '../../lib/prop-types';
 import { investorsQuery } from '../../lib/queries';
 import InvestorCell from '../common/investor-cell';
-import TicketsCell from '../common/tickets-cell';
+import TicketsSumCell from '../common/tickets-sum-cell';
 
 const InvestorsListHeader = () =>
   <Table.Header>
@@ -21,7 +21,7 @@ const InvestorsListHeader = () =>
 const InvestorsListRow = ({ investor }) =>
   <Table.Row>
     <InvestorCell investor={investor} />
-    <TicketsCell tickets={investor.tickets} />
+    <TicketsSumCell ticketsSum={investor.ticketsSum} />
     <Table.Cell>
       <strong className={investor.status}>
         {investor.status}

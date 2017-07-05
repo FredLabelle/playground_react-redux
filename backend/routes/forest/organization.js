@@ -37,11 +37,11 @@ module.exports.seedDatabase = async (req, res) => {
         },
       },
     });
-    await organization.createDealCategory({
+    const seed = await organization.createDealCategory({
       order: 0,
       name: 'Pre-seed / Seed',
     });
-    const category = await organization.createDealCategory({
+    const laterStage = await organization.createDealCategory({
       order: 1,
       name: 'Later stage (Series A, B, etc.)',
       investmentMechanisms: ['DealByDeal'],
@@ -61,7 +61,7 @@ module.exports.seedDatabase = async (req, res) => {
     await user.createInvestorProfile({
       status: 'joined',
       investmentSettings: {
-        [category.id]: { interested: true },
+        [laterStage.id]: { interested: true },
       },
     });
     await organization.createCompany({
@@ -94,19 +94,19 @@ module.exports.seedDatabase = async (req, res) => {
       website: 'https://hivyapp.com',
       description: 'The Office Management Platform',
     });
-    const company = await organization.createCompany({
+    const spendesk = await organization.createCompany({
       name: 'Spendesk',
       website: 'https://www.spendesk.com',
       description: 'Smart spending solution for teams',
     });
-    await organization.createCompany({
+    const forest = await organization.createCompany({
       name: 'Forest',
       website: 'https://www.forestadmin.com/',
       description: 'The plug and play Admin Interface',
     });
     const deal = await organization.createDeal({
-      companyId: company.id,
-      categoryId: category.id,
+      companyId: spendesk.id,
+      categoryId: laterStage.id,
       name: 'Follow',
       totalAmount: {
         amount: '3000000',
@@ -130,6 +130,33 @@ module.exports.seedDatabase = async (req, res) => {
         amount: '50000',
         currency: 'eur',
       },
+    });
+    await organization.createTicket({
+      userId: user.id,
+      dealId: deal.id,
+      amount: {
+        amount: '25000',
+        currency: 'eur',
+      },
+    });
+    await organization.createDeal({
+      companyId: forest.id,
+      categoryId: seed.id,
+      name: 'Seed',
+      totalAmount: {
+        amount: '300000',
+        currency: 'usd',
+      },
+      minTicket: {
+        amount: '5000',
+        currency: 'usd',
+      },
+      maxTicket: {
+        amount: '',
+        currency: 'usd',
+      },
+      carried: '5',
+      hurdle: '0',
     });
     return res.json({ success: 'Done!' });
   } catch (error) {

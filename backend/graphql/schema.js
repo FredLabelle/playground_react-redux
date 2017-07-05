@@ -33,7 +33,7 @@ type Amount {
   currency: String!
 }
 
-type Tickets {
+type TicketsSum {
   count: Int!
   sum: Amount
 }
@@ -76,7 +76,7 @@ type Investor {
   id: ID!
   fullName: String!
   email: String!
-  tickets: Tickets!
+  ticketsSum: TicketsSum!
   pictureUrl: String!
   companyName: String!
   status: String!
@@ -131,6 +131,7 @@ type Company {
 
 type Deal {
   id: ID!
+  shortId: ID!
   company: Company!
   category: DealCategory!
   name: String!
@@ -141,8 +142,10 @@ type Deal {
   carried: String!
   hurdle: String!
   deck: [File]!
-  tickets: Tickets!
+  ticketsSum: TicketsSum!
   investorsCommited: Int!
+  investors: [Investor]
+  tickets: [Ticket]
   createdAt: Date!
 }
 
@@ -161,6 +164,7 @@ type Query {
   companies: [Company]
   deals: [Deal]
   tickets: [Ticket]
+  deal(shortId: ID!): Deal
 }
 
 schema {
@@ -176,14 +180,14 @@ const authedQuery = query => user => {
   return query(user);
 };
 
-const adminQuery = query => user => {
+const adminQuery = query => (user, params) => {
   if (!user) {
     return null;
   }
   if (user.role !== 'admin') {
     return null;
   }
-  return query(user);
+  return query(user, params);
 };
 
 const resolvers = {
@@ -194,9 +198,6 @@ const resolvers = {
       return context.Organization.organization(shortId);
     },
     me(root, params, context) {
-      if (!context.user) {
-        return null;
-      }
       return context.User.me(context.user);
     },
     investors(root, params, context) {
@@ -210,6 +211,9 @@ const resolvers = {
     },
     tickets(root, params, context) {
       return authedQuery(context.Organization.tickets)(context.user);
+    },
+    deal(root, { shortId }, context) {
+      return adminQuery(context.Deal.deal)(context.user, shortId);
     },
   },
 };

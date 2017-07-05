@@ -98,12 +98,12 @@ export const investorsQuery = gql`
       id
       fullName
       email
-      tickets {
-        count
-      }
       pictureUrl
       companyName
       status
+      ticketsSum {
+        count
+      }
       createdAt
       updatedAt
     }
@@ -126,6 +126,7 @@ export const dealsQuery = gql`
   query {
     deals {
       id
+      shortId
       company {
         name
         website
@@ -153,7 +154,7 @@ export const dealsQuery = gql`
       deck {
         url
       }
-      tickets {
+      ticketsSum {
         count
         sum {
           amount
@@ -196,6 +197,55 @@ export const ticketsQuery = gql`
         currency
       }
       createdAt
+    }
+  }
+`;
+
+export const dealQuery = gql`
+  query deal($shortId: ID!) {
+    deal(shortId: $shortId) {
+      id
+      shortId
+      company {
+        name
+        domain
+      }
+      category {
+        name
+      }
+      name
+      totalAmount {
+        amount
+        currency
+      }
+      ticketsSum {
+        count
+        sum {
+          amount
+          currency
+        }
+      }
+      investors {
+        id
+        fullName
+        pictureUrl
+        companyName
+        ticketsSum {
+          count
+        }
+      }
+      tickets {
+        id
+        investor {
+          fullName
+          pictureUrl
+          companyName
+        }
+        amount {
+          amount
+          currency
+        }
+      }
     }
   }
 `;

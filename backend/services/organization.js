@@ -107,12 +107,8 @@ const OrganizationService = {
         include: [{ model: InvestorProfile }, { model: Ticket }],
       });
       return investors.map(investor =>
-        Object.assign({}, investor.toJSON(), omit(investor.InvestorProfile.toJSON(), 'id'), {
-          pictureUrl: investor.picture[0].url,
-          companyName: investor.InvestorProfile.corporationSettings.companyName,
-          tickets: {
-            count: investor.Tickets.length,
-          },
+        Object.assign(UserService.toInvestor(investor), {
+          ticketsSum: { count: investor.Tickets.length },
         }),
       );
     } catch (error) {
@@ -259,7 +255,7 @@ const OrganizationService = {
         Object.assign({}, deal.toJSON(), {
           company: deal.Company.toJSON(),
           category: deal.DealCategory.toJSON(),
-          tickets: {
+          ticketsSum: {
             count: deal.Tickets.length,
             sum: {
               amount: deal.Tickets.reduce(
@@ -269,9 +265,10 @@ const OrganizationService = {
               currency: deal.totalAmount.currency,
             },
           },
-          investorsCommited: deal.Tickets.reduce((result, { userId }) => (
-            result.includes(userId) ? result : [...result, userId]
-          ), []).length,
+          investorsCommited: deal.Tickets.reduce(
+            (result, { userId }) => (result.includes(userId) ? result : [...result, userId]),
+            [],
+          ).length,
         }),
       );
     } catch (error) {
@@ -315,10 +312,7 @@ const OrganizationService = {
       });
       return tickets.map(ticket =>
         Object.assign({}, ticket.toJSON(), {
-          investor: Object.assign({}, ticket.User.toJSON(), ticket.User.InvestorProfile.toJSON(), {
-            pictureUrl: ticket.User.picture[0].url,
-            companyName: ticket.User.InvestorProfile.corporationSettings.companyName,
-          }),
+          investor: UserService.toInvestor(ticket.User),
           deal: Object.assign({}, ticket.Deal.toJSON(), {
             company: ticket.Deal.Company.toJSON(),
             category: ticket.Deal.DealCategory.toJSON(),

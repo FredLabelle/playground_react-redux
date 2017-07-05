@@ -33,6 +33,13 @@ const UserService = {
     const profile = user.role === 'investor' ? user.InvestorProfile.toJSON() : {};
     return Object.assign(user, omit(profile, 'id'));
   },
+  toInvestor(user) {
+    const investorProfile = omit(user.InvestorProfile.toJSON(), 'id');
+    return Object.assign({}, user.toJSON(), investorProfile, {
+      pictureUrl: user.picture[0].url,
+      companyName: investorProfile.corporationSettings.companyName,
+    });
+  },
   findByResetPasswordToken(resetPasswordToken) {
     return User.findOne({
       where: { resetPasswordToken },
@@ -173,6 +180,9 @@ const UserService = {
   },
   async me(user) {
     try {
+      if (!user) {
+        return null;
+      }
       return UserService.findByEmail(user.email, user.organizationId);
     } catch (error) {
       console.error(error);

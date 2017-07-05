@@ -1039,9 +1039,9 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
-express-cors@0.0.3:
-  version v0.0.3
-  resolved "https://registry.yarnpkg.com/express-cors/-/express-cors-0.0.3.tgz#5c25a78d7be69a4fcb08412cb27c8dfc758896bd"
+"express-cors@git://github.com/ForestAdmin/express-cors.git":
+  version "0.0.4"
+  resolved "git://github.com/ForestAdmin/express-cors.git#0dba7ba1567863d97bb9993d4183cd243b5ccc41"
 
 express-jwt@3.3.0:
   version "3.3.0"
@@ -1232,26 +1232,26 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
-forest-express-sequelize@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/forest-express-sequelize/-/forest-express-sequelize-1.1.9.tgz#649551df248a4babd6d10f8c732f9987646ae1e9"
+forest-express-sequelize@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/forest-express-sequelize/-/forest-express-sequelize-1.1.10.tgz#03798bdbe7e9ed8c3abf88dac0ce6e2729759553"
   dependencies:
     bluebird "2.9.25"
-    forest-express "1.1.8"
+    forest-express "1.1.11"
     http-errors "1.6.1"
     lodash "3.9.3"
     moment "2.10.6"
 
-forest-express@1.1.8:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/forest-express/-/forest-express-1.1.8.tgz#bb98755916a22cfccb5e86bdc63a272d9113c481"
+forest-express@1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/forest-express/-/forest-express-1.1.11.tgz#15a68a9c977166309088b0ec375355ddb48a8787"
   dependencies:
     bcryptjs "2.4.3"
     bluebird "3.3.4"
     body-parser "1.15.0"
     esprima "3.1.3"
     express "4.14.0"
-    express-cors "0.0.3"
+    express-cors "git://github.com/ForestAdmin/express-cors"
     express-jwt "3.3.0"
     jsonapi-serializer "3.4.1"
     jsonwebtoken "7.1.9"

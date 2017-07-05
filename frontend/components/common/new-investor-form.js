@@ -115,11 +115,7 @@ class NewInvestorForm extends Component {
             />
           </div>}
         {this.state.info &&
-          <Message
-            info
-            header="Information!"
-            content="This user has already been invited."
-          />}
+          <Message info header="Information!" content="This user has already been invited." />}
         {this.state.warning &&
           <Message warning header="Warning!" content="This user has already joined!" />}
         <Message error header="Error!" content="You must chose at least one investment method." />

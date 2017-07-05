@@ -77,8 +77,8 @@ class InvitationEmailParameters extends Component {
             autoHeight
           />
           <p>
-            You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,
-            {' '}<strong>{'{{lastname}}'}</strong> and <strong>{'{{signup_link}}'}</strong>.
+            You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
+            <strong>{'{{lastname}}'}</strong> and <strong>{'{{signup_link}}'}</strong>.
           </p>
           <Message
             warning

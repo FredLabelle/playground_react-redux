@@ -9,11 +9,7 @@ module.exports.gravatarPicture = email => {
   };
 };
 
-module.exports.generateInvitationEmailContent = (
-  { subject, body },
-  organizationName,
-  userName,
-) => {
+module.exports.generateInvitationEmailContent = ({ subject, body }, organizationName, userName) => {
   const replace = string =>
     string
       .replace(/{{organization}}/g, organizationName)

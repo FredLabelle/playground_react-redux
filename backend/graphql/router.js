@@ -5,6 +5,7 @@ const authMiddleware = require('../routes/auth/middleware');
 const schema = require('./schema');
 const Organization = require('../services/organization');
 const User = require('../services/user');
+const Deal = require('../services/deal');
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.use(
         user: req.user,
         Organization,
         User,
+        Deal,
       },
     };
   }),

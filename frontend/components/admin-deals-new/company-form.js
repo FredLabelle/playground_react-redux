@@ -76,7 +76,7 @@ class Company extends Component {
           Company
         </Header>
         <Grid>
-          <Grid.Column width={4}>
+          <Grid.Column width={3}>
             <Image
               src={
                 this.state.company.domain
@@ -87,7 +87,7 @@ class Company extends Component {
               centered
             />
           </Grid.Column>
-          <Grid.Column width={12}>
+          <Grid.Column width={13}>
             <Form id="upsert-company" onSubmit={this.onSubmit} success={this.state.success}>
               <Form.Group>
                 <Form.Field

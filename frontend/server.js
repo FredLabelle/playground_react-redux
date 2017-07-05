@@ -12,20 +12,20 @@ const verify = promisify(jwt.verify);
 
 const redirectMiddleware = async (req, res, nextCallback) => {
   const admin = req.url.startsWith('/admin') ? '/admin' : '';
-  const { shortId } = req.params;
+  const { organizationShortId } = req.params;
   try {
     // if redirected to admin dashboard after admin login, get token from query string
     const token = req.query.token || req.universalCookies.get('token');
     const { role } = await verify(token, process.env.FOREST_ENV_SECRET);
     if (admin && role !== 'admin') {
-      return res.redirect(`/organization/${shortId}`);
+      return res.redirect(`/organization/${organizationShortId}`);
     }
     if (!admin && role === 'admin') {
-      return res.redirect(`/admin/organization/${shortId}`);
+      return res.redirect(`/admin/organization/${organizationShortId}`);
     }
     return nextCallback();
   } catch (error) {
-    return res.redirect(`${admin}/organization/${shortId}/login`);
+    return res.redirect(`${admin}/organization/${organizationShortId}/login`);
   }
 };
 
@@ -35,53 +35,70 @@ app.prepare().then(() => {
   };
   const server = express();
   server.use(cookiesMiddleware());
-  server.get('/organization/:shortId/signup', route('/signup'));
-  server.get('/organization/:shortId/login', route('/login'));
-  server.get('/organization/:shortId', redirectMiddleware, route('/'));
-  server.get('/organization/:shortId/deals', redirectMiddleware, route('/deals'));
-  server.get('/organization/:shortId/settings', redirectMiddleware, route('/settings'));
+  server.get('/organization/:organizationShortId/signup', route('/signup'));
+  server.get('/organization/:organizationShortId/login', route('/login'));
+  server.get('/organization/:organizationShortId', redirectMiddleware, route('/'));
+  server.get('/organization/:organizationShortId/deals', redirectMiddleware, route('/deals'));
+  server.get('/organization/:organizationShortId/settings', redirectMiddleware, route('/settings'));
   server.get(
-    '/organization/:shortId/settings/administrative',
+    '/organization/:organizationShortId/settings/administrative',
     redirectMiddleware,
     route('/settings/administrative'),
   );
   server.get(
-    '/organization/:shortId/settings/parameters',
+    '/organization/:organizationShortId/settings/parameters',
     redirectMiddleware,
     route('/settings/parameters'),
   );
-  server.get('/admin/organization/:shortId/login', route('/admin/login'));
-  server.get('/admin/organization/:shortId', redirectMiddleware, route('/admin'));
+  server.get('/admin/organization/:organizationShortId/login', route('/admin/login'));
+  server.get('/admin/organization/:organizationShortId', redirectMiddleware, route('/admin'));
   server.get(
-    '/admin/organization/:shortId/deals/new',
+    '/admin/organization/:organizationShortId/deals/new',
     redirectMiddleware,
     route('/admin/deals/new'),
   );
   server.get(
-    '/admin/organization/:shortId/investors',
+    '/admin/organization/:organizationShortId/deals/:resourceShortId',
+    redirectMiddleware,
+    route('/admin/deals'),
+  );
+  server.get(
+    '/admin/organization/:organizationShortId/investors',
     redirectMiddleware,
     route('/admin/investors'),
   );
   server.get(
-    '/admin/organization/:shortId/investors/new',
+    '/admin/organization/:organizationShortId/investors/new',
     redirectMiddleware,
     route('/admin/investors/new'),
   );
-  server.get('/admin/organization/:shortId/tickets', redirectMiddleware, route('/admin/tickets'));
   server.get(
-    '/admin/organization/:shortId/tickets/new',
+    '/admin/organization/:organizationShortId/tickets',
+    redirectMiddleware,
+    route('/admin/tickets'),
+  );
+  server.get(
+    '/admin/organization/:organizationShortId/tickets/new',
     redirectMiddleware,
     route('/admin/tickets/new'),
   );
-  server.get('/admin/organization/:shortId/reports', redirectMiddleware, route('/admin/reports'));
-  server.get('/admin/organization/:shortId/settings', redirectMiddleware, route('/admin/settings'));
   server.get(
-    '/admin/organization/:shortId/settings/users',
+    '/admin/organization/:organizationShortId/reports',
+    redirectMiddleware,
+    route('/admin/reports'),
+  );
+  server.get(
+    '/admin/organization/:organizationShortId/settings',
+    redirectMiddleware,
+    route('/admin/settings'),
+  );
+  server.get(
+    '/admin/organization/:organizationShortId/settings/users',
     redirectMiddleware,
     route('/admin/settings/users'),
   );
   server.get(
-    '/admin/organization/:shortId/settings/parameters',
+    '/admin/organization/:organizationShortId/settings/parameters',
     redirectMiddleware,
     route('/admin/settings/parameters'),
   );
