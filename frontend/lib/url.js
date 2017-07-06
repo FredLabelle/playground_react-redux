@@ -3,7 +3,7 @@ import { stringify } from 'querystring';
 const whitelist = ['new', 'users', 'parameters', 'administrative'];
 
 export const linkHref = (rawPathname, { admin, organizationShortId }, me) => {
-  const adminProp = me ? me.role : admin;
+  const adminProp = me ? me.role === 'admin' : admin;
   const adminPath = adminProp ? '/admin' : '';
   const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
   const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;
@@ -21,7 +21,7 @@ console.log(linkHref('/deals/abc-_', { admin: true, organizationShortId: 'eclub'
 console.log('--------');*/
 
 export const linkAs = (rawPathname, { admin, organizationShortId }, me) => {
-  const adminProp = me ? me.role : admin;
+  const adminProp = me ? me.role === 'admin' : admin;
   const adminPath = adminProp ? '/admin' : '';
   const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
   const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;

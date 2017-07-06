@@ -27,32 +27,42 @@ const DealsListHeader = ({ router }) =>
 DealsListHeader.propTypes = { router: RouterPropType.isRequired };
 
 const DealsListRow = ({ router, deal }) =>
-  <Link
-    href={linkHref(`/deals/${deal.shortId}`, router)}
-    as={linkAs(`/deals/${deal.shortId}`, router)}
-  >
-    <Table.Row className="table-row">
-      <CompanyCell company={deal.company} />
-      <DealCell deal={deal} />
-      <Table.Cell>
-        {deal.investorsCommited} commited
-      </Table.Cell>
-      {router.admin && <TicketsSumCell ticketsSum={deal.ticketsSum} />}
-      {/* <Table.Cell>
-        <strong>Open</strong><br />
-        {moment(deal.createdAt).format('DD/MM/YYYY')}
-      </Table.Cell>
-      <Table.Cell>
-        View | Share | Close
-      </Table.Cell>*/}
-      <style jsx>{`
-        strong {
-          color: #21ba45;
-        }
-      `}</style>
-    </Table.Row>
-  </Link>;
+  <Table.Row className={router.admin ? 'table-row' : ''}>
+    <CompanyCell company={deal.company} />
+    <DealCell deal={deal} />
+    <Table.Cell>
+      {deal.investorsCommited} commited
+    </Table.Cell>
+    {router.admin && <TicketsSumCell ticketsSum={deal.ticketsSum} />}
+    {/* <Table.Cell>
+      <strong>Open</strong><br />
+      {moment(deal.createdAt).format('DD/MM/YYYY')}
+    </Table.Cell>
+    <Table.Cell>
+      View | Share | Close
+    </Table.Cell>*/}
+    <style jsx>{`
+      strong {
+        color: #21ba45;
+      }
+    `}</style>
+  </Table.Row>;
 DealsListRow.propTypes = {
+  router: RouterPropType.isRequired,
+  deal: DealPropType.isRequired,
+};
+
+const DealsListRowLink = ({ router, deal }) =>
+  router.admin
+    ? <Link
+        prefetch
+        href={linkHref(`/deals/${deal.shortId}`, router)}
+        as={linkAs(`/deals/${deal.shortId}`, router)}
+      >
+        <DealsListRow router={router} deal={deal} />
+      </Link>
+    : <DealsListRow router={router} deal={deal} />;
+DealsListRowLink.propTypes = {
   router: RouterPropType.isRequired,
   deal: DealPropType.isRequired,
 };
@@ -62,7 +72,7 @@ const DealsList = ({ router, deals }) =>
     ? <Table basic="very" celled>
         <DealsListHeader router={router} />
         <Table.Body>
-          {deals.map(deal => <DealsListRow key={deal.id} router={router} deal={deal} />)}
+          {deals.map(deal => <DealsListRowLink key={deal.id} router={router} deal={deal} />)}
         </Table.Body>
       </Table>
     : null;

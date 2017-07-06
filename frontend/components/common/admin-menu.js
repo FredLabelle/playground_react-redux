@@ -1,50 +1,28 @@
-import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Menu } from 'semantic-ui-react';
-import Router from 'next/router';
+import Link from 'next/link';
 
 import { RouterPropType } from '../../lib/prop-types';
 import { linkHref, linkAs } from '../../lib/url';
 
-class AdminMenu extends Component {
-  static propTypes = { router: RouterPropType.isRequired };
-  componentDidMount() {
-    Router.prefetch('/admin');
-    Router.prefetch('/admin/investors');
-    Router.prefetch('/admin/tickets');
-    // Router.prefetch('/admin/reports');
-  }
-  onClick = (event, { name }) => {
-    event.preventDefault();
-    Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
-  };
-  render() {
-    const { pathname } = this.props.router;
-    return (
-      <Menu attached="top" tabular widths={3}>
-        <Menu.Item
-          name="/"
-          active={pathname === '/' || pathname.startsWith('/deals')}
-          onClick={this.onClick}
-        >
-          Deals
-        </Menu.Item>
-        <Menu.Item
-          name="/investors"
-          active={pathname.startsWith('/investors')}
-          onClick={this.onClick}
-        >
-          Investors
-        </Menu.Item>
-        <Menu.Item name="/tickets" active={pathname.startsWith('/tickets')} onClick={this.onClick}>
-          Tickets
-        </Menu.Item>
-        {/* <Menu.Item name="/reports" active={active('/reports')} onClick={this.onClick}>
-          Reports
-        </Menu.Item>*/}
-      </Menu>
-    );
-  }
-}
+const AdminMenu = ({ router }) =>
+  <Menu attached="top" tabular widths={3}>
+    <Link prefetch href={linkHref('/', router)} as={linkAs('/', router)}>
+      <Menu.Item name="/" active={router.pathname === '/' || router.pathname.startsWith('/deals')}>
+        Deals
+      </Menu.Item>
+    </Link>
+    <Link prefetch href={linkHref('/investors', router)} as={linkAs('/investors', router)}>
+      <Menu.Item name="/investors" active={router.pathname.startsWith('/investors')}>
+        Investors
+      </Menu.Item>
+    </Link>
+    <Link prefetch href={linkHref('/tickets', router)} as={linkAs('/tickets', router)}>
+      <Menu.Item name="/tickets" active={router.pathname.startsWith('/tickets')}>
+        Tickets
+      </Menu.Item>
+    </Link>
+  </Menu>;
+AdminMenu.propTypes = { router: RouterPropType.isRequired };
 
 export default connect(({ router }) => ({ router }))(AdminMenu);

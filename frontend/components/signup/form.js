@@ -1,16 +1,19 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import Router from 'next/router';
 
-import { OrganizationPropType } from '../../lib/prop-types';
+import { linkHref, linkAs } from '../../lib/url';
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { investorSignupMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 import NewInvestorForm from '../common/new-investor-form';
 
 class SignupForm extends Component {
   static propTypes = {
+    router: RouterPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     signup: PropTypes.func.isRequired,
@@ -26,10 +29,9 @@ class SignupForm extends Component {
     const { data: { investorSignup } } = await this.props.signup(investor);
     if (investorSignup) {
       this.props.cookies.set('token', investorSignup, { path: '/' });
-      const { shortId: organizationShortId } = this.props.organization;
       Router.push(
-        `/settings/administrative?organizationShortId=${organizationShortId}`,
-        `/organization/${organizationShortId}/settings/administrative`,
+        linkHref('/settings/administrative', this.props.router),
+        linkAs('/settings/administrative', this.props.router),
       );
     } else {
       console.error('SIGNUP ERROR');
@@ -50,6 +52,7 @@ class SignupForm extends Component {
 
 export default compose(
   withCookies,
+  connect(({ router }) => ({ router })),
   graphql(investorSignupMutation, {
     props: ({ mutate }) => ({
       signup: input =>

@@ -11,7 +11,7 @@ module.exports.seedDatabase = async (req, res) => {
   try {
     await sequelize.sync({ force: true });
     const organization = await Organization.create({
-      shortId: 'eclub',
+      shortId: process.env.NODE_ENV === 'production' ? '' : 'eclub',
       generalSettings: {
         name: 'eClub',
         website: 'https://efounders.co',
