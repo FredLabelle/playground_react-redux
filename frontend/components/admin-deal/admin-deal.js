@@ -1,13 +1,14 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Grid, Image, Menu } from 'semantic-ui-react';
+import { Segment, Grid, Image, Menu, Button } from 'semantic-ui-react';
 import { stringify } from 'querystring';
 import Link from 'next/link';
 
 import { numberFormatter } from '../../lib/util';
 import { RouterPropType, DealPropType } from '../../lib/prop-types';
 import { dealQuery } from '../../lib/queries';
+import UpdateDealModal from './update-deal-modal';
 import DealInvestorsList from './deal-investors-list';
 import DealTicketsList from './deal-tickets-list';
 
@@ -17,6 +18,13 @@ class AdminDeal extends Component {
     deal: DealPropType,
   };
   static defaultProps = { deal: null };
+  state = { updateDealModalOpen: false };
+  onUpdateDealModalClose = () => {
+    this.setState({ updateDealModalOpen: false });
+  };
+  updateDeal = () => {
+    this.setState({ updateDealModalOpen: true });
+  };
   render() {
     const { deal } = this.props;
     if (!deal) {
@@ -50,11 +58,22 @@ class AdminDeal extends Component {
             />
           </Grid.Column>
           <Grid.Column width={13}>
-            <p>
+            <div>
+              <Button
+                type="button"
+                primary
+                floated="right"
+                content="Update deal"
+                icon="file text outline"
+                labelPosition="left"
+                onClick={this.updateDeal}
+              />
               <strong>
                 {dealTitle}
               </strong>
-            </p>
+            </div>
+            <br />
+            <br />
             <br />
             <p>
               {ticketsSumAmount} ({deal.ticketsSum.count} ticket{ticketsPlural})
@@ -75,6 +94,11 @@ class AdminDeal extends Component {
         {active('investors') && <DealInvestorsList investors={deal.investors} />}
         {active('tickets') && <DealTicketsList tickets={deal.tickets} />}
         {active('reports') && <span>REPORTS</span>}
+        <UpdateDealModal
+          open={this.state.updateDealModalOpen}
+          onClose={this.onUpdateDealModalClose}
+          deal={this.props.deal}
+        />
       </Segment>
     );
   }

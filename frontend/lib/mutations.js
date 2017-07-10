@@ -37,7 +37,7 @@ export const updateInvestorMutation = gql`
 `;
 
 export const updateInvestorFilesMutation = gql`
-  mutation updateInvestorFiles($input: UpdateInvestorFilesInput!) {
+  mutation updateInvestorFiles($input: UpdateFilesInput!) {
     updateInvestorFiles(input: $input)
   }
 `;
@@ -111,5 +111,17 @@ export const changeEmailMutation = gql`
 export const changePasswordMutation = gql`
   mutation changePassword($input: ChangePasswordInput!) {
     changePassword(input: $input)
+  }
+`;
+
+export const updateDealMutation = gql`
+  mutation updateDeal($input: UpdateDealInput!) {
+    updateDeal(input: $input)
+  }
+`;
+
+export const updateDealFilesMutation = gql`
+  mutation updateDealFiles($input: UpdateFilesInput!) {
+    updateDealFiles(input: $input)
   }
 `;

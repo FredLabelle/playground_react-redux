@@ -74,9 +74,11 @@ export const DealCategoryPropType = PropTypes.shape({
 });
 
 export const DealPropType = PropTypes.shape({
+  id: PropTypes.string,
   company: CompanyPropType.isRequired,
   category: DealCategoryPropType.isRequired,
   name: PropTypes.string.isRequired,
+  description: PropTypes.string,
   totalAmount: AmountPropType.isRequired,
   ticketsSum: TicketsSumPropType,
   investorsCommited: PropTypes.number,

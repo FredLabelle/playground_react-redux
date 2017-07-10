@@ -22,9 +22,10 @@ File.propTypes = { file: FilePropType.isRequired };
 
 export default class extends Component {
   static propTypes = {
+    resourceId: PropTypes.string,
     field: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    files: PropTypes.arrayOf(FilePropType).isRequired,
+    files: PropTypes.arrayOf(FilePropType),
     onChange: PropTypes.func,
     mutation: PropTypes.func,
     mutationName: PropTypes.string,
@@ -34,6 +35,8 @@ export default class extends Component {
     multiple: PropTypes.bool,
   };
   static defaultProps = {
+    resourceId: '',
+    files: [],
     onChange: () => {},
     mutation: () => {},
     mutationName: '',
@@ -97,6 +100,7 @@ export default class extends Component {
             return;
           }
           const { data } = await this.props.mutation({
+            resourceId: this.props.resourceId,
             field: this.props.field,
             files: value,
           });
@@ -117,6 +121,7 @@ export default class extends Component {
       return;
     }
     const { data } = await this.props.mutation({
+      resourceId: this.props.resourceId,
       field: this.props.field,
       files: [],
     });

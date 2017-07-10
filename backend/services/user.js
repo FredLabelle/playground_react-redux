@@ -107,11 +107,10 @@ const UserService = {
       }
       const resetPasswordToken = uuid();
       await user.update({ resetPasswordToken });
-      const queryString = stringify({ token: resetPasswordToken });
-      const frontendUrl = process.env.FRONTEND_URL;
+      const queryString = stringify({ resetPasswordToken });
       const { shortId } = organization;
-      const url = `${frontendUrl}/organization/${shortId}/login?${queryString}`;
-      await sendEmail({
+      const url = `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`;
+      sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: email,
@@ -147,10 +146,9 @@ const UserService = {
       }
       const changeEmailToken = await sign({ email: input.email }, process.env.FOREST_ENV_SECRET);
       await user.update({ changeEmailToken });
-      const queryString = stringify({ token: changeEmailToken });
-      const backendUrl = process.env.BACKEND_URL;
-      const url = `${backendUrl}/change-email?${queryString}`;
-      await sendEmail({
+      const queryString = stringify({ changeEmailToken });
+      const url = `${process.env.BACKEND_URL}/change-email?${queryString}`;
+      sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: input.email,

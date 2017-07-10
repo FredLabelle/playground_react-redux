@@ -17,7 +17,6 @@ const {
 const UserService = require('./user');
 const { gravatarPicture, generateInvitationEmailContent } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
-const { uploadFileFromUrl } = require('../lib/gcs');
 
 const sign = promisify(jwt.sign);
 
@@ -65,9 +64,6 @@ const OrganizationService = {
   },
   async update(user, input) {
     try {
-      if (user.role !== 'admin') {
-        return false;
-      }
       const organization = await user.getOrganization();
       await organization.update(input);
       return true;
@@ -138,7 +134,7 @@ const OrganizationService = {
         organization.generalSettings.name,
         newUser.name,
       );
-      await sendEmail({
+      sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: newUser.email,
@@ -192,7 +188,7 @@ const OrganizationService = {
         organization.generalSettings.name,
         input.investor.name,
       );
-      await sendEmail({
+      sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
         to: input.investor.email,
@@ -274,24 +270,6 @@ const OrganizationService = {
     } catch (error) {
       console.error(error);
       return null;
-    }
-  },
-  async createDeal(user, input) {
-    try {
-      const organization = await user.getOrganization();
-      const deal = await organization.createDeal(input);
-      if (input.deck.length) {
-        const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-        const folderName = `deck${env}/${deal.shortId}`;
-        uploadFileFromUrl(input.deck[0].url, `${folderName}/0`).then(url => {
-          const newDeck = [Object.assign({}, input.deck[0], { url })];
-          deal.update({ deck: newDeck });
-        });
-      }
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
     }
   },
   async tickets(user) {

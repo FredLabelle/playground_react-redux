@@ -51,7 +51,6 @@ class UserLogin extends Component {
           organization={this.props.organization}
         />
         <ResetPasswordModal
-          defaultOpen
           open={this.state.resetPasswordModalOpen}
           onClose={this.onResetPasswordModalClose}
           router={this.props.router}

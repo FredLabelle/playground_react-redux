@@ -12,20 +12,20 @@ const verify = promisify(jwt.verify);
 
 const redirectMiddleware = async (req, res, nextCallback) => {
   const admin = req.url.startsWith('/admin') ? '/admin' : '';
-  const { organizationShortId } = req.params;
+  const { organizationShortId: shortId } = req.params;
   try {
     // if redirected to admin dashboard after admin login, get token from query string
     const token = req.query.token || req.universalCookies.get('token');
     const { role } = await verify(token, process.env.FOREST_ENV_SECRET);
     if (admin && role !== 'admin') {
-      return res.redirect(`/organization/${organizationShortId}`);
+      return res.redirect(`/organization/${shortId}`);
     }
     if (!admin && role === 'admin') {
-      return res.redirect(`/admin/organization/${organizationShortId}`);
+      return res.redirect(`/admin/organization/${shortId}`);
     }
     return nextCallback();
   } catch (error) {
-    return res.redirect(`${admin}/organization/${organizationShortId}/login`);
+    return res.redirect(`${admin}/organization/${shortId}/login`);
   }
 };
 

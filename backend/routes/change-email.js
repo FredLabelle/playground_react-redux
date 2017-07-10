@@ -6,12 +6,11 @@ const UserService = require('../services/user');
 const verify = promisify(jwt.verify);
 
 module.exports = async (req, res) => {
-  const { token } = req.query;
-  const { email } = await verify(token, process.env.FOREST_ENV_SECRET);
-  const user = await UserService.findByChangeEmailToken(token);
+  const { changeEmailToken } = req.query;
+  const { email } = await verify(changeEmailToken, process.env.FOREST_ENV_SECRET);
+  const user = await UserService.findByChangeEmailToken(changeEmailToken);
   user.update({ changeEmailToken: null, email, verified: true });
-  const frontendUrl = process.env.FRONTEND_URL;
   const { shortId } = await user.getOrganization();
-  const url = `${frontendUrl}/organization/${shortId}`;
+  const url = `${process.env.FRONTEND_URL}/organization/${shortId}`;
   res.redirect(url);
 };

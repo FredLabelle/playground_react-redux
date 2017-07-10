@@ -28,9 +28,7 @@ class SettingsAccount extends Component {
   };
   static defaultProps = { me: null };
   state = {
-    me: {
-      ...pick(this.props.me, 'name', 'picture', 'investmentSettings'),
-    },
+    me: pick(this.props.me, 'name', 'picture', 'investmentSettings'),
     investmentSettingsError: false,
     saving: false,
     saved: false,

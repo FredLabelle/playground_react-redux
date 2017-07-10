@@ -218,6 +218,21 @@ export const dealQuery = gql`
         amount
         currency
       }
+      minTicket {
+        amount
+        currency
+      }
+      maxTicket {
+        amount
+        currency
+      }
+      carried
+      hurdle
+      deck {
+        name
+        url
+        image
+      }
       ticketsSum {
         count
         sum {

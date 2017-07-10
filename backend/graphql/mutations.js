@@ -74,7 +74,8 @@ input FileInput {
   image: Boolean!
 }
 
-input UpdateInvestorFilesInput {
+input UpdateFilesInput {
+  resourceId: ID!
   field: String!
   files: [FileInput]!
 }
@@ -169,6 +170,17 @@ input ChangePasswordInput {
   password: String!
 }
 
+input UpdateDealInput {
+  id: ID!
+  name: String!
+  description: String
+  totalAmount: AmountInput!
+  minTicket: AmountInput!
+  maxTicket: AmountInput!
+  carried: String!
+  hurdle: String!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -178,7 +190,7 @@ type Mutation {
   changeEmail(input: ChangeEmailInput!): Boolean!
   changePassword(input: ChangePasswordInput!): Boolean!
   updateInvestor(input: UpdateInvestorInput!): Boolean!
-  updateInvestorFiles(input: UpdateInvestorFilesInput!): Boolean!
+  updateInvestorFiles(input: UpdateFilesInput!): Boolean!
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   updateDealCategories(input: [DealCategoryInput]!): Boolean!
@@ -188,6 +200,8 @@ type Mutation {
   upsertCompany(input: UpsertCompanyInput!): Company
   createDeal(input: CreateDealInput!): Boolean!
   createTicket(input: CreateTicketInput!): Boolean!
+  updateDeal(input: UpdateDealInput!): Boolean!
+  updateDealFiles(input: UpdateFilesInput!): Boolean!
 }
 `;
 
@@ -217,13 +231,13 @@ exports.resolvers = {
       return context.User.login(input);
     },
     logout(root, params, context) {
-      return context.User.logout();
+      return authedMutation(context.User.logout, false)();
     },
     forgotPassword(root, { input }, context) {
       return context.User.forgotPassword(input);
     },
     resetPassword(root, { input }, context) {
-      return context.User.resetPassword(input);
+      return authedMutation(context.User.resetPassword, false)(input);
     },
     changeEmail(root, { input }, context) {
       return authedMutation(context.User.changeEmail, false)(context.user, input);
@@ -232,10 +246,10 @@ exports.resolvers = {
       return authedMutation(context.User.changePassword, false)(context.user, input);
     },
     updateInvestor(root, { input }, context) {
-      return context.User.updateInvestor(context.user, input);
+      return authedMutation(context.User.updateInvestor, false)(context.user, input);
     },
     updateInvestorFiles(root, { input }, context) {
-      return context.User.updateInvestorFiles(context.user, input);
+      return authedMutation(context.User.updateInvestorFiles, false)(context.user, input);
     },
     adminLoginAck() {
       return true;
@@ -250,7 +264,7 @@ exports.resolvers = {
       return adminMutation(context.Organization.createInvestor, false)(context.user, input);
     },
     invitationStatus(root, { input }, context) {
-      return context.Organization.invitationStatus(input);
+      return adminMutation(context.Organization.invitationStatus, 'error')(input);
     },
     inviteInvestor(root, { input }, context) {
       return adminMutation(context.Organization.inviteInvestor, false)(context.user, input);
@@ -259,10 +273,16 @@ exports.resolvers = {
       return adminMutation(context.Organization.upsertCompany, null)(context.user, input);
     },
     createDeal(root, { input }, context) {
-      return adminMutation(context.Organization.createDeal, false)(context.user, input);
+      return adminMutation(context.Deal.create, false)(context.user, input);
     },
     createTicket(root, { input }, context) {
       return adminMutation(context.Organization.createTicket, false)(context.user, input);
+    },
+    updateDeal(root, { input }, context) {
+      return adminMutation(context.Deal.update, false)(context.user, input);
+    },
+    updateDealFiles(root, { input }, context) {
+      return adminMutation(context.Deal.updateFiles, false)(context.user, input);
     },
   },
 };

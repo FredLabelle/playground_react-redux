@@ -6,17 +6,16 @@ const verify = promisify(jwt.verify);
 
 module.exports = async (req, res) => {
   const { token } = req.query;
-  const { name: { firstName, lastName }, email, organizationShortId } = await verify(
+  const { name: { firstName, lastName }, email, organizationShortId: shortId } = await verify(
     token,
     process.env.FOREST_ENV_SECRET,
   );
-  const frontendUrl = process.env.FRONTEND_URL;
   const queryString = stringify({
     firstName,
     lastName,
     email,
     token,
   });
-  const url = `${frontendUrl}/organization/${organizationShortId}/signup?${queryString}`;
+  const url = `${process.env.FRONTEND_URL}/organization/${shortId}/signup?${queryString}`;
   res.redirect(url);
 };

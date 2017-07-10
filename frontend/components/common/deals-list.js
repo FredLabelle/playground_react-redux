@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
+import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Table } from 'semantic-ui-react';
-import Link from 'next/link';
+import Router from 'next/router';
 // import moment from 'moment';
 
 import { linkHref, linkAs } from '../../lib/url';
@@ -26,53 +27,54 @@ const DealsListHeader = ({ router }) =>
   </Table.Header>;
 DealsListHeader.propTypes = { router: RouterPropType.isRequired };
 
-const DealsListRow = ({ router, deal }) =>
-  <Table.Row className={router.admin ? 'table-row' : ''}>
-    <CompanyCell company={deal.company} />
-    <DealCell deal={deal} />
-    <Table.Cell>
-      {deal.investorsCommited} commited
-    </Table.Cell>
-    {router.admin && <TicketsSumCell ticketsSum={deal.ticketsSum} />}
-    {/* <Table.Cell>
-      <strong>Open</strong><br />
-      {moment(deal.createdAt).format('DD/MM/YYYY')}
-    </Table.Cell>
-    <Table.Cell>
-      View | Share | Close
-    </Table.Cell>*/}
-    <style jsx>{`
-      strong {
-        color: #21ba45;
-      }
-    `}</style>
-  </Table.Row>;
-DealsListRow.propTypes = {
-  router: RouterPropType.isRequired,
-  deal: DealPropType.isRequired,
-};
-
-const DealsListRowLink = ({ router, deal }) =>
-  router.admin
-    ? <Link
-        prefetch
-        href={linkHref(`/deals/${deal.shortId}`, router)}
-        as={linkAs(`/deals/${deal.shortId}`, router)}
-      >
-        <DealsListRow router={router} deal={deal} />
-      </Link>
-    : <DealsListRow router={router} deal={deal} />;
-DealsListRowLink.propTypes = {
-  router: RouterPropType.isRequired,
-  deal: DealPropType.isRequired,
-};
+class DealsListRow extends Component {
+  static propTypes = {
+    router: RouterPropType.isRequired,
+    deal: DealPropType.isRequired,
+  };
+  onClick = (router, deal) => event => {
+    event.preventDefault();
+    if (!router.admin) {
+      return;
+    }
+    Router.push(
+      linkHref(`/deals/${deal.shortId}`, router),
+      linkAs(`/deals/${deal.shortId}`, router),
+    );
+  };
+  render() {
+    const { router, deal } = this.props;
+    return (
+      <Table.Row className={router.admin ? 'table-row' : ''} onClick={this.onClick(router, deal)}>
+        <CompanyCell company={deal.company} />
+        <DealCell deal={deal} />
+        <Table.Cell>
+          {deal.investorsCommited} commited
+        </Table.Cell>
+        {router.admin && <TicketsSumCell ticketsSum={deal.ticketsSum} />}
+        {/* <Table.Cell>
+          <strong>Open</strong><br />
+          {moment(deal.createdAt).format('DD/MM/YYYY')}
+        </Table.Cell>
+        <Table.Cell>
+          View | Share | Close
+        </Table.Cell>*/}
+        <style jsx>{`
+          strong {
+            color: #21ba45;
+          }
+        `}</style>
+      </Table.Row>
+    );
+  }
+}
 
 const DealsList = ({ router, deals }) =>
   deals.length
     ? <Table basic="very" celled>
         <DealsListHeader router={router} />
         <Table.Body>
-          {deals.map(deal => <DealsListRowLink key={deal.id} router={router} deal={deal} />)}
+          {deals.map(deal => <DealsListRow key={deal.id} router={router} deal={deal} />)}
         </Table.Body>
       </Table>
     : null;
