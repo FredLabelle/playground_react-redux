@@ -7,7 +7,9 @@ const DealCell = ({ deal }) =>
   <Table.Cell>
     {deal.name} - {deal.category.name}
     <br />
-    {numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount)}
+    {numberFormatter(deal.amountAllocatedToOrganization.currency).format(
+      deal.amountAllocatedToOrganization.amount,
+    )}
   </Table.Cell>;
 DealCell.propTypes = { deal: DealPropType.isRequired };
 

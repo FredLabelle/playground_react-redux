@@ -13,4 +13,9 @@ module.exports = sequelize.define('Ticket', {
     type: Sequelize.JSONB,
     allowNull: false,
   },
+  status: {
+    type: Sequelize.STRING,
+    defaultValue: 'pending',
+    allowNull: false,
+  },
 });

@@ -1,8 +1,9 @@
 const uniqBy = require('lodash/uniqBy');
+const omit = require('lodash/omit');
 
 const { Deal, Company, DealCategory, Ticket, User, InvestorProfile } = require('../models');
 const UserService = require('../services/user');
-const { uploadFileFromUrl, deleteFiles } = require('../lib/gcs');
+const { handleFilesUpdate } = require('../lib/util');
 
 const DealService = {
   findById(id) {
@@ -26,6 +27,46 @@ const DealService = {
       ],
     });
   },
+  async deals(user) {
+    try {
+      const organization = await user.getOrganization();
+      const deals = await organization.getDeals({
+        include: [
+          { model: Company },
+          { model: DealCategory },
+          {
+            model: Ticket,
+            required: false,
+            where: user.role === 'investor' && { userId: user.id },
+          },
+        ],
+      });
+      const filter = user.role === 'investor' ? deal => deal.Tickets.length === 0 : () => true;
+      return deals.filter(filter).map(deal =>
+        Object.assign({}, deal.toJSON(), {
+          company: deal.Company.toJSON(),
+          category: deal.DealCategory.toJSON(),
+          ticketsSum: {
+            count: deal.Tickets.length,
+            sum: {
+              amount: deal.Tickets.reduce(
+                (result, { amount }) => parseInt(amount.amount, 10) + result,
+                0,
+              ),
+              currency: deal.amountAllocatedToOrganization.currency,
+            },
+          },
+          investorsCommited: deal.Tickets.reduce(
+            (result, { userId }) => (result.includes(userId) ? result : [...result, userId]),
+            [],
+          ).length,
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
   async deal(user, shortId) {
     try {
       const deal = await DealService.findByShortId(shortId);
@@ -46,7 +87,7 @@ const DealService = {
               (result, { amount }) => parseInt(amount.amount, 10) + result,
               0,
             ),
-            currency: deal.totalAmount.currency,
+            currency: deal.amountAllocatedToOrganization.currency,
           },
         },
         investors: uniqBy(
@@ -74,15 +115,12 @@ const DealService = {
   async create(user, input) {
     try {
       const organization = await user.getOrganization();
-      const deal = await organization.createDeal(input);
-      if (input.deck.length) {
-        const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-        const folderName = `deck${env}/${deal.shortId}`;
-        uploadFileFromUrl(input.deck[0].url, `${folderName}/0`).then(url => {
-          const newDeck = [Object.assign({}, input.deck[0], { url })];
-          deal.update({ deck: newDeck });
-        });
-      }
+      const deal = await organization.createDeal(omit(input, 'deck'));
+      handleFilesUpdate(deal.shortId, input, 'deck').then(deck => {
+        if (deck) {
+          deal.update({ deck });
+        }
+      });
       return true;
     } catch (error) {
       console.error(error);
@@ -92,36 +130,14 @@ const DealService = {
   async update(user, input) {
     try {
       const deal = await DealService.findById(input.id);
-      await deal.update(input);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  },
-  async updateFiles(user, { resourceId, field, files }) {
-    try {
-      const deal = await DealService.findById(resourceId);
       if (user.organizationId !== deal.organizationId) {
         return false;
       }
-      const fieldName = field.split('.').pop();
-      const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-      const folderName = `${fieldName}${env}/${deal.shortId}`;
-      const newFiles = files.map(file => Object.assign({}, file));
-      if (files.length) {
-        const promises = files.map((file, index) =>
-          uploadFileFromUrl(file.url, `${folderName}/${index}`),
-        );
-        const urls = await Promise.all(promises);
-        urls.forEach((url, index) => {
-          newFiles[index].url = url;
-        });
-      } else {
-        await deleteFiles(folderName);
+      const deck = await handleFilesUpdate(deal.shortId, input, 'deck');
+      if (deck) {
+        Object.assign(input, { deck });
       }
-      deal.set(field, newFiles);
-      await deal.save();
+      await deal.update(input);
       return true;
     } catch (error) {
       console.error(error);

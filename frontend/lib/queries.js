@@ -39,10 +39,13 @@ export const meQuery = gql`
         firstName
         lastName
       }
+      phone
       email
       picture {
+        name
         url
         image
+        uploaded
       }
       role
       type
@@ -54,6 +57,7 @@ export const meQuery = gql`
           name
           url
           image
+          uploaded
         }
         fiscalAddress {
           address1
@@ -79,6 +83,7 @@ export const meQuery = gql`
           name
           url
           image
+          uploaded
         }
       }
       advisor {
@@ -138,7 +143,7 @@ export const dealsQuery = gql`
       }
       name
       description
-      totalAmount {
+      amountAllocatedToOrganization {
         amount
         currency
       }
@@ -187,7 +192,7 @@ export const ticketsQuery = gql`
           name
         }
         name
-        totalAmount {
+        amountAllocatedToOrganization {
           amount
           currency
         }
@@ -196,6 +201,7 @@ export const ticketsQuery = gql`
         amount
         currency
       }
+      status
       createdAt
     }
   }
@@ -214,7 +220,16 @@ export const dealQuery = gql`
         name
       }
       name
-      totalAmount {
+      spvName
+      roundSize {
+        amount
+        currency
+      }
+      premoneyValuation {
+        amount
+        currency
+      }
+      amountAllocatedToOrganization {
         amount
         currency
       }
@@ -226,12 +241,14 @@ export const dealQuery = gql`
         amount
         currency
       }
+      referenceClosingDate
       carried
       hurdle
       deck {
         name
         url
         image
+        uploaded
       }
       ticketsSum {
         count

@@ -112,7 +112,7 @@ const initialState = organization => ({
   form: 'invite-investor',
   success: false,
   info: false,
-  investorWarning: false,
+  inviteInvestorWarning: false,
   invitationEmailWarning: false,
   error: false,
 });
@@ -179,7 +179,7 @@ class InviteModal extends Component {
                 onSubmit={this.onInvestorSubmit}
                 investor={this.state.investor}
                 onChange={this.handleChange}
-                warning={this.state.investorWarning}
+                warning={this.state.inviteInvestorWarning}
                 error={this.state.error}
               />
             : <InviteInvitationEmailForm

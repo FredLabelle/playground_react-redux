@@ -1,6 +1,6 @@
 /* eslint-disable react/no-danger */
 import { Head } from 'next/document';
-import reactDatePickerStyleSheet from 'react-date-picker/index.css';
+import reactDatesStyleSheet from 'react-dates/lib/css/_datepicker.css';
 
 import { FRONTEND_URL } from '../../lib/env';
 import UploadcareScript from './uploadcare-script';
@@ -37,7 +37,7 @@ export default () =>
       rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
     />
-    <style dangerouslySetInnerHTML={{ __html: reactDatePickerStyleSheet }} />
+    <style dangerouslySetInnerHTML={{ __html: reactDatesStyleSheet }} />
     <style dangerouslySetInnerHTML={{ __html: globalStyleSheet }} />
     <UploadcareScript />
   </Head>;

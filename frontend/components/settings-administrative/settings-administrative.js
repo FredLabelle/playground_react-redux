@@ -8,7 +8,7 @@ import isEqual from 'lodash/isEqual';
 
 import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { MePropType, FormPropType } from '../../lib/prop-types';
-import { updateInvestorMutation, updateInvestorFilesMutation } from '../../lib/mutations';
+import { updateInvestorMutation } from '../../lib/mutations';
 import { meQuery } from '../../lib/queries';
 import { setUnsavedChanges } from '../../actions/form';
 import RadioField from '../fields/radio-field';
@@ -21,7 +21,6 @@ class SettingsAdministrative extends Component {
     form: FormPropType.isRequired,
     me: MePropType,
     updateInvestor: PropTypes.func.isRequired,
-    updateInvestorFiles: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   static defaultProps = { me: null };
@@ -39,24 +38,6 @@ class SettingsAdministrative extends Component {
     saving: false,
     success: false,
   };
-  componentWillReceiveProps({ me }) {
-    if (!me) {
-      return;
-    }
-    this.setState({
-      me: {
-        ...this.state.me,
-        individualSettings: {
-          ...this.state.me.individualSettings,
-          idDocuments: me.individualSettings.idDocuments,
-        },
-        corporationSettings: {
-          ...this.state.me.corporationSettings,
-          incProof: me.corporationSettings.incProof,
-        },
-      },
-    });
-  }
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ saving: true });
@@ -80,11 +61,11 @@ class SettingsAdministrative extends Component {
       'corporationSettings',
       'advisor',
     ]);
-    const meOmitted = omitDeep(me, 'idDocuments', 'incProof', '__typename');
+    const meOmitted = omitDeep(me, '__typename');
     const unsavedChanges = !isEqual(this.update(), meOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
-  update = () => omitDeep(this.state.me, 'idDocuments', 'incProof', '__typename');
+  update = () => omitDeep(this.state.me, '__typename');
   render() {
     return (
       this.props.me &&
@@ -101,16 +82,8 @@ class SettingsAdministrative extends Component {
             label="Type of Investor"
           />
           {this.state.me.type === 'individual'
-            ? <IndividualSettings
-                me={this.state.me}
-                handleChange={this.handleChange}
-                updateInvestorFiles={this.props.updateInvestorFiles}
-              />
-            : <CorporationSettings
-                me={this.state.me}
-                handleChange={this.handleChange}
-                updateInvestorFiles={this.props.updateInvestorFiles}
-              />}
+            ? <IndividualSettings me={this.state.me} handleChange={this.handleChange} />
+            : <CorporationSettings me={this.state.me} handleChange={this.handleChange} />}
           <Header as="h3" dividing>
             Advisor
           </Header>
@@ -156,15 +129,6 @@ export default compose(
   graphql(updateInvestorMutation, {
     props: ({ mutate }) => ({
       updateInvestor: input =>
-        mutate({
-          variables: { input },
-          refetchQueries: [{ query: meQuery }],
-        }),
-    }),
-  }),
-  graphql(updateInvestorFilesMutation, {
-    props: ({ mutate }) => ({
-      updateInvestorFiles: input =>
         mutate({
           variables: { input },
           refetchQueries: [{ query: meQuery }],

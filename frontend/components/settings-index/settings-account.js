@@ -10,7 +10,7 @@ import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { FormPropType, MePropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
 import { meQuery, organizationQuery } from '../../lib/queries';
-import { updateInvestorMutation, updateInvestorFilesMutation } from '../../lib/mutations';
+import { updateInvestorMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FilesField from '../fields/files-field';
 import InvestmentField from '../fields/investment-field';
@@ -23,12 +23,11 @@ class SettingsAccount extends Component {
     me: MePropType,
     organization: OrganizationPropType.isRequired,
     updateInvestor: PropTypes.func.isRequired,
-    updateInvestorFiles: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   static defaultProps = { me: null };
   state = {
-    me: pick(this.props.me, 'name', 'picture', 'investmentSettings'),
+    me: pick(this.props.me, 'name', 'phone', 'picture', 'investmentSettings'),
     investmentSettingsError: false,
     saving: false,
     saved: false,
@@ -38,17 +37,6 @@ class SettingsAccount extends Component {
   componentDidMount() {
     const inputs = [...document.querySelectorAll('[type="email"], [type="password"]')];
     inputs.forEach(input => Object.assign(input, { disabled: true }));
-  }
-  componentWillReceiveProps({ me }) {
-    if (!me) {
-      return;
-    }
-    this.setState({
-      me: {
-        ...this.state.me,
-        picture: me.picture,
-      },
-    });
   }
   onChangeEmailModalClose = () => {
     this.setState({ changeEmailModalOpen: false });
@@ -77,12 +65,12 @@ class SettingsAccount extends Component {
     }
   };
   handleChange = handleChange(() => {
-    const me = pick(this.props.me, 'name', 'investmentSettings');
+    const me = pick(this.props.me, 'name', 'phone', 'picture', 'investmentSettings');
     const meOmitted = omitDeep(me, '__typename');
     const unsavedChanges = !isEqual(this.update(), meOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
-  update = () => omitDeep(this.state.me, 'picture', '__typename');
+  update = () => omitDeep(this.state.me, '__typename');
   changeEmail = event => {
     event.preventDefault();
     this.setState({ changeEmailModalOpen: true });
@@ -109,6 +97,14 @@ class SettingsAccount extends Component {
           </Header>
           <NameField name="me.name" value={this.state.me.name} onChange={this.handleChange} />
           <Form.Input
+            name="me.phone"
+            value={this.state.me.phone}
+            onChange={this.handleChange}
+            label="Phone"
+            placeholder="Phone"
+            type="tel"
+          />
+          <Form.Input
             defaultValue={this.props.me.email}
             label="Email"
             action={{ type: 'button', content: 'Change it?', onClick: this.changeEmail }}
@@ -121,11 +117,10 @@ class SettingsAccount extends Component {
             type="password"
           />
           <FilesField
-            field="picture"
+            name="me.picture"
+            value={this.state.me.picture}
+            onChange={this.handleChange}
             label="Profile picture"
-            files={this.state.me.picture}
-            mutation={this.props.updateInvestorFiles}
-            mutationName="updateInvestorFiles"
             imagesOnly
             tabs={['camera', 'file', 'gdrive', 'dropbox', 'url']}
             crop="192x192 upscale"
@@ -183,15 +178,6 @@ export default compose(
   graphql(updateInvestorMutation, {
     props: ({ mutate }) => ({
       updateInvestor: input =>
-        mutate({
-          variables: { input },
-          refetchQueries: [{ query: meQuery }],
-        }),
-    }),
-  }),
-  graphql(updateInvestorFilesMutation, {
-    props: ({ mutate }) => ({
-      updateInvestorFiles: input =>
         mutate({
           variables: { input },
           refetchQueries: [{ query: meQuery }],

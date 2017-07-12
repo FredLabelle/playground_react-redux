@@ -1,5 +1,24 @@
-.react-date-field--theme-default, .react-date-field--focused {
-  border: 0 !important;
+.SingleDatePicker {
+  border: 1px solid #dbdbdb;
+  border-radius: .28571429rem;
+  width: 100%;
+}
+
+.SingleDatePicker > div {
+  padding: 1px;
+}
+
+.SingleDatePickerInput {
+  border: 0;
+}
+
+.SingleDatePickerInput__calendar-icon {
+  padding: 2px;
+  margin: 0 5px;
+}
+
+.DateInput {
+  padding: 0;
 }
 
 select {

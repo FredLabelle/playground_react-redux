@@ -43,7 +43,13 @@ export default compose(
     props: ({ mutate }) => ({
       adminLoginAck: () =>
         mutate({
-          refetchQueries: [{ query: meQuery }, { query: dealsQuery }],
+          refetchQueries: [
+            {
+              query: meQuery,
+              fetchPolicy: 'network-only',
+            },
+            { query: dealsQuery },
+          ],
         }),
     }),
   }),

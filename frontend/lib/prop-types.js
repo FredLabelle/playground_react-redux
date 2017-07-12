@@ -23,7 +23,7 @@ export const FilePropType = PropTypes.shape({
   name: PropTypes.string,
   url: PropTypes.string.isRequired,
   image: PropTypes.bool,
-  processed: PropTypes.bool,
+  uploaded: PropTypes.bool,
 });
 
 export const TicketsSumPropType = PropTypes.shape({
@@ -38,8 +38,8 @@ export const InvestorPropType = PropTypes.shape({
   email: PropTypes.string,
   status: PropTypes.string,
   ticketsSum: TicketsSumPropType,
-  createdAt: PropTypes.instanceOf(Date),
-  updatedAt: PropTypes.instanceOf(Date),
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
 });
 
 export const RouterPropType = PropTypes.shape({
@@ -75,21 +75,33 @@ export const DealCategoryPropType = PropTypes.shape({
 
 export const DealPropType = PropTypes.shape({
   id: PropTypes.string,
-  company: CompanyPropType.isRequired,
-  category: DealCategoryPropType.isRequired,
+  shortId: PropTypes.string,
+  company: CompanyPropType,
+  category: DealCategoryPropType,
   name: PropTypes.string.isRequired,
+  spvName: PropTypes.string,
   description: PropTypes.string,
-  totalAmount: AmountPropType.isRequired,
+  roundSize: AmountPropType,
+  premoneyValuation: AmountPropType,
+  amountAllocatedToOrganization: AmountPropType.isRequired,
+  minTicket: AmountPropType,
+  maxTicket: AmountPropType,
+  referenceClosingDate: PropTypes.string,
+  carried: PropTypes.string,
+  hurdle: PropTypes.string,
   ticketsSum: TicketsSumPropType,
   investorsCommited: PropTypes.number,
-  createdAt: PropTypes.instanceOf(Date),
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
 });
 
 export const TicketPropType = PropTypes.shape({
   investor: InvestorPropType.isRequired,
   deal: DealPropType,
   amount: AmountPropType.isRequired,
-  createdAt: PropTypes.instanceOf(Date),
+  status: PropTypes.string.isRequired,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
 });
 
 export const OrganizationPropType = PropTypes.shape({

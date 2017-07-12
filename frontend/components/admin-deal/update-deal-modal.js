@@ -3,26 +3,30 @@ import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
 import pick from 'lodash/pick';
-import get from 'lodash/get';
 
 import { sleep, handleChange, omitDeep } from '../../lib/util';
 import { DealPropType } from '../../lib/prop-types';
-import { updateDealMutation, updateDealFilesMutation } from '../../lib/mutations';
+import { updateDealMutation } from '../../lib/mutations';
 import { dealQuery } from '../../lib/queries';
-import FilesField from '../fields/files-field';
-import AmountField from '../fields/amount-field';
+import CreateUpdateDealFields, { afterHandleChange } from '../common/create-update-deal-fields';
+
+const dealFields = [
+  'name',
+  'spvName',
+  'description',
+  'deck',
+  'roundSize',
+  'premoneyValuation',
+  'amountAllocatedToOrganization',
+  'minTicket',
+  'maxTicket',
+  'referenceClosingDate',
+  'carried',
+  'hurdle',
+];
 
 const initialState = deal => ({
-  deal: pick(deal, [
-    'name',
-    'description',
-    'deck',
-    'totalAmount',
-    'minTicket',
-    'maxTicket',
-    'carried',
-    'hurdle',
-  ]),
+  deal: pick(deal, dealFields),
   loading: false,
   error: false,
   success: false,
@@ -33,33 +37,17 @@ class UpdateDealModal extends Component {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     deal: DealPropType.isRequired,
+    organizationName: PropTypes.string.isRequired,
     updateDeal: PropTypes.func.isRequired,
-    updateDealFiles: PropTypes.func.isRequired,
   };
   state = initialState(this.props.deal);
-  componentWillReceiveProps({ deal }) {
-    this.setState({
-      deal: {
-        ...this.state.deal,
-        deck: deal.deck,
-      },
-    });
-  }
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ loading: true });
     const dealOmitted = omitDeep(this.state.deal, '__typename');
     const update = {
       id: this.props.deal.id,
-      ...pick(dealOmitted, [
-        'name',
-        'description',
-        'totalAmount',
-        'minTicket',
-        'maxTicket',
-        'carried',
-        'hurdle',
-      ]),
+      ...pick(dealOmitted, dealFields),
     };
     const { data: { updateDeal } } = await this.props.updateDeal(update);
     if (updateDeal) {
@@ -71,26 +59,12 @@ class UpdateDealModal extends Component {
     }
   };
   onClose = () => {
-    this.setState(initialState(this.props.deal));
-    this.props.onClose();
+    this.setState(initialState(this.props.deal), this.props.onClose);
   };
-  handleChange = handleChange(name => {
-    if (!['deal.totalAmount', 'deal.minTicket', 'deal.maxTicket'].includes(name)) {
-      return;
-    }
-    const { currency } = get(this.state, name);
-    this.setState({
-      deal: {
-        ...this.state.deal,
-        totalAmount: { ...this.state.deal.totalAmount, currency },
-        minTicket: { ...this.state.deal.minTicket, currency },
-        maxTicket: { ...this.state.deal.maxTicket, currency },
-      },
-    });
-  }).bind(this);
+  handleChange = handleChange(afterHandleChange.bind(this)).bind(this);
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onClose} size="small">
+      <Modal open={this.props.open} onClose={this.onClose} size="fullscreen">
         <Header icon="file text outline" content="Update deal" />
         <Modal.Content>
           <Form
@@ -100,81 +74,24 @@ class UpdateDealModal extends Component {
             success={this.state.success}
           >
             {!this.state.success &&
-              <div>
-                <Form.Input
-                  name="deal.name"
-                  value={this.state.deal.name}
-                  onChange={this.handleChange}
-                  label="Name"
-                  placeholder="Name"
-                  required
-                />
-                <Form.TextArea
-                  name="deal.description"
-                  value={this.state.deal.description}
-                  onChange={this.handleChange}
-                  label="Description"
-                  placeholder="Description"
-                  autoHeight
-                />
-                <FilesField
-                  multiple
-                  resourceId={this.props.deal.id}
-                  field="deck"
-                  label="Deck"
-                  files={this.state.deal.deck}
-                  mutation={this.props.updateDealFiles}
-                  mutationName="updateDealFiles"
-                />
-                <AmountField
-                  name="deal.totalAmount"
-                  value={this.state.deal.totalAmount}
-                  onChange={this.handleChange}
-                  label="Total amount"
-                  required
-                />
-                <AmountField
-                  name="deal.minTicket"
-                  value={this.state.deal.minTicket}
-                  onChange={this.handleChange}
-                  label="Min ticket"
-                  required
-                />
-                <AmountField
-                  name="deal.maxTicket"
-                  value={this.state.deal.maxTicket}
-                  onChange={this.handleChange}
-                  label="Max ticket"
-                  placeholder="No Limit"
-                />
-                <Form.Input
-                  name="deal.carried"
-                  value={this.state.deal.carried}
-                  onChange={this.handleChange}
-                  label="Carried"
-                  placeholder="Carried"
-                  type="number"
-                  min="0"
-                  max="100"
-                  required
-                />
-                <Form.Input
-                  name="deal.hurdle"
-                  value={this.state.deal.hurdle}
-                  onChange={this.handleChange}
-                  label="Hurdle"
-                  placeholder="Hurdle"
-                  type="number"
-                  min="0"
-                  max="100"
-                  required
-                />
-              </div>}
+              <CreateUpdateDealFields
+                deal={this.state.deal}
+                handleChange={this.handleChange}
+                organizationName={this.props.organizationName}
+              />}
             <Message error header="Error!" content="Something went wrong!" />
             <Message success header="Success!" content="Deal has been updated!" />
           </Form>
         </Modal.Content>
         <Modal.Actions>
+          <Button
+            type="button"
+            color="red"
+            content="Cancel"
+            icon="remove"
+            labelPosition="left"
+            onClick={this.onClose}
+          />
           <Button
             type="submit"
             form="update-deal"
@@ -194,20 +111,6 @@ export default compose(
   graphql(updateDealMutation, {
     props: ({ mutate, ownProps: { deal } }) => ({
       updateDeal: input =>
-        mutate({
-          variables: { input },
-          refetchQueries: [
-            {
-              query: dealQuery,
-              variables: { shortId: deal.shortId },
-            },
-          ],
-        }),
-    }),
-  }),
-  graphql(updateDealFilesMutation, {
-    props: ({ mutate, ownProps: { deal } }) => ({
-      updateDealFiles: input =>
         mutate({
           variables: { input },
           refetchQueries: [

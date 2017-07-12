@@ -45,6 +45,7 @@ input AddressInput {
 input IndividualSettingsInput {
   birthdate: String!
   nationality: String!
+  idDocuments: [FileInput]!
   fiscalAddress: AddressInput!
 }
 
@@ -52,6 +53,7 @@ input CorporationSettingsInput {
   position: String!
   companyName: String!
   companyAddress: AddressInput!
+  incProof: [FileInput]!
 }
 
 input AdvisorInput {
@@ -61,6 +63,8 @@ input AdvisorInput {
 
 input UpdateInvestorInput {
   name: NameInput!
+  phone: String
+  picture: [FileInput]
   type: String
   investmentSettings: JSON
   individualSettings: IndividualSettingsInput
@@ -72,12 +76,7 @@ input FileInput {
   name: String!
   url: String!
   image: Boolean!
-}
-
-input UpdateFilesInput {
-  resourceId: ID!
-  field: String!
-  files: [FileInput]!
+  uploaded: Boolean!
 }
 
 input GeneralSettingsInput {
@@ -134,16 +133,20 @@ input UpsertCompanyInput {
   description: String!
 }
 
-input CreateDealInput {
-  companyId: ID!
+input CreateUpdateDealInput {
+  id: ID
+  companyId: ID
   name: String!
-  description: String!
+  spvName: String
+  description: String
   deck: [FileInput]!
-  categoryId: ID!
-  totalAmount: AmountInput!
+  categoryId: ID
+  roundSize: AmountInput!
+  premoneyValuation: AmountInput!
+  amountAllocatedToOrganization: AmountInput!
   minTicket: AmountInput!
   maxTicket: AmountInput!
-  referenceClosingDate: String!
+  referenceClosingDate: String
   carried: String!
   hurdle: String!
 }
@@ -170,17 +173,6 @@ input ChangePasswordInput {
   password: String!
 }
 
-input UpdateDealInput {
-  id: ID!
-  name: String!
-  description: String
-  totalAmount: AmountInput!
-  minTicket: AmountInput!
-  maxTicket: AmountInput!
-  carried: String!
-  hurdle: String!
-}
-
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -190,7 +182,6 @@ type Mutation {
   changeEmail(input: ChangeEmailInput!): Boolean!
   changePassword(input: ChangePasswordInput!): Boolean!
   updateInvestor(input: UpdateInvestorInput!): Boolean!
-  updateInvestorFiles(input: UpdateFilesInput!): Boolean!
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   updateDealCategories(input: [DealCategoryInput]!): Boolean!
@@ -198,10 +189,9 @@ type Mutation {
   invitationStatus(input: InvitationStatusInput!): String!
   inviteInvestor(input: InviteInvestorInput!): String!
   upsertCompany(input: UpsertCompanyInput!): Company
-  createDeal(input: CreateDealInput!): Boolean!
+  createDeal(input: CreateUpdateDealInput!): Boolean!
   createTicket(input: CreateTicketInput!): Boolean!
-  updateDeal(input: UpdateDealInput!): Boolean!
-  updateDealFiles(input: UpdateFilesInput!): Boolean!
+  updateDeal(input: CreateUpdateDealInput!): Boolean!
 }
 `;
 
@@ -231,13 +221,13 @@ exports.resolvers = {
       return context.User.login(input);
     },
     logout(root, params, context) {
-      return authedMutation(context.User.logout, false)();
+      return authedMutation(context.User.logout)(context.user);
     },
     forgotPassword(root, { input }, context) {
       return context.User.forgotPassword(input);
     },
     resetPassword(root, { input }, context) {
-      return authedMutation(context.User.resetPassword, false)(input);
+      return context.User.resetPassword(input);
     },
     changeEmail(root, { input }, context) {
       return authedMutation(context.User.changeEmail, false)(context.user, input);
@@ -248,11 +238,8 @@ exports.resolvers = {
     updateInvestor(root, { input }, context) {
       return authedMutation(context.User.updateInvestor, false)(context.user, input);
     },
-    updateInvestorFiles(root, { input }, context) {
-      return authedMutation(context.User.updateInvestorFiles, false)(context.user, input);
-    },
-    adminLoginAck() {
-      return true;
+    adminLoginAck(root, variables, context) {
+      return context.User.adminLoginAck();
     },
     updateOrganization(root, { input }, context) {
       return adminMutation(context.Organization.update, false)(context.user, input);
@@ -261,28 +248,25 @@ exports.resolvers = {
       return adminMutation(context.Organization.updateDealCategories, false)(context.user, input);
     },
     createInvestor(root, { input }, context) {
-      return adminMutation(context.Organization.createInvestor, false)(context.user, input);
+      return adminMutation(context.User.createInvestor, false)(context.user, input);
     },
     invitationStatus(root, { input }, context) {
-      return adminMutation(context.Organization.invitationStatus, 'error')(input);
+      return context.User.invitationStatus(input);
     },
     inviteInvestor(root, { input }, context) {
-      return adminMutation(context.Organization.inviteInvestor, false)(context.user, input);
+      return adminMutation(context.User.inviteInvestor, false)(context.user, input);
     },
     upsertCompany(root, { input }, context) {
-      return adminMutation(context.Organization.upsertCompany, null)(context.user, input);
+      return adminMutation(context.Company.upsert, null)(context.user, input);
     },
     createDeal(root, { input }, context) {
       return adminMutation(context.Deal.create, false)(context.user, input);
     },
     createTicket(root, { input }, context) {
-      return adminMutation(context.Organization.createTicket, false)(context.user, input);
+      return adminMutation(context.Ticket.create, false)(context.user, input);
     },
     updateDeal(root, { input }, context) {
       return adminMutation(context.Deal.update, false)(context.user, input);
-    },
-    updateDealFiles(root, { input }, context) {
-      return adminMutation(context.Deal.updateFiles, false)(context.user, input);
     },
   },
 };

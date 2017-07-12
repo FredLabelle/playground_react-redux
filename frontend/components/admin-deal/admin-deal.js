@@ -6,8 +6,8 @@ import { stringify } from 'querystring';
 import Link from 'next/link';
 
 import { numberFormatter } from '../../lib/util';
-import { RouterPropType, DealPropType } from '../../lib/prop-types';
-import { dealQuery } from '../../lib/queries';
+import { RouterPropType, OrganizationPropType, DealPropType } from '../../lib/prop-types';
+import { organizationQuery, dealQuery } from '../../lib/queries';
 import UpdateDealModal from './update-deal-modal';
 import DealInvestorsList from './deal-investors-list';
 import DealTicketsList from './deal-tickets-list';
@@ -15,9 +15,10 @@ import DealTicketsList from './deal-tickets-list';
 class AdminDeal extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
+    organization: OrganizationPropType,
     deal: DealPropType,
   };
-  static defaultProps = { deal: null };
+  static defaultProps = { organization: null, deal: null };
   state = { updateDealModalOpen: false };
   onUpdateDealModalClose = () => {
     this.setState({ updateDealModalOpen: false });
@@ -26,15 +27,17 @@ class AdminDeal extends Component {
     this.setState({ updateDealModalOpen: true });
   };
   render() {
-    const { deal } = this.props;
-    if (!deal) {
+    const { organization, deal } = this.props;
+    if (!organization || !deal) {
       return null;
     }
     const dealTitle = [
       deal.company.name,
       deal.name,
       deal.category.name,
-      numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount),
+      numberFormatter(deal.amountAllocatedToOrganization.currency).format(
+        deal.amountAllocatedToOrganization.amount,
+      ),
     ].join(' - ');
     const ticketsSumAmount = numberFormatter(deal.ticketsSum.sum.currency).format(
       deal.ticketsSum.sum.amount,
@@ -97,7 +100,8 @@ class AdminDeal extends Component {
         <UpdateDealModal
           open={this.state.updateDealModalOpen}
           onClose={this.onUpdateDealModalClose}
-          deal={this.props.deal}
+          deal={deal}
+          organizationName={organization.generalSettings.name}
         />
       </Segment>
     );
@@ -106,6 +110,12 @@ class AdminDeal extends Component {
 
 export default compose(
   connect(({ router }) => ({ router })),
+  graphql(organizationQuery, {
+    options: ({ router }) => ({
+      variables: { shortId: router.organizationShortId },
+    }),
+    props: ({ data: { organization } }) => ({ organization }),
+  }),
   graphql(dealQuery, {
     options: ({ router }) => ({
       variables: { shortId: router.resourceShortId },

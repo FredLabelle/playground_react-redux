@@ -5,8 +5,8 @@ const { Organization } = require('../../models');
 const { gravatarPicture } = require('../../lib/util');
 
 module.exports.seedDatabase = async (req, res) => {
-  if (process.env.NODE_ENV !== 'development') {
-    // return res.json({ error: 'ERROR' });
+  if (process.env.NODE_ENV === 'production') {
+    return res.json({ error: 'ERROR' });
   }
   try {
     await sequelize.sync({ force: true });
@@ -37,7 +37,7 @@ module.exports.seedDatabase = async (req, res) => {
         },
       },
     });
-    const seed = await organization.createDealCategory({
+    /* const seed = */ await organization.createDealCategory({
       order: 0,
       name: 'Pre-seed / Seed',
     });
@@ -99,17 +99,30 @@ module.exports.seedDatabase = async (req, res) => {
       website: 'https://www.spendesk.com',
       description: 'Smart spending solution for teams',
     });
-    const forest = await organization.createCompany({
+    /* const forest = */ await organization.createCompany({
       name: 'Forest',
-      website: 'https://www.forestadmin.com/',
+      website: 'https://www.forestadmin.com',
       description: 'The plug and play Admin Interface',
+    });
+    const foxIntelligence = await organization.createCompany({
+      name: 'foxintelligence',
+      website: 'https://www.foxintelligence.fr',
+      description: 'We generate the best market intelligence. We protect data privacy.',
     });
     const deal = await organization.createDeal({
       companyId: spendesk.id,
       categoryId: laterStage.id,
       name: 'Follow',
-      totalAmount: {
+      roundSize: {
         amount: '3000000',
+        currency: 'eur',
+      },
+      premoneyValuation: {
+        amount: '6000000',
+        currency: 'eur',
+      },
+      amountAllocatedToOrganization: {
+        amount: '600000',
         currency: 'eur',
       },
       minTicket: {
@@ -140,20 +153,28 @@ module.exports.seedDatabase = async (req, res) => {
       },
     });
     await organization.createDeal({
-      companyId: forest.id,
-      categoryId: seed.id,
-      name: 'Seed',
-      totalAmount: {
-        amount: '300000',
-        currency: 'usd',
+      companyId: foxIntelligence.id,
+      categoryId: laterStage.id,
+      name: 'Serie B - GlobalFounders',
+      roundSize: {
+        amount: '10300000',
+        currency: 'eur',
+      },
+      premoneyValuation: {
+        amount: '23000000',
+        currency: 'eur',
+      },
+      amountAllocatedToOrganization: {
+        amount: '1300000',
+        currency: 'eur',
       },
       minTicket: {
-        amount: '5000',
-        currency: 'usd',
+        amount: '25000',
+        currency: 'eur',
       },
       maxTicket: {
         amount: '',
-        currency: 'usd',
+        currency: 'eur',
       },
       carried: '5',
       hurdle: '0',

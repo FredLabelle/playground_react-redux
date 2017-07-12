@@ -87,13 +87,6 @@ DealsList.defaultProps = { deals: [] };
 export default compose(
   connect(({ router }) => ({ router })),
   graphql(dealsQuery, {
-    props: ({ data: { deals } }) => ({
-      deals: deals
-        ? deals.map(deal => ({
-            ...deal,
-            createdAt: new Date(deal.createdAt),
-          }))
-        : [],
-    }),
+    props: ({ data: { deals } }) => ({ deals: deals || [] }),
   }),
 )(DealsList);

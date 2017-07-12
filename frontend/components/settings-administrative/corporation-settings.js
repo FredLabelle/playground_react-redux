@@ -6,7 +6,7 @@ import NameField from '../fields/name-field';
 import AddressField from '../fields/address-field';
 import FilesField from '../fields/files-field';
 
-const CorporationSettings = ({ me, handleChange, updateInvestorFiles }) =>
+const CorporationSettings = ({ me, handleChange }) =>
   <div>
     <Header as="h3" dividing>
       Legal representative
@@ -35,17 +35,15 @@ const CorporationSettings = ({ me, handleChange, updateInvestorFiles }) =>
       onChange={handleChange}
     />
     <FilesField
-      field="corporationSettings.incProof"
+      name="me.corporationSettings.incProof"
+      value={me.corporationSettings.incProof}
+      onChange={handleChange}
       label="Inc. Proof"
-      files={me.corporationSettings.incProof}
-      mutation={updateInvestorFiles}
-      mutationName="updateInvestorFiles"
     />
   </div>;
 CorporationSettings.propTypes = {
   me: MePropType.isRequired,
   handleChange: PropTypes.func.isRequired,
-  updateInvestorFiles: PropTypes.func.isRequired,
 };
 
 export default CorporationSettings;

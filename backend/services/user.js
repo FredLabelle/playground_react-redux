@@ -7,10 +7,9 @@ const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
 const omit = require('lodash/omit');
 
-const { User, Organization, InvestorProfile } = require('../models');
-const { gravatarPicture } = require('../lib/util');
-const { sendEmail } = require('../lib/mailjet');
-const { uploadFileFromUrl, deleteFiles } = require('../lib/gcs');
+const { User, Organization, InvestorProfile, Ticket } = require('../models');
+const { gravatarPicture, handleFilesUpdate } = require('../lib/util');
+const { generateInvitationEmailContent, sendEmail } = require('../lib/mailjet');
 
 const sign = promisify(jwt.sign);
 const verify = promisify(jwt.verify);
@@ -132,6 +131,7 @@ const UserService = {
       }
       const password = await bcrypt.hash(input.password, 10);
       await user.update({ password, resetPasswordToken: null });
+      await user.InvestorProfile.update({ status: 'joined' });
       return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
@@ -189,11 +189,28 @@ const UserService = {
   },
   async updateInvestor(user, input) {
     try {
+      const [picture, idDocuments, incProof] = await Promise.all([
+        handleFilesUpdate(user.shortId, input, 'picture'),
+        handleFilesUpdate(user.shortId, input, 'individualSettings.idDocuments'),
+        handleFilesUpdate(user.shortId, input, 'corporationSettings.incProof'),
+      ]);
+      if (picture) {
+        if (!picture.length) {
+          picture.push(gravatarPicture(user.email));
+        }
+        Object.assign(input, { picture });
+      }
       await user.update(input);
       const investorProfile = await user.getInvestorProfile();
       // input lacks some fields in nested JSONB so we need to default to current values
       const { individualSettings, corporationSettings } = investorProfile.toJSON();
       const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
+      if (idDocuments) {
+        Object.assign(update.individualSettings, { idDocuments });
+      }
+      if (incProof) {
+        Object.assign(update.corporationSettings, { incProof });
+      }
       await investorProfile.update(update);
       return true;
     } catch (error) {
@@ -201,34 +218,8 @@ const UserService = {
       return false;
     }
   },
-  async updateInvestorFiles(user, { field, files }) {
-    try {
-      const fieldName = field.split('.').pop();
-      const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-      const folderName = `${fieldName}${env}/${user.shortId}`;
-      const newFiles = files.map(file => Object.assign({}, file));
-      if (files.length) {
-        const promises = files.map((file, index) =>
-          uploadFileFromUrl(file.url, `${folderName}/${index}`),
-        );
-        const urls = await Promise.all(promises);
-        urls.forEach((url, index) => {
-          newFiles[index].url = url;
-        });
-      } else {
-        await deleteFiles(folderName);
-        if (fieldName === 'picture') {
-          newFiles.push(gravatarPicture(user.email));
-        }
-      }
-      const record = fieldName === 'picture' ? user : await user.getInvestorProfile();
-      record.set(field, newFiles);
-      await record.save();
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+  adminLoginAck() {
+    return true;
   },
   async adminLogin(input, organization) {
     const user = await UserService.findByEmail(input.email, organization.id);
@@ -237,6 +228,118 @@ const UserService = {
       return sign({ userId: newUser.id, role: newUser.role }, process.env.FOREST_ENV_SECRET);
     }
     return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
+  },
+  async investors(user) {
+    try {
+      const organization = await user.getOrganization();
+      const investors = await organization.getUsers({
+        where: { role: 'investor' },
+        include: [{ model: InvestorProfile }, { model: Ticket }],
+      });
+      return investors.map(investor =>
+        Object.assign(UserService.toInvestor(investor), {
+          ticketsSum: { count: investor.Tickets.length },
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async createInvestor(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const invitationStatus = await UserService.invitationStatus({
+        email: input.email,
+        organizationId: organization.id,
+      });
+      if (invitationStatus !== 'invitable') {
+        return false;
+      }
+      const resetPasswordToken = uuid();
+      const picture = [gravatarPicture(input.email)];
+      const investor = Object.assign({ role: 'investor', picture, resetPasswordToken }, input);
+      const newUser = await organization.createUser(investor);
+      await newUser.createInvestorProfile(investor);
+      const { shortId } = organization;
+      const queryString = stringify({ resetPasswordToken });
+      const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
+        organization.parametersSettings.invitationEmail,
+        organization.generalSettings.name,
+        newUser.name,
+      );
+      sendEmail({
+        fromEmail: 'investorx@e-founders.com',
+        fromName: 'InvestorX',
+        to: newUser.email,
+        subject,
+        templateId: 166944,
+        vars: {
+          beforeLink: beforeLink.replace(/\n/g, '<br />'),
+          linkText: `Join ${organization.generalSettings.name}`,
+          link: `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`,
+          afterLink: afterLink.replace(/\n/g, '<br />'),
+        },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async invitationStatus(input) {
+    try {
+      const foundUser = await UserService.findByEmail(input.email, input.organizationId);
+      if (foundUser && foundUser.role !== 'investor') {
+        return 'error';
+      }
+      if (foundUser) {
+        return foundUser.status;
+      }
+      return 'invitable';
+    } catch (error) {
+      console.error(error);
+      return 'error';
+    }
+  },
+  async inviteInvestor(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const foundUser = await UserService.findByEmail(input.investor.email, organization.id);
+      if (!foundUser) {
+        const picture = [gravatarPicture(input.investor.email)];
+        const investor = Object.assign({ role: 'investor', picture }, input.investor);
+        const newUser = await organization.createUser(investor);
+        await newUser.createInvestorProfile();
+      }
+      const payload = Object.assign({}, input.investor, {
+        organizationShortId: organization.shortId,
+      });
+      const token = await sign(payload, process.env.FOREST_ENV_SECRET);
+      const queryString = stringify({ token });
+      const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
+        input.invitationEmail,
+        organization.generalSettings.name,
+        input.investor.name,
+      );
+      sendEmail({
+        fromEmail: 'investorx@e-founders.com',
+        fromName: 'InvestorX',
+        to: input.investor.email,
+        subject,
+        templateId: 166944,
+        vars: {
+          beforeLink: beforeLink.replace(/\n/g, '<br />'),
+          linkText: `Join ${organization.generalSettings.name}`,
+          link: `${process.env.BACKEND_URL}/signup?${queryString}`,
+          afterLink: afterLink.replace(/\n/g, '<br />'),
+        },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   },
 };
 

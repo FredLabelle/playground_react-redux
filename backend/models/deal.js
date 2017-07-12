@@ -19,6 +19,10 @@ module.exports = sequelize.define(
     name: {
       type: Sequelize.STRING,
     },
+    spvName: {
+      type: Sequelize.STRING,
+      defaultValue: '',
+    },
     description: {
       type: Sequelize.STRING,
       defaultValue: '',
@@ -28,7 +32,13 @@ module.exports = sequelize.define(
       defaultValue: [],
       allowNull: false,
     },
-    totalAmount: {
+    roundSize: {
+      type: Sequelize.JSONB,
+    },
+    premoneyValuation: {
+      type: Sequelize.JSONB,
+    },
+    amountAllocatedToOrganization: {
       type: Sequelize.JSONB,
     },
     minTicket: {

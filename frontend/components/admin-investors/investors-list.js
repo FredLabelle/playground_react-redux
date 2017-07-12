@@ -59,13 +59,5 @@ InvestorsList.propTypes = { investors: PropTypes.arrayOf(InvestorPropType) };
 InvestorsList.defaultProps = { investors: [] };
 
 export default graphql(investorsQuery, {
-  props: ({ data: { investors } }) => ({
-    investors: investors
-      ? investors.map(investor => ({
-          ...investor,
-          createdAt: new Date(investor.createdAt),
-          updatedAt: new Date(investor.updatedAt),
-        }))
-      : [],
-  }),
+  props: ({ data: { investors } }) => ({ investors: investors || [] }),
 })(InvestorsList);

@@ -101,7 +101,12 @@ export default compose(
       login: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: meQuery }],
+          refetchQueries: [
+            {
+              query: meQuery,
+              fetchPolicy: 'network-only',
+            },
+          ],
         }),
     }),
   }),

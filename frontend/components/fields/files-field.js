@@ -2,15 +2,14 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Button, Progress, Image, Segment } from 'semantic-ui-react';
 import uploadcare from 'uploadcare-widget';
-import omit from 'lodash/omit';
 
 import { FilePropType } from '../../lib/prop-types';
 
-const File = ({ file: { name, url, image, processed } }) =>
+const File = ({ file: { name, url, image, uploaded } }) =>
   image
     ? <Image src={url} alt={name} size="medium" centered />
     : <Segment basic textAlign="center">
-        {processed
+        {uploaded
           ? <a href={url} target="_blank" rel="noopener noreferrer">
               {name}
             </a>
@@ -22,24 +21,18 @@ File.propTypes = { file: FilePropType.isRequired };
 
 export default class extends Component {
   static propTypes = {
-    resourceId: PropTypes.string,
-    field: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    files: PropTypes.arrayOf(FilePropType),
+    name: PropTypes.string.isRequired,
+    value: PropTypes.arrayOf(FilePropType),
     onChange: PropTypes.func,
-    mutation: PropTypes.func,
-    mutationName: PropTypes.string,
+    label: PropTypes.string.isRequired,
     imagesOnly: PropTypes.bool,
     tabs: PropTypes.arrayOf(PropTypes.string),
     crop: PropTypes.string,
     multiple: PropTypes.bool,
   };
   static defaultProps = {
-    resourceId: '',
-    files: [],
+    value: [],
     onChange: () => {},
-    mutation: () => {},
-    mutationName: '',
     imagesOnly: false,
     tabs: ['file', 'gdrive', 'dropbox', 'url'],
     crop: 'disabled',
@@ -47,21 +40,10 @@ export default class extends Component {
   };
   state = {
     progress: 1,
-    files: this.props.files.map(file => ({ ...file, processed: true })),
+    value: this.props.value,
   };
   componentWillReceiveProps({ files }) {
-    if (files.length !== this.state.files.length) {
-      this.setState({ files: files.map(file => ({ ...file, processed: true })) });
-      return;
-    }
-    const filesState = files.map((file, index) => {
-      const fileState = { ...this.state.files[index] };
-      if (!file.image && file.url !== fileState.url) {
-        return { ...file, processed: true };
-      }
-      return fileState;
-    });
-    this.setState({ files: filesState });
+    this.setState({ files });
   }
   onUploadClick = event => {
     event.preventDefault();
@@ -88,48 +70,21 @@ export default class extends Component {
             name,
             url: cdnUrl,
             image: !!originalImageInfo,
-            processed: false,
+            uploaded: false,
           });
           if (filesState.length < files.length) {
             return;
           }
-          this.setState({ files: filesState });
-          const value = filesState.map(fileState => omit(fileState, 'processed'));
-          this.props.onChange(null, { name: this.props.field, value });
-          if (!this.props.mutationName) {
-            return;
-          }
-          const { data } = await this.props.mutation({
-            resourceId: this.props.resourceId,
-            field: this.props.field,
-            files: value,
-          });
-          if (data[this.props.mutationName]) {
-            console.info('UPDATE FILES SUCCESS');
-          } else {
-            console.error('UPDATE FILES ERROR');
-          }
+          this.setState({ value: filesState });
+          this.props.onChange(event, { name: this.props.name, value: filesState });
         });
       });
     });
   };
   onDeleteClick = async event => {
     event.preventDefault();
-    this.setState({ files: [] });
-    this.props.onChange(event, { name: this.props.field, value: [] });
-    if (!this.props.mutationName) {
-      return;
-    }
-    const { data } = await this.props.mutation({
-      resourceId: this.props.resourceId,
-      field: this.props.field,
-      files: [],
-    });
-    if (data[this.props.mutationName]) {
-      console.info('DELETE FILES SUCCESS');
-    } else {
-      console.error('UPDATE FILES ERROR');
-    }
+    this.setState({ value: [] });
+    this.props.onChange(event, { name: this.props.name, value: [] });
   };
   uploading = () => this.state.progress < 1;
   render() {
@@ -153,7 +108,7 @@ export default class extends Component {
               <Button
                 type="button"
                 color="red"
-                disabled={this.uploading() || !this.state.files.length}
+                disabled={this.uploading() || !this.state.value.length}
                 content="Delete"
                 icon="trash"
                 labelPosition="left"
@@ -164,7 +119,7 @@ export default class extends Component {
         </div>
         {this.uploading()
           ? <Progress percent={this.state.progress * 100} indicating />
-          : this.state.files.map(file =>
+          : this.state.value.map(file =>
               <div key={file.url} className="divider">
                 <File file={file} />
               </div>,
@@ -173,7 +128,7 @@ export default class extends Component {
           .field {
             width: 100%;
           }
-          .field div {
+          .field > div {
             display: flex;
             justify-content: center;
           }

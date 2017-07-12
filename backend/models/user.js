@@ -24,6 +24,10 @@ module.exports = sequelize.define(
       },
       allowNull: false,
     },
+    phone: {
+      type: Sequelize.STRING,
+      defaultValue: '',
+    },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -36,11 +40,6 @@ module.exports = sequelize.define(
     },
     changeEmailToken: {
       type: Sequelize.STRING,
-    },
-    verified: {
-      type: Sequelize.BOOLEAN,
-      defaultValue: false,
-      allowNull: false,
     },
     role: {
       type: Sequelize.STRING,

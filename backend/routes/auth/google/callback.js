@@ -26,13 +26,13 @@ module.exports = async (req, res) => {
       {
         name: { firstName: profile.given_name, lastName: profile.family_name },
         email: profile.email,
-        verified: true,
         role: 'admin',
         picture: [
           {
             name: '',
             url: profile.picture,
             image: true,
+            uploaded: true,
           },
         ],
         emailDomain: profile.hd,

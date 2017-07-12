@@ -17,6 +17,7 @@ type File {
   name: String!
   url: String!
   image: Boolean!
+  uploaded: Boolean!
 }
 
 type Address {
@@ -61,6 +62,7 @@ type User {
   id: ID!
   shortId: ID!
   name: Name!
+  phone: String!
   email: String!
   role: String!
   picture: [File]
@@ -135,10 +137,14 @@ type Deal {
   company: Company!
   category: DealCategory!
   name: String!
-  description: String!
-  totalAmount: Amount!
+  spvName: String
+  description: String
+  roundSize: Amount!
+  premoneyValuation: Amount!
+  amountAllocatedToOrganization: Amount!
   minTicket: Amount!
   maxTicket: Amount!
+  referenceClosingDate: String
   carried: String!
   hurdle: String!
   deck: [File]!
@@ -154,6 +160,7 @@ type Ticket {
   investor: Investor!
   deal: Deal!
   amount: Amount!
+  status: String!
   createdAt: Date!
 }
 
@@ -201,16 +208,16 @@ const resolvers = {
       return context.User.me(context.user);
     },
     investors(root, params, context) {
-      return adminQuery(context.Organization.investors)(context.user);
+      return adminQuery(context.User.investors)(context.user);
     },
     companies(root, params, context) {
-      return adminQuery(context.Organization.companies)(context.user);
+      return adminQuery(context.Company.companies)(context.user);
     },
     deals(root, params, context) {
-      return authedQuery(context.Organization.deals)(context.user);
+      return authedQuery(context.Deal.deals)(context.user);
     },
     tickets(root, params, context) {
-      return authedQuery(context.Organization.tickets)(context.user);
+      return authedQuery(context.Ticket.tickets)(context.user);
     },
     deal(root, { shortId }, context) {
       return adminQuery(context.Deal.deal)(context.user, shortId);

@@ -98,7 +98,12 @@ export default compose(
       resetPassword: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: meQuery }],
+          refetchQueries: [
+            {
+              query: meQuery,
+              fetchPolicy: 'network-only',
+            },
+          ],
         }),
     }),
   }),

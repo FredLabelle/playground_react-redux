@@ -13,6 +13,20 @@ import { dealsQuery, investorsQuery, ticketsQuery } from '../../lib/queries';
 import { createTicketMutation } from '../../lib/mutations';
 import AmountField from '../fields/amount-field';
 
+const dealTitle = deal => `${deal.company.name} ${deal.name} ${deal.category.name}`;
+
+const dealToResult = deal => ({
+  title: dealTitle(deal),
+  description: numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount),
+  image: `//logo.clearbit.com/${deal.company.domain}?size=192`,
+});
+
+const investorToResult = investor => ({
+  title: investor.fullName,
+  description: investor.email,
+  image: investor.pictureUrl,
+});
+
 class CreateNewTicket extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
@@ -31,10 +45,12 @@ class CreateNewTicket extends Component {
         currency: '',
       },
     },
-    dealsResults: [],
+    dealsResults: this.props.deals.map(dealToResult),
     deal: '',
-    investorsResults: [],
+    dealSearchOpen: false,
+    investorsResults: this.props.investors.map(investorToResult),
     investor: '',
+    investorSearchOpen: false,
     dealIdError: false,
     userIdError: false,
     loading: false,
@@ -61,18 +77,28 @@ class CreateNewTicket extends Component {
       this.setState({ loading: false });
     }
   };
+  onDealSearchFocus = () => {
+    this.setState({ dealSearchOpen: true });
+  };
+  onDealSearchBlur = () => {
+    setTimeout(() => {
+      this.setState({ dealSearchOpen: false });
+    }, 200);
+  };
+  onInvestorSearchFocus = () => {
+    this.setState({ investorSearchOpen: true });
+  };
+  onInvestorSearchBlur = () => {
+    setTimeout(() => {
+      this.setState({ investorSearchOpen: false });
+    }, 200);
+  };
   getDealMinBoundary = ({ minTicket }) =>
     numberFormatter(minTicket.currency).format(minTicket.amount);
   getDealMaxBoundary = ({ maxTicket }) =>
     maxTicket.amount ? numberFormatter(maxTicket.currency).format(maxTicket.amount) : 'No Limit';
-  dealTitle = deal => `${deal.company.name} ${deal.name} ${deal.category}`;
-  dealToResult = deal => ({
-    title: this.dealTitle(deal),
-    description: numberFormatter(deal.totalAmount.currency).format(deal.totalAmount.amount),
-    image: `//logo.clearbit.com/${deal.company.domain}?size=192`,
-  });
-  handleDealResultSelect = (event, result) => {
-    const deal = this.props.deals.find(d => this.dealTitle(d) === result.title);
+  handleDealResultSelect = (event, { result }) => {
+    const deal = this.props.deals.find(d => dealTitle(d) === result.title);
     const ticket = {
       ...this.state.ticket,
       dealId: deal.id,
@@ -81,11 +107,11 @@ class CreateNewTicket extends Component {
         currency: deal.totalAmount.currency,
       },
     };
-    this.setState({ deal: result.title, ticket });
+    this.setState({ deal: result.title, ticket, dealSearchOpen: false });
   };
-  handleDealSearchChange = (event, search) => {
-    const perfectMatch = this.props.deals.find(d => this.dealTitle(d) === search);
-    const deal = perfectMatch ? perfectMatch.title : search;
+  handleDealSearchChange = (event, { value }) => {
+    const perfectMatch = this.props.deals.find(d => dealTitle(d) === value);
+    const deal = perfectMatch ? perfectMatch.title : value;
     const dealId = perfectMatch ? perfectMatch.id : '';
     const currency = perfectMatch ? perfectMatch.totalAmount.currency : '';
     const ticket = {
@@ -96,36 +122,31 @@ class CreateNewTicket extends Component {
         currency,
       },
     };
-    const regExp = new RegExp(escapeRegExp(search), 'i');
+    const regExp = new RegExp(escapeRegExp(value), 'i');
     const isMatch = result => regExp.test(result.title);
-    const deals = this.props.deals.map(this.dealToResult);
+    const deals = this.props.deals.map(dealToResult);
     const dealsResults = deals.filter(isMatch);
     this.setState({ ticket, dealsResults, deal });
   };
-  investorToResult = investor => ({
-    title: investor.fullName,
-    description: investor.email,
-    image: investor.pictureUrl,
-  });
-  handleInvestorResultSelect = (event, result) => {
+  handleInvestorResultSelect = (event, { result }) => {
     const investor = this.props.investors.find(i => i.fullName === result.title);
     const ticket = {
       ...this.state.ticket,
       userId: investor.id,
     };
-    this.setState({ investor: result.title, ticket });
+    this.setState({ investor: result.title, ticket, investorSearchOpen: false });
   };
-  handleInvestorSearchChange = (event, search) => {
-    const perfectMatch = this.props.investors.find(i => i.fullName === search);
-    const investor = perfectMatch ? perfectMatch.title : search;
+  handleInvestorSearchChange = (event, { value }) => {
+    const perfectMatch = this.props.investors.find(i => i.fullName === value);
+    const investor = perfectMatch ? perfectMatch.title : value;
     const userId = perfectMatch ? perfectMatch.id : '';
     const ticket = {
       ...this.state.ticket,
       userId,
     };
-    const regExp = new RegExp(escapeRegExp(search), 'i');
-    const isMatch = result => regExp.test(result.title);
-    const investors = this.props.investors.map(this.investorToResult);
+    const regExp = new RegExp(escapeRegExp(value), 'i');
+    const isMatch = result => regExp.test(result.title) || regExp.test(result.description);
+    const investors = this.props.investors.map(investorToResult);
     const investorsResults = investors.filter(isMatch);
     this.setState({ ticket, investorsResults, investor });
   };
@@ -153,6 +174,9 @@ class CreateNewTicket extends Component {
               results={this.state.dealsResults}
               value={this.state.deal}
               required
+              open={this.state.dealSearchOpen}
+              onFocus={this.onDealSearchFocus}
+              onBlur={this.onDealSearchBlur}
             />
             <Form.Field
               label="Investor"
@@ -163,6 +187,9 @@ class CreateNewTicket extends Component {
               results={this.state.investorsResults}
               value={this.state.investor}
               required
+              open={this.state.investorSearchOpen}
+              onFocus={this.onInvestorSearchFocus}
+              onBlur={this.onInvestorSearchBlur}
             />
           </Form.Group>
           <AmountField
@@ -222,6 +249,7 @@ export default compose(
         ? investors.map(investor => ({
             ...investor,
             createdAt: new Date(investor.createdAt),
+            updatedAt: new Date(investor.updatedAt),
           }))
         : [],
     }),

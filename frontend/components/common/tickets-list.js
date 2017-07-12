@@ -32,14 +32,22 @@ const TicketsListRow = ({ admin, ticket }) =>
     <TicketsSumCell ticketsSum={{ sum: ticket.amount }} />
     {admin &&
       <Table.Cell>
-        <strong>Pending</strong>
+        <strong className={ticket.status}>
+          {ticket.status}
+        </strong>
         <br />
-        {moment(ticket.createdAt).format('DD/MM/YYYY')}
+        {moment(ticket.updatedAt).format('DD/MM/YYYY')}
       </Table.Cell>}
     {/* admin && <Table.Cell>Accept | Reject | Edit</Table.Cell>*/}
     <style jsx>{`
+      strong.accepted {
+        color: #21ba45;
+      }
+      strong.pending {
+        color: #f2711c;
+      }
       strong {
-        color: #fe9a76;
+        text-transform: capitalize;
       }
     `}</style>
   </Table.Row>;
@@ -69,13 +77,6 @@ export default compose(
     admin: router.admin,
   })),
   graphql(ticketsQuery, {
-    props: ({ data: { tickets } }) => ({
-      tickets: tickets
-        ? tickets.map(ticket => ({
-            ...ticket,
-            createdAt: new Date(ticket.createdAt),
-          }))
-        : [],
-    }),
+    props: ({ data: { tickets } }) => ({ tickets: tickets || [] }),
   }),
 )(TicketsList);

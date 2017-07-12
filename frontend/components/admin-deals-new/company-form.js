@@ -53,16 +53,16 @@ class Company extends Component {
     description: company.description,
     image: `//logo.clearbit.com/${company.domain}?size=192`,
   });
-  handleResultSelect = (event, result) => {
+  handleResultSelect = (event, { result }) => {
     const company = this.props.companies.find(({ name }) => name === result.title);
     this.props.onChange(company);
     this.setState({ company, isNew: false });
   };
-  handleSearchChange = async (event, search) => {
-    const perfectMatch = this.props.companies.find(({ name }) => name === search);
+  handleSearchChange = async (event, { value }) => {
+    const perfectMatch = this.props.companies.find(({ name }) => name === value);
     this.props.onChange(perfectMatch || { id: '' });
-    const company = perfectMatch || { name: search, website: '', description: '' };
-    const regExp = new RegExp(escapeRegExp(search), 'i');
+    const company = perfectMatch || { name: value, website: '', description: '' };
+    const regExp = new RegExp(escapeRegExp(value), 'i');
     const isMatch = result => regExp.test(result.title);
     const companies = this.props.companies.map(this.companyToResult);
     const results = companies.filter(isMatch);

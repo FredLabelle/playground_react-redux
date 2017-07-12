@@ -3,8 +3,6 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Form, Button, Header, Message } from 'semantic-ui-react';
-import omit from 'lodash/omit';
-import get from 'lodash/get';
 import Router from 'next/router';
 import moment from 'moment';
 
@@ -14,9 +12,12 @@ import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery, dealsQuery } from '../../lib/queries';
 import { createDealMutation } from '../../lib/mutations';
 import CompanyForm from './company-form';
-import AmountField from '../fields/amount-field';
-import FilesField from '../fields/files-field';
-import DateField from '../fields/date-field';
+import CreateUpdateDealFields, { afterHandleChange } from '../common/create-update-deal-fields';
+
+const defaultAmount = ({ parametersSettings }) => ({
+  amount: '',
+  currency: parametersSettings.investmentMechanisms.defaultCurrency,
+});
 
 class CreateNewDeal extends Component {
   static propTypes = {
@@ -33,20 +34,14 @@ class CreateNewDeal extends Component {
       companyId: '',
       categoryId: '',
       name: '',
+      spvName: '',
       description: '',
       deck: [],
-      totalAmount: {
-        amount: '',
-        currency: this.props.organization.parametersSettings.investmentMechanisms.defaultCurrency,
-      },
-      minTicket: {
-        amount: '',
-        currency: this.props.organization.parametersSettings.investmentMechanisms.defaultCurrency,
-      },
-      maxTicket: {
-        amount: '',
-        currency: this.props.organization.parametersSettings.investmentMechanisms.defaultCurrency,
-      },
+      roundSize: defaultAmount(this.props.organization),
+      premoneyValuation: defaultAmount(this.props.organization),
+      amountAllocatedToOrganization: defaultAmount(this.props.organization),
+      minTicket: defaultAmount(this.props.organization),
+      maxTicket: defaultAmount(this.props.organization),
       referenceClosingDate: moment().format('DD-MM-YYYY'),
       carried: '',
       hurdle: '',
@@ -66,8 +61,7 @@ class CreateNewDeal extends Component {
       return;
     }
     this.setState({ loading: true });
-    const deal = omit(this.state.deal);
-    const { data: { createDeal } } = await this.props.createDeal(deal);
+    const { data: { createDeal } } = await this.props.createDeal(this.state.deal);
     if (createDeal) {
       this.setState({ success: true });
       await sleep(2000);
@@ -86,20 +80,7 @@ class CreateNewDeal extends Component {
       },
     });
   };
-  handleChange = handleChange(name => {
-    if (!['deal.totalAmount', 'deal.minTicket', 'deal.maxTicket'].includes(name)) {
-      return;
-    }
-    const { currency } = get(this.state, name);
-    this.setState({
-      deal: {
-        ...this.state.deal,
-        totalAmount: { ...this.state.deal.totalAmount, currency },
-        minTicket: { ...this.state.deal.minTicket, currency },
-        maxTicket: { ...this.state.deal.maxTicket, currency },
-      },
-    });
-  }).bind(this);
+  handleChange = handleChange(afterHandleChange.bind(this)).bind(this);
   dealCategoriesOptions = () => {
     const { dealCategories } = this.props.organization;
     return dealCategories.map(dealCategory => ({
@@ -128,89 +109,12 @@ class CreateNewDeal extends Component {
           error={this.state.companyIdError || this.state.categoryIdError}
         >
           {!this.state.success &&
-            <div>
-              <Form.Input
-                name="deal.name"
-                value={this.state.deal.name}
-                onChange={this.handleChange}
-                label="Name"
-                placeholder="Name"
-                required
-              />
-              <Form.TextArea
-                name="deal.description"
-                value={this.state.deal.description}
-                onChange={this.handleChange}
-                label="Description"
-                placeholder="Description"
-                autoHeight
-              />
-              <FilesField
-                multiple
-                field="deal.deck"
-                label="Deck"
-                files={this.state.deal.deck}
-                onChange={this.handleChange}
-              />
-              <Form.Select
-                name="deal.categoryId"
-                value={this.state.deal.categoryId}
-                onChange={this.handleChange}
-                options={this.dealCategoriesOptions()}
-                label="Category"
-                placeholder="Category"
-                required
-              />
-              <AmountField
-                name="deal.totalAmount"
-                value={this.state.deal.totalAmount}
-                onChange={this.handleChange}
-                label="Total amount"
-                required
-              />
-              <AmountField
-                name="deal.minTicket"
-                value={this.state.deal.minTicket}
-                onChange={this.handleChange}
-                label="Min ticket"
-                required
-              />
-              <AmountField
-                name="deal.maxTicket"
-                value={this.state.deal.maxTicket}
-                onChange={this.handleChange}
-                label="Max ticket"
-                placeholder="No Limit"
-              />
-              <DateField
-                name="deal.referenceClosingDate"
-                value={this.state.deal.referenceClosingDate}
-                onChange={this.handleChange}
-                label="Reference closing date"
-              />
-              <Form.Input
-                name="deal.carried"
-                value={this.state.deal.carried}
-                onChange={this.handleChange}
-                label="Carried"
-                placeholder="Carried"
-                type="number"
-                min="0"
-                max="100"
-                required
-              />
-              <Form.Input
-                name="deal.hurdle"
-                value={this.state.deal.hurdle}
-                onChange={this.handleChange}
-                label="Hurdle"
-                placeholder="Hurdle"
-                type="number"
-                min="0"
-                max="100"
-                required
-              />
-            </div>}
+            <CreateUpdateDealFields
+              deal={this.state.deal}
+              handleChange={this.handleChange}
+              organizationName={this.props.organization.generalSettings.name}
+              dealCategoriesOptions={this.dealCategoriesOptions()}
+            />}
           {this.state.companyIdError &&
             <Message error header="Error!" content="Company is required." />}
           {this.state.categoryIdError &&

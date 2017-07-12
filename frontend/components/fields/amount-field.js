@@ -15,6 +15,7 @@ export default class extends Component {
     min: PropTypes.string,
     max: PropTypes.string,
     currencyDisabled: PropTypes.bool,
+    width: PropTypes.number,
   };
   static defaultProps = {
     label: '',
@@ -23,6 +24,7 @@ export default class extends Component {
     min: '',
     max: '',
     currencyDisabled: false,
+    width: 16,
   };
   handleChange = (event, { name, value }) => {
     const newValue = {
@@ -65,8 +67,10 @@ export default class extends Component {
             options={options}
             placeholder="Currency"
             disabled={this.props.currencyDisabled}
+            tabIndex="-1"
           />
         }
+        width={this.props.width}
       />
     );
   }

@@ -7,7 +7,7 @@ const InvestorCell = ({ investor }) =>
     <Header as="h4" image>
       <Image src={investor.pictureUrl} shape="rounded" size="mini" />
       <Header.Content>
-        {investor.fullName}
+        {investor.fullName === ' ' ? investor.email : investor.fullName}
         <Header.Subheader>
           {investor.companyName}
         </Header.Subheader>

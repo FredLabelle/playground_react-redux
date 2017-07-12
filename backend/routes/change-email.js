@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   const { changeEmailToken } = req.query;
   const { email } = await verify(changeEmailToken, process.env.FOREST_ENV_SECRET);
   const user = await UserService.findByChangeEmailToken(changeEmailToken);
-  user.update({ changeEmailToken: null, email, verified: true });
+  user.update({ changeEmailToken: null, email });
   const { shortId } = await user.getOrganization();
   const url = `${process.env.FRONTEND_URL}/organization/${shortId}`;
   res.redirect(url);
