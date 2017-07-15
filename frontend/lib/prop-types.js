@@ -31,17 +31,6 @@ export const TicketsSumPropType = PropTypes.shape({
   sum: AmountPropType,
 });
 
-export const InvestorPropType = PropTypes.shape({
-  pictureUrl: PropTypes.string.isRequired,
-  fullName: PropTypes.string.isRequired,
-  companyName: PropTypes.string.isRequired,
-  email: PropTypes.string,
-  status: PropTypes.string,
-  ticketsSum: TicketsSumPropType,
-  createdAt: PropTypes.string,
-  updatedAt: PropTypes.string,
-});
-
 export const RouterPropType = PropTypes.shape({
   organizationShortId: PropTypes.string.isRequired,
   pathname: PropTypes.string.isRequired,
@@ -53,6 +42,7 @@ export const RouterPropType = PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     email: PropTypes.string,
+    invited: PropTypes.string,
   }).isRequired,
 });
 
@@ -95,11 +85,23 @@ export const DealPropType = PropTypes.shape({
   updatedAt: PropTypes.string,
 });
 
+export const InvestorPropType = PropTypes.shape({
+  picture: PropTypes.arrayOf(FilePropType),
+  name: NamePropType,
+  fullName: PropTypes.string,
+  company: CompanyPropType,
+  email: PropTypes.string,
+  status: PropTypes.string,
+  ticketsSum: TicketsSumPropType,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
+});
+
 export const TicketPropType = PropTypes.shape({
-  investor: InvestorPropType.isRequired,
+  investor: InvestorPropType,
   deal: DealPropType,
   amount: AmountPropType.isRequired,
-  status: PropTypes.string.isRequired,
+  status: PropTypes.string,
   createdAt: PropTypes.string,
   updatedAt: PropTypes.string,
 });

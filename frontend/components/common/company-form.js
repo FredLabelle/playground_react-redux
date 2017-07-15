@@ -4,7 +4,6 @@ import { compose, graphql } from 'react-apollo';
 import { Segment, Form, Button, Header, Grid, Image, Search, Message } from 'semantic-ui-react';
 import escapeRegExp from 'lodash/escapeRegExp';
 import omit from 'lodash/omit';
-import pick from 'lodash/pick';
 
 import { sleep, handleChange } from '../../lib/util';
 import { CompanyPropType } from '../../lib/prop-types';
@@ -24,7 +23,6 @@ class Company extends Component {
       description: '',
       domain: '',
     },
-    isNew: true,
     results: [],
     loading: false,
     success: false,
@@ -32,14 +30,13 @@ class Company extends Component {
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ loading: true });
-    const company = omit(this.state.company, 'id', 'domain', '__typename');
+    const company = omit(this.state.company, 'domain', '__typename');
     const { data: { upsertCompany } } = await this.props.upsertCompany(company);
     this.setState({ loading: false });
     if (upsertCompany) {
       this.props.onChange(upsertCompany);
       this.setState({
-        company: pick(upsertCompany, 'name', 'website', 'description', 'domain'),
-        isNew: false,
+        company: upsertCompany,
         success: true,
       });
       await sleep(2000);
@@ -56,7 +53,7 @@ class Company extends Component {
   handleResultSelect = (event, { result }) => {
     const company = this.props.companies.find(({ name }) => name === result.title);
     this.props.onChange(company);
-    this.setState({ company, isNew: false });
+    this.setState({ company });
   };
   handleSearchChange = async (event, { value }) => {
     const perfectMatch = this.props.companies.find(({ name }) => name === value);
@@ -66,7 +63,7 @@ class Company extends Component {
     const isMatch = result => regExp.test(result.title);
     const companies = this.props.companies.map(this.companyToResult);
     const results = companies.filter(isMatch);
-    this.setState({ company, results, isNew: !perfectMatch });
+    this.setState({ company, results });
   };
   handleChange = handleChange().bind(this);
   render() {
@@ -132,7 +129,7 @@ class Company extends Component {
             form="upsert-company"
             primary
             disabled={this.state.loading}
-            content={this.state.isNew ? 'Create company' : 'Update company'}
+            content={this.state.company.id ? 'Update company' : 'Create company'}
             icon="checkmark"
             labelPosition="left"
           />

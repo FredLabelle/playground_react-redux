@@ -34,8 +34,9 @@ module.exports.handleFilesUpdate = async (shortId, input, field) => {
   if (!files) {
     return null;
   }
+  const fieldName = field.split('.').pop();
   const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-  const folderName = `deck${env}/${shortId}`;
+  const folderName = `${fieldName}${env}/${shortId}`;
   if (files.length) {
     if (files[0].uploaded) {
       return null;

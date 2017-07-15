@@ -53,11 +53,6 @@ app.prepare().then(() => {
   server.get('/admin/organization/:organizationShortId/login', route('/admin/login'));
   server.get('/admin/organization/:organizationShortId', redirectMiddleware, route('/admin'));
   server.get(
-    '/admin/organization/:organizationShortId/deals/new',
-    redirectMiddleware,
-    route('/admin/deals/new'),
-  );
-  server.get(
     '/admin/organization/:organizationShortId/deals/:resourceShortId',
     redirectMiddleware,
     route('/admin/deals'),
@@ -68,19 +63,9 @@ app.prepare().then(() => {
     route('/admin/investors'),
   );
   server.get(
-    '/admin/organization/:organizationShortId/investors/new',
-    redirectMiddleware,
-    route('/admin/investors/new'),
-  );
-  server.get(
     '/admin/organization/:organizationShortId/tickets',
     redirectMiddleware,
     route('/admin/tickets'),
-  );
-  server.get(
-    '/admin/organization/:organizationShortId/tickets/new',
-    redirectMiddleware,
-    route('/admin/tickets/new'),
   );
   server.get(
     '/admin/organization/:organizationShortId/reports',

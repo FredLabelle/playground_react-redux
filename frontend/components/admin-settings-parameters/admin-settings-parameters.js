@@ -17,15 +17,6 @@ class AdminSettingsParameters extends Component {
     organization: OrganizationPropType,
   };
   static defaultProps = { organization: null };
-  /* onClick = event => {
-    event.preventDefault();
-    const { shortId: organizationShortId } = this.props.organization;
-    const { item } = event.target.dataset;
-    Router.replace(
-      `/admin/settings/parameters?organizationShortId=${organizationShortId}&item=${item}`,
-      `/admin/organization/${organizationShortId}/settings/parameters?item=${item}`,
-    );
-  };*/
   render() {
     if (!this.props.organization) {
       return null;

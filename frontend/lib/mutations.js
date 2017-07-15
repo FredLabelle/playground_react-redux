@@ -30,12 +30,6 @@ export const resetPasswordMutation = gql`
   }
 `;
 
-export const updateInvestorMutation = gql`
-  mutation updateInvestor($input: UpdateInvestorInput!) {
-    updateInvestor(input: $input)
-  }
-`;
-
 export const adminLoginAckMutation = gql`
   mutation adminLoginAck {
     adminLoginAck
@@ -54,9 +48,11 @@ export const updateDealCategoriesMutation = gql`
   }
 `;
 
-export const createInvestorMutation = gql`
-  mutation createInvestor($input: CreateInvestorInput!) {
-    createInvestor(input: $input)
+export const upsertInvestorMutation = gql`
+  mutation upsertInvestor($input: UpsertInvestorInput!) {
+    upsertInvestor(input: $input) {
+      id
+    }
   }
 `;
 
@@ -84,15 +80,11 @@ export const upsertCompanyMutation = gql`
   }
 `;
 
-export const createDealMutation = gql`
-  mutation createDeal($input: CreateUpdateDealInput!) {
-    createDeal(input: $input)
-  }
-`;
-
-export const createTicketMutation = gql`
-  mutation createTicket($input: CreateTicketInput!) {
-    createTicket(input: $input)
+export const upsertTicketMutation = gql`
+  mutation upsertTicket($input: UpsertTicketInput!) {
+    upsertTicket(input: $input) {
+      id
+    }
   }
 `;
 
@@ -108,8 +100,16 @@ export const changePasswordMutation = gql`
   }
 `;
 
-export const updateDealMutation = gql`
-  mutation updateDeal($input: CreateUpdateDealInput!) {
-    updateDeal(input: $input)
+export const upsertDealMutation = gql`
+  mutation upsertDeal($input: UpsertDealInput!) {
+    upsertDeal(input: $input) {
+      id
+    }
+  }
+`;
+
+export const sendInvitationMutation = gql`
+  mutation sendInvitation($input: InviteInvestorInput!) {
+    sendInvitation(input: $input)
   }
 `;

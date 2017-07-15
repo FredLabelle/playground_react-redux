@@ -29,7 +29,7 @@ class InvitationEmailParameters extends Component {
   onSubmit = async event => {
     event.preventDefault();
     const { body } = this.state.organization.parametersSettings.invitationEmail;
-    const warning = body.indexOf('{{signup_link}}') === -1;
+    const warning = !body.includes('{{signup_link}}');
     this.setState({ warning });
     if (warning) {
       return;

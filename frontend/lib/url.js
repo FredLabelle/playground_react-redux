@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
 
-const whitelist = ['new', 'users', 'parameters', 'administrative'];
+const whitelist = ['users', 'parameters', 'administrative'];
 
 export const linkHref = (rawPathname, { admin, organizationShortId }, me) => {
   const adminProp = me ? me.role === 'admin' : admin;

@@ -101,10 +101,61 @@ export const investorsQuery = gql`
   query {
     investors {
       id
+      picture {
+        url
+      }
       fullName
       email
-      pictureUrl
-      companyName
+      phone
+      name {
+        firstName
+        lastName
+      }
+      investmentSettings
+      type
+      individualSettings {
+        birthdate
+        nationality
+        idDocuments {
+          name
+          url
+          image
+          uploaded
+        }
+        fiscalAddress {
+          address1
+          address2
+          city
+          zipCode
+          country
+          state
+        }
+      }
+      corporationSettings {
+        position
+        companyName
+        companyAddress {
+          address1
+          address2
+          city
+          zipCode
+          country
+          state
+        }
+        incProof {
+          name
+          url
+          image
+          uploaded
+        }
+      }
+      advisor {
+        name {
+          firstName
+          lastName
+        }
+        email
+      }
       status
       ticketsSum {
         count
@@ -178,8 +229,9 @@ export const ticketsQuery = gql`
       id
       investor {
         fullName
-        pictureUrl
-        companyName
+        picture {
+          url
+        }
       }
       deal {
         company {
@@ -260,8 +312,9 @@ export const dealQuery = gql`
       investors {
         id
         fullName
-        pictureUrl
-        companyName
+        picture {
+          url
+        }
         ticketsSum {
           count
         }
@@ -270,8 +323,9 @@ export const dealQuery = gql`
         id
         investor {
           fullName
-          pictureUrl
-          companyName
+          picture {
+            url
+          }
         }
         amount {
           amount

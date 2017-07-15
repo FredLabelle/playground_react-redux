@@ -61,17 +61,6 @@ input AdvisorInput {
   email: String!
 }
 
-input UpdateInvestorInput {
-  name: NameInput!
-  phone: String
-  picture: [FileInput]
-  type: String
-  investmentSettings: JSON
-  individualSettings: IndividualSettingsInput
-  corporationSettings: CorporationSettingsInput
-  advisor: AdvisorInput
-}
-
 input FileInput {
   name: String!
   url: String!
@@ -106,14 +95,21 @@ input UpdateOrganizationInput {
   parametersSettings: ParametersSettingsInput
 }
 
-input CreateInvestorInput {
-  name: NameInput!
-  email: String!
-  investmentSettings: JSON!
+input UpsertInvestorInput {
+  id: ID
+  email: String
+  phone: String
+  name: NameInput
+  picture: [FileInput]
+  investmentSettings: JSON
+  type: String
+  individualSettings: IndividualSettingsInput
+  corporationSettings: CorporationSettingsInput
+  advisor: AdvisorInput
 }
 
 input InvestorInfoInput {
-  name: NameInput!
+  name: NameInput
   email: String!
 }
 
@@ -128,12 +124,13 @@ input InviteInvestorInput {
 }
 
 input UpsertCompanyInput {
+  id: ID
   name: String!
   website: String!
   description: String!
 }
 
-input CreateUpdateDealInput {
+input UpsertDealInput {
   id: ID
   companyId: ID
   name: String!
@@ -149,12 +146,6 @@ input CreateUpdateDealInput {
   referenceClosingDate: String
   carried: String!
   hurdle: String!
-}
-
-input CreateTicketInput {
-  userId: ID!
-  dealId: ID!
-  amount: AmountInput!
 }
 
 input DealCategoryInput {
@@ -173,6 +164,13 @@ input ChangePasswordInput {
   password: String!
 }
 
+input UpsertTicketInput {
+  id: ID
+  userId: ID
+  dealId: ID
+  amount: AmountInput!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -181,17 +179,16 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): ID
   changeEmail(input: ChangeEmailInput!): Boolean!
   changePassword(input: ChangePasswordInput!): Boolean!
-  updateInvestor(input: UpdateInvestorInput!): Boolean!
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   updateDealCategories(input: [DealCategoryInput]!): Boolean!
-  createInvestor(input: CreateInvestorInput!): Boolean!
+  upsertInvestor(input: UpsertInvestorInput!): User
   invitationStatus(input: InvitationStatusInput!): String!
   inviteInvestor(input: InviteInvestorInput!): String!
   upsertCompany(input: UpsertCompanyInput!): Company
-  createDeal(input: CreateUpdateDealInput!): Boolean!
-  createTicket(input: CreateTicketInput!): Boolean!
-  updateDeal(input: CreateUpdateDealInput!): Boolean!
+  upsertDeal(input: UpsertDealInput!): Deal
+  sendInvitation(input: InviteInvestorInput!): Boolean!
+  upsertTicket(input: UpsertTicketInput!): Ticket
 }
 `;
 
@@ -235,9 +232,6 @@ exports.resolvers = {
     changePassword(root, { input }, context) {
       return authedMutation(context.User.changePassword, false)(context.user, input);
     },
-    updateInvestor(root, { input }, context) {
-      return authedMutation(context.User.updateInvestor, false)(context.user, input);
-    },
     adminLoginAck(root, variables, context) {
       return context.User.adminLoginAck();
     },
@@ -247,8 +241,8 @@ exports.resolvers = {
     updateDealCategories(root, { input }, context) {
       return adminMutation(context.Organization.updateDealCategories, false)(context.user, input);
     },
-    createInvestor(root, { input }, context) {
-      return adminMutation(context.User.createInvestor, false)(context.user, input);
+    upsertInvestor(root, { input }, context) {
+      return authedMutation(context.User.upsertInvestor, null)(context.user, input);
     },
     invitationStatus(root, { input }, context) {
       return context.User.invitationStatus(input);
@@ -259,14 +253,14 @@ exports.resolvers = {
     upsertCompany(root, { input }, context) {
       return adminMutation(context.Company.upsert, null)(context.user, input);
     },
-    createDeal(root, { input }, context) {
-      return adminMutation(context.Deal.create, false)(context.user, input);
+    upsertDeal(root, { input }, context) {
+      return adminMutation(context.Deal.upsert, null)(context.user, input);
     },
-    createTicket(root, { input }, context) {
-      return adminMutation(context.Ticket.create, false)(context.user, input);
+    sendInvitation(root, { input }, context) {
+      return adminMutation(context.User.sendInvitation, false)(context.user, input);
     },
-    updateDeal(root, { input }, context) {
-      return adminMutation(context.Deal.update, false)(context.user, input);
+    upsertTicket(root, { input }, context) {
+      return adminMutation(context.Ticket.upsert, null)(context.user, input);
     },
   },
 };

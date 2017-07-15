@@ -16,11 +16,12 @@ const DatePicker = ({ date, onDateChange, focused, onFocusChange }) =>
     displayFormat="DD/MM/YYYY"
   />;
 DatePicker.propTypes = {
-  date: PropTypes.instanceOf(Moment).isRequired,
+  date: PropTypes.instanceOf(Moment),
   onDateChange: PropTypes.func.isRequired,
-  focused: PropTypes.bool.isRequired,
+  focused: PropTypes.bool,
   onFocusChange: PropTypes.func.isRequired,
 };
+DatePicker.defaultProps = { date: null, focused: false };
 
 export default class extends Component {
   static propTypes = {
@@ -44,7 +45,7 @@ export default class extends Component {
         label={this.props.label}
         width={this.props.width}
         control={DatePicker}
-        date={moment(this.props.value, 'DD-MM-YYYY')}
+        date={this.props.value ? moment(this.props.value, 'DD-MM-YYYY') : null}
         onDateChange={this.handleChange}
         focused={this.state.focused}
         onFocusChange={this.onFocusChange}

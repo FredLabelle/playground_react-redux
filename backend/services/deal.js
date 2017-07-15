@@ -112,36 +112,25 @@ const DealService = {
       return null;
     }
   },
-  async create(user, input) {
+  async upsert(user, input) {
     try {
-      const organization = await user.getOrganization();
-      const deal = await organization.createDeal(omit(input, 'deck'));
-      handleFilesUpdate(deal.shortId, input, 'deck').then(deck => {
-        if (deck) {
-          deal.update({ deck });
-        }
-      });
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  },
-  async update(user, input) {
-    try {
-      const deal = await DealService.findById(input.id);
-      if (user.organizationId !== deal.organizationId) {
-        return false;
+      let deal = await DealService.findById(input.id);
+      if (deal && user.organizationId !== deal.organizationId) {
+        return null;
+      }
+      if (!deal) {
+        const organization = await user.getOrganization();
+        deal = await organization.createDeal(omit(input, 'deck'));
       }
       const deck = await handleFilesUpdate(deal.shortId, input, 'deck');
       if (deck) {
         Object.assign(input, { deck });
       }
-      await deal.update(input);
-      return true;
+      const result = await deal.update(input);
+      return result.toJSON();
     } catch (error) {
       console.error(error);
-      return false;
+      return null;
     }
   },
 };

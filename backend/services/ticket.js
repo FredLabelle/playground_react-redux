@@ -1,4 +1,4 @@
-const { User, InvestorProfile, Deal, Company, DealCategory } = require('../models');
+const { Ticket, User, InvestorProfile, Deal, Company, DealCategory } = require('../models');
 const UserService = require('./user');
 
 const TicketService = {
@@ -32,11 +32,15 @@ const TicketService = {
       return null;
     }
   },
-  async create(user, input) {
+  async upsert(user, input) {
     try {
-      const organization = await user.getOrganization();
-      await organization.createTicket(Object.assign({ status: 'accepted' }, input));
-      return true;
+      let ticket = await Ticket.findById(input.id);
+      if (!ticket) {
+        const organization = await user.getOrganization();
+        ticket = await organization.createTicket(Object.assign({ status: 'accepted' }, input));
+      }
+      const result = await ticket.update(input);
+      return result.toJSON();
     } catch (error) {
       console.error(error);
       return false;

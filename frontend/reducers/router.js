@@ -18,7 +18,7 @@ export default (state = initialState, { type, payload }) => {
       }
       const [, admin = '', organizationShortId, rawPathname = '/', queryString = ''] = matches;
       const [, pathname = '/', resourceShortId = ''] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
-      const whitelist = ['new', 'users', 'parameters', 'administrative'];
+      const whitelist = ['users', 'parameters', 'administrative'];
       const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;
       const query = parse(queryString);
       return {

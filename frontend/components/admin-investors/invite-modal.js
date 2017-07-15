@@ -9,9 +9,22 @@ import { NamePropType, OrganizationPropType } from '../../lib/prop-types';
 import { invitationStatusMutation, inviteInvestorMutation } from '../../lib/mutations';
 import { investorsQuery } from '../../lib/queries';
 import NameField from '../fields/name-field';
+import InvitationEmailFields from '../common/invitation-email-fields';
 
-const InviteInvestorForm = ({ onSubmit, investor, onChange, warning, error }) =>
-  <Form id="invite-investor" onSubmit={onSubmit} warning={warning} error={error}>
+const InviteInvestorForm = ({
+  onSubmit,
+  investor,
+  onChange,
+  createdWarning,
+  joinedWarning,
+  error,
+}) =>
+  <Form
+    id="invite-investor"
+    onSubmit={onSubmit}
+    warning={createdWarning || joinedWarning}
+    error={error}
+  >
     <Form.Input
       name="investor.email"
       value={investor.email}
@@ -22,7 +35,9 @@ const InviteInvestorForm = ({ onSubmit, investor, onChange, warning, error }) =>
       required
     />
     <NameField name="investor.name" value={investor.name} onChange={onChange} />
-    <Message warning header="Warning!" content="This user has already joined!" />
+    {createdWarning &&
+      <Message warning header="Warning!" content="This user is already created!" />}
+    {joinedWarning && <Message warning header="Warning!" content="This user has already joined!" />}
     <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvestorForm.propTypes = {
@@ -32,7 +47,8 @@ InviteInvestorForm.propTypes = {
     email: PropTypes.string,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
-  warning: PropTypes.bool.isRequired,
+  createdWarning: PropTypes.bool.isRequired,
+  joinedWarning: PropTypes.bool.isRequired,
   error: PropTypes.bool.isRequired,
 };
 
@@ -59,29 +75,7 @@ const InviteInvitationEmailForm = ({
         content="This user has already been invited, send a reminder email?"
       />}
     {!success &&
-      <div>
-        <Form.Input
-          name="invitationEmail.subject"
-          value={invitationEmail.subject}
-          onChange={onChange}
-          label="Subject"
-          placeholder="Subject"
-          required
-        />
-        <Form.TextArea
-          name="invitationEmail.body"
-          defaultValue={invitationEmail.body}
-          onChange={onChange}
-          label="Body"
-          placeholder="Body"
-          required
-          autoHeight
-        />
-        <p>
-          You can use <strong>{'{{organization}}'}</strong>, <strong>{'{{firstname}}'}</strong>,{' '}
-          <strong>{'{{lastname}}'}</strong> and <strong>{'{{signup_link}}'}</strong>.
-        </p>
-      </div>}
+      <InvitationEmailFields invitationEmail={invitationEmail} handleChange={onChange} />}
     <Message
       success
       header="Success!"
@@ -103,16 +97,17 @@ InviteInvitationEmailForm.propTypes = {
   error: PropTypes.bool.isRequired,
 };
 
-const initialState = organization => ({
+const initialState = ({ parametersSettings }) => ({
   investor: {
     name: { firstName: '', lastName: '' },
     email: '',
   },
-  invitationEmail: organization.parametersSettings.invitationEmail,
+  invitationEmail: parametersSettings.invitationEmail,
   form: 'invite-investor',
   success: false,
   info: false,
-  inviteInvestorWarning: false,
+  createdWarning: false,
+  joinedWarning: false,
   invitationEmailWarning: false,
   error: false,
 });
@@ -146,7 +141,8 @@ class InviteModal extends Component {
       });
     } else {
       this.setState({
-        inviteInvestorWarning: invitationStatus === 'joined',
+        createdWarning: invitationStatus === 'created',
+        joinedWarning: invitationStatus === 'joined',
         error: invitationStatus === 'error',
       });
     }
@@ -154,7 +150,7 @@ class InviteModal extends Component {
   onInvitationEmailSubmit = async event => {
     event.preventDefault();
     const { body } = this.state.invitationEmail;
-    const invitationEmailWarning = body.indexOf('{{signup_link}}') === -1;
+    const invitationEmailWarning = !body.includes('{{signup_link}}');
     this.setState({ invitationEmailWarning });
     if (invitationEmailWarning) {
       return;
@@ -179,7 +175,8 @@ class InviteModal extends Component {
                 onSubmit={this.onInvestorSubmit}
                 investor={this.state.investor}
                 onChange={this.handleChange}
-                warning={this.state.inviteInvestorWarning}
+                createdWarning={this.state.createdWarning}
+                joinedWarning={this.state.joinedWarning}
                 error={this.state.error}
               />
             : <InviteInvitationEmailForm

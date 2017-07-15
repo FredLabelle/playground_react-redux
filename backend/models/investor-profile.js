@@ -11,7 +11,7 @@ module.exports = sequelize.define('InvestorProfile', {
   },
   status: {
     type: Sequelize.STRING,
-    defaultValue: 'invited',
+    defaultValue: 'created',
   },
   type: {
     type: Sequelize.STRING,

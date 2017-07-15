@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { numberFormatter } from '../../lib/util';
 import { RouterPropType, OrganizationPropType, DealPropType } from '../../lib/prop-types';
 import { organizationQuery, dealQuery } from '../../lib/queries';
-import UpdateDealModal from './update-deal-modal';
+import UpsertDealModal from '../common/upsert-deal-modal';
 import DealInvestorsList from './deal-investors-list';
 import DealTicketsList from './deal-tickets-list';
 
@@ -19,12 +19,12 @@ class AdminDeal extends Component {
     deal: DealPropType,
   };
   static defaultProps = { organization: null, deal: null };
-  state = { updateDealModalOpen: false };
-  onUpdateDealModalClose = () => {
-    this.setState({ updateDealModalOpen: false });
+  state = { upsertDealModalOpen: false };
+  onUpsertDealModalClose = () => {
+    this.setState({ upsertDealModalOpen: false });
   };
   updateDeal = () => {
-    this.setState({ updateDealModalOpen: true });
+    this.setState({ upsertDealModalOpen: true });
   };
   render() {
     const { organization, deal } = this.props;
@@ -97,11 +97,11 @@ class AdminDeal extends Component {
         {active('investors') && <DealInvestorsList investors={deal.investors} />}
         {active('tickets') && <DealTicketsList tickets={deal.tickets} />}
         {active('reports') && <span>REPORTS</span>}
-        <UpdateDealModal
-          open={this.state.updateDealModalOpen}
-          onClose={this.onUpdateDealModalClose}
+        <UpsertDealModal
+          open={this.state.upsertDealModalOpen}
+          onClose={this.onUpsertDealModalClose}
           deal={deal}
-          organizationName={organization.generalSettings.name}
+          organization={organization}
         />
       </Segment>
     );

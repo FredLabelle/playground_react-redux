@@ -13,13 +13,12 @@ const CompanyService = {
   },
   async upsert(user, input) {
     try {
-      const organization = await user.getOrganization();
-      const company = await Company.findOne({
-        where: { name: input.name },
-      });
-      const result = company
-        ? await company.update(input)
-        : await organization.createCompany(input);
+      let company = await Company.findById(input.id);
+      if (!company) {
+        const organization = await user.getOrganization();
+        company = await organization.createCompany(input);
+      }
+      const result = await company.update(input);
       return result.toJSON();
     } catch (error) {
       console.error(error);

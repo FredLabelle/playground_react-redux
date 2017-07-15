@@ -21,8 +21,7 @@ const DealsListHeader = ({ router }) =>
       <Table.HeaderCell>Investors</Table.HeaderCell>
       {router.admin && <Table.HeaderCell>Tickets</Table.HeaderCell>}
       {/* <Table.HeaderCell>Reports</Table.HeaderCell>
-      <Table.HeaderCell>Status</Table.HeaderCell>
-      <Table.HeaderCell>Actions</Table.HeaderCell>*/}
+      <Table.HeaderCell>Status</Table.HeaderCell>*/}
     </Table.Row>
   </Table.Header>;
 DealsListHeader.propTypes = { router: RouterPropType.isRequired };
@@ -32,20 +31,20 @@ class DealsListRow extends Component {
     router: RouterPropType.isRequired,
     deal: DealPropType.isRequired,
   };
-  onClick = (router, deal) => event => {
+  viewDeal = ({ shortId }) => event => {
     event.preventDefault();
-    if (!router.admin) {
+    if (!this.props.router.admin) {
       return;
     }
     Router.push(
-      linkHref(`/deals/${deal.shortId}`, router),
-      linkAs(`/deals/${deal.shortId}`, router),
+      linkHref(`/deals/${shortId}`, this.props.router),
+      linkAs(`/deals/${shortId}`, this.props.router),
     );
   };
   render() {
     const { router, deal } = this.props;
     return (
-      <Table.Row className={router.admin ? 'table-row' : ''} onClick={this.onClick(router, deal)}>
+      <Table.Row className={router.admin ? 'table-row' : ''} onClick={this.viewDeal(deal)}>
         <CompanyCell company={deal.company} />
         <DealCell deal={deal} />
         <Table.Cell>
@@ -55,9 +54,6 @@ class DealsListRow extends Component {
         {/* <Table.Cell>
           <strong>Open</strong><br />
           {moment(deal.createdAt).format('DD/MM/YYYY')}
-        </Table.Cell>
-        <Table.Cell>
-          View | Share | Close
         </Table.Cell>*/}
         <style jsx>{`
           strong {
@@ -80,9 +76,8 @@ const DealsList = ({ router, deals }) =>
     : null;
 DealsList.propTypes = {
   router: RouterPropType.isRequired,
-  deals: PropTypes.arrayOf(DealPropType),
+  deals: PropTypes.arrayOf(DealPropType).isRequired,
 };
-DealsList.defaultProps = { deals: [] };
 
 export default compose(
   connect(({ router }) => ({ router })),

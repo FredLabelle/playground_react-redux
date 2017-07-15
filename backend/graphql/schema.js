@@ -61,6 +61,8 @@ type Advisor {
 type User {
   id: ID!
   shortId: ID!
+  picture: [File]!
+  fullName: String!
   name: Name!
   phone: String!
   email: String!
@@ -71,16 +73,8 @@ type User {
   individualSettings: IndividualSettings
   corporationSettings: CorporationSettings
   advisor: Advisor
-  createdAt: Date!
-}
-
-type Investor {
-  id: ID!
-  fullName: String!
-  email: String!
   ticketsSum: TicketsSum!
-  pictureUrl: String!
-  companyName: String!
+  company: Company!
   status: String!
   createdAt: Date!
   updatedAt: Date!
@@ -150,14 +144,14 @@ type Deal {
   deck: [File]!
   ticketsSum: TicketsSum!
   investorsCommited: Int!
-  investors: [Investor]
+  investors: [User]
   tickets: [Ticket]
   createdAt: Date!
 }
 
 type Ticket {
   id: ID!
-  investor: Investor!
+  investor: User!
   deal: Deal!
   amount: Amount!
   status: String!
@@ -167,7 +161,7 @@ type Ticket {
 type Query {
   organization(shortId: ID!): Organization
   me: User
-  investors: [Investor]
+  investors: [User]
   companies: [Company]
   deals: [Deal]
   tickets: [Ticket]

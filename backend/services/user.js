@@ -6,10 +6,15 @@ const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
 const omit = require('lodash/omit');
+const pick = require('lodash/pick');
 
 const { User, Organization, InvestorProfile, Ticket } = require('../models');
-const { gravatarPicture, handleFilesUpdate } = require('../lib/util');
-const { generateInvitationEmailContent, sendEmail } = require('../lib/mailjet');
+const {
+  gravatarPicture,
+  generateInvitationEmailContent,
+  handleFilesUpdate,
+} = require('../lib/util');
+const { sendEmail } = require('../lib/mailjet');
 
 const sign = promisify(jwt.sign);
 const verify = promisify(jwt.verify);
@@ -32,16 +37,19 @@ const UserService = {
     const profile = user.role === 'investor' ? user.InvestorProfile.toJSON() : {};
     return Object.assign(user, omit(profile, 'id'));
   },
+  findByInvestorId(id) {
+    return User.findById(id, {
+      include: [{ model: InvestorProfile }],
+    });
+  },
   toInvestor(user) {
     const investorProfile = omit(user.InvestorProfile.toJSON(), 'id');
-    return Object.assign({}, user.toJSON(), investorProfile, {
-      pictureUrl: user.picture[0].url,
-      companyName: investorProfile.corporationSettings.companyName,
-    });
+    return Object.assign({}, user.toJSON(), investorProfile);
   },
   findByResetPasswordToken(resetPasswordToken) {
     return User.findOne({
       where: { resetPasswordToken },
+      include: [{ model: InvestorProfile }],
     });
   },
   findByChangeEmailToken(changeEmailToken) {
@@ -187,37 +195,6 @@ const UserService = {
       return null;
     }
   },
-  async updateInvestor(user, input) {
-    try {
-      const [picture, idDocuments, incProof] = await Promise.all([
-        handleFilesUpdate(user.shortId, input, 'picture'),
-        handleFilesUpdate(user.shortId, input, 'individualSettings.idDocuments'),
-        handleFilesUpdate(user.shortId, input, 'corporationSettings.incProof'),
-      ]);
-      if (picture) {
-        if (!picture.length) {
-          picture.push(gravatarPicture(user.email));
-        }
-        Object.assign(input, { picture });
-      }
-      await user.update(input);
-      const investorProfile = await user.getInvestorProfile();
-      // input lacks some fields in nested JSONB so we need to default to current values
-      const { individualSettings, corporationSettings } = investorProfile.toJSON();
-      const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
-      if (idDocuments) {
-        Object.assign(update.individualSettings, { idDocuments });
-      }
-      if (incProof) {
-        Object.assign(update.corporationSettings, { incProof });
-      }
-      await investorProfile.update(update);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  },
   adminLoginAck() {
     return true;
   },
@@ -246,45 +223,53 @@ const UserService = {
       return null;
     }
   },
-  async createInvestor(user, input) {
+  async upsertInvestor(user, input) {
     try {
-      const organization = await user.getOrganization();
-      const invitationStatus = await UserService.invitationStatus({
-        email: input.email,
-        organizationId: organization.id,
-      });
-      if (invitationStatus !== 'invitable') {
-        return false;
+      if (user.role !== 'admin' && user.id !== input.id) {
+        return null;
       }
-      const resetPasswordToken = uuid();
-      const picture = [gravatarPicture(input.email)];
-      const investor = Object.assign({ role: 'investor', picture, resetPasswordToken }, input);
-      const newUser = await organization.createUser(investor);
-      await newUser.createInvestorProfile(investor);
-      const { shortId } = organization;
-      const queryString = stringify({ resetPasswordToken });
-      const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
-        organization.parametersSettings.invitationEmail,
-        organization.generalSettings.name,
-        newUser.name,
-      );
-      sendEmail({
-        fromEmail: 'investorx@e-founders.com',
-        fromName: 'InvestorX',
-        to: newUser.email,
-        subject,
-        templateId: 166944,
-        vars: {
-          beforeLink: beforeLink.replace(/\n/g, '<br />'),
-          linkText: `Join ${organization.generalSettings.name}`,
-          link: `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`,
-          afterLink: afterLink.replace(/\n/g, '<br />'),
-        },
-      });
-      return true;
+      let investor = await UserService.findByInvestorId(input.id);
+      if (!investor) {
+        const organization = await user.getOrganization();
+        const invitationStatus = await UserService.invitationStatus({
+          email: input.email,
+          organizationId: organization.id,
+        });
+        if (invitationStatus !== 'invitable') {
+          return null;
+        }
+        const picture = [gravatarPicture(input.email)];
+        const investorInput = Object.assign({ role: 'investor', picture }, input);
+        const newInvestor = await organization.createUser(investorInput);
+        await newInvestor.createInvestorProfile(investorInput);
+        investor = await UserService.findByInvestorId(newInvestor.id);
+      }
+      const [picture, idDocuments, incProof] = await Promise.all([
+        handleFilesUpdate(user.shortId, input, 'picture'),
+        handleFilesUpdate(user.shortId, input, 'individualSettings.idDocuments'),
+        handleFilesUpdate(user.shortId, input, 'corporationSettings.incProof'),
+      ]);
+      if (picture) {
+        if (!picture.length) {
+          picture.push(gravatarPicture(user.email));
+        }
+        Object.assign(input, { picture });
+      }
+      const { individualSettings, corporationSettings } = investor.InvestorProfile.toJSON();
+      // input lacks some fields in nested JSONB so we need to default to current values
+      const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
+      if (idDocuments) {
+        Object.assign(update.individualSettings, { idDocuments });
+      }
+      if (incProof) {
+        Object.assign(update.corporationSettings, { incProof });
+      }
+      await Promise.all([investor.update(input), investor.InvestorProfile.update(update)]);
+      const result = await UserService.findByInvestorId(investor.id);
+      return UserService.toInvestor(result);
     } catch (error) {
       console.error(error);
-      return false;
+      return null;
     }
   },
   async invitationStatus(input) {
@@ -310,9 +295,10 @@ const UserService = {
         const picture = [gravatarPicture(input.investor.email)];
         const investor = Object.assign({ role: 'investor', picture }, input.investor);
         const newUser = await organization.createUser(investor);
-        await newUser.createInvestorProfile();
+        await newUser.createInvestorProfile({ status: 'invited' });
       }
-      const payload = Object.assign({}, input.investor, {
+      const investor = foundUser ? pick(foundUser, 'email', 'name') : input.investor;
+      const payload = Object.assign({}, investor, {
         organizationShortId: organization.shortId,
       });
       const token = await sign(payload, process.env.FOREST_ENV_SECRET);
@@ -320,18 +306,53 @@ const UserService = {
       const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
         input.invitationEmail,
         organization.generalSettings.name,
-        input.investor.name,
+        investor.name,
       );
       sendEmail({
         fromEmail: 'investorx@e-founders.com',
         fromName: 'InvestorX',
-        to: input.investor.email,
+        to: investor.email,
         subject,
         templateId: 166944,
         vars: {
           beforeLink: beforeLink.replace(/\n/g, '<br />'),
           linkText: `Join ${organization.generalSettings.name}`,
           link: `${process.env.BACKEND_URL}/signup?${queryString}`,
+          afterLink: afterLink.replace(/\n/g, '<br />'),
+        },
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  },
+  async sendInvitation(user, input) {
+    try {
+      const organization = await user.getOrganization();
+      const foundUser = await UserService.findByEmail(input.investor.email, organization.id);
+      if (!foundUser) {
+        return false;
+      }
+      const resetPasswordToken = uuid();
+      foundUser.update({ resetPasswordToken });
+      const { shortId } = organization;
+      const queryString = stringify({ resetPasswordToken, invited: true });
+      const { subject, beforeLink, afterLink } = generateInvitationEmailContent(
+        input.invitationEmail,
+        organization.generalSettings.name,
+        foundUser.name,
+      );
+      sendEmail({
+        fromEmail: 'investorx@e-founders.com',
+        fromName: 'InvestorX',
+        to: foundUser.email,
+        subject,
+        templateId: 166944,
+        vars: {
+          beforeLink: beforeLink.replace(/\n/g, '<br />'),
+          linkText: `Join ${organization.generalSettings.name}`,
+          link: `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`,
           afterLink: afterLink.replace(/\n/g, '<br />'),
         },
       });

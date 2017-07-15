@@ -1,7 +1,7 @@
 .SingleDatePicker {
+  width: 100%;
   border: 1px solid #dbdbdb;
   border-radius: .28571429rem;
-  width: 100%;
 }
 
 .SingleDatePicker > div {
@@ -18,6 +18,7 @@
 }
 
 .DateInput {
+  width: 90%;
   padding: 0;
 }
 
@@ -35,4 +36,15 @@ select {
 
 .table-row:hover {
   background-color: rgba(0, 0, 0, .05);
+}
+
+.ui.basic.button.button-link {
+  box-shadow: none !important;
+  color: #4183c4 !important;
+  padding: 0;
+  margin: 0;
+}
+
+.ui.basic.button.button-link:hover {
+  color: #1e70bf !important;
 }

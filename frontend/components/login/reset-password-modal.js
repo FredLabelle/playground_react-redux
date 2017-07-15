@@ -35,10 +35,11 @@ class ResetPasswordModal extends Component {
       token: this.props.router.query.resetPasswordToken,
     });
     if (resetPassword) {
+      this.props.cookies.set('token', resetPassword, { path: '/' });
       this.setState({ success: true });
       await sleep(2000);
-      this.props.cookies.set('token', resetPassword, { path: '/' });
-      Router.push(linkHref('/', this.props.router), linkAs('/', this.props.router));
+      const route = this.props.router.query.invited === 'true' ? '/settings/administrative' : '/';
+      Router.push(linkHref(route, this.props.router), linkAs(route, this.props.router));
     } else {
       console.error('RESET PASSWORD ERROR');
       this.setState({ loading: false });

@@ -88,6 +88,14 @@ class NewInvestorForm extends Component {
               required
               disabled={this.props.signup}
             />
+            <Form.Input
+              name="investor.phone"
+              value={this.state.investor.phone}
+              onChange={this.handleChange}
+              label="Phone"
+              placeholder="Phone"
+              type="tel"
+            />
             <NameField
               name="investor.name"
               value={this.state.investor.name}

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Button } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 import omit from 'lodash/omit';
 import Router from 'next/router';
 
@@ -12,7 +12,6 @@ import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery, investorsQuery } from '../../lib/queries';
 import { createInvestorMutation } from '../../lib/mutations';
 import NewInvestorForm from '../common/new-investor-form';
-import InviteModal from './invite-modal';
 
 class CreateNewInvestor extends Component {
   static propTypes = {
@@ -23,7 +22,6 @@ class CreateNewInvestor extends Component {
   };
   static defaultProps = { organization: null };
   state = {
-    inviteModalOpen: false,
     loading: false,
     success: false,
   };
@@ -43,37 +41,15 @@ class CreateNewInvestor extends Component {
       this.setState({ loading: false });
     }
   };
-  onClick = event => {
-    event.preventDefault();
-    this.setState({ inviteModalOpen: true });
-  };
-  onInviteModalClose = () => {
-    this.setState({ inviteModalOpen: false });
-  };
   render() {
     return (
       this.props.organization &&
       <Segment attached="bottom" className="tab active">
-        <Segment basic textAlign="right">
-          <Button
-            type="button"
-            primary
-            content="Invite investor by email"
-            icon="mail"
-            labelPosition="left"
-            onClick={this.onClick}
-          />
-        </Segment>
         <NewInvestorForm
           organization={this.props.organization}
           onSubmit={this.onSubmit}
           loading={this.state.loading}
           success={this.state.success}
-        />
-        <InviteModal
-          open={this.state.inviteModalOpen}
-          onClose={this.onInviteModalClose}
-          organization={this.props.organization}
         />
       </Segment>
     );

@@ -10,24 +10,26 @@ import { sleep, omitDeep, handleChange } from '../../lib/util';
 import { FormPropType, MePropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
 import { meQuery, organizationQuery } from '../../lib/queries';
-import { updateInvestorMutation } from '../../lib/mutations';
+import { upsertInvestorMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FilesField from '../fields/files-field';
 import InvestmentField from '../fields/investment-field';
 import ChangeEmailModal from './change-email-modal';
 import ChangePasswordModal from './change-password-modal';
 
+const accountFields = ['id', 'name', 'phone', 'picture', 'investmentSettings'];
+
 class SettingsAccount extends Component {
   static propTypes = {
     form: FormPropType.isRequired,
     me: MePropType,
     organization: OrganizationPropType.isRequired,
-    updateInvestor: PropTypes.func.isRequired,
+    upsertInvestor: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   static defaultProps = { me: null };
   state = {
-    me: pick(this.props.me, 'name', 'phone', 'picture', 'investmentSettings'),
+    me: pick(this.props.me, accountFields),
     investmentSettingsError: false,
     saving: false,
     saved: false,
@@ -53,9 +55,9 @@ class SettingsAccount extends Component {
       return;
     }
     this.setState({ saving: true });
-    const { data: { updateInvestor } } = await this.props.updateInvestor(this.update());
+    const { data: { upsertInvestor } } = await this.props.upsertInvestor(this.update());
     this.setState({ saving: false });
-    if (updateInvestor) {
+    if (upsertInvestor) {
       this.props.setUnsavedChanges(false);
       this.setState({ success: true });
       await sleep(2000);
@@ -65,7 +67,7 @@ class SettingsAccount extends Component {
     }
   };
   handleChange = handleChange(() => {
-    const me = pick(this.props.me, 'name', 'phone', 'picture', 'investmentSettings');
+    const me = pick(this.props.me, accountFields);
     const meOmitted = omitDeep(me, '__typename');
     const unsavedChanges = !isEqual(this.update(), meOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
@@ -175,9 +177,9 @@ export default compose(
     }),
     props: ({ data: { organization } }) => ({ organization }),
   }),
-  graphql(updateInvestorMutation, {
+  graphql(upsertInvestorMutation, {
     props: ({ mutate }) => ({
-      updateInvestor: input =>
+      upsertInvestor: input =>
         mutate({
           variables: { input },
           refetchQueries: [{ query: meQuery }],

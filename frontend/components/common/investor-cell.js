@@ -5,12 +5,12 @@ import { InvestorPropType } from '../../lib/prop-types';
 const InvestorCell = ({ investor }) =>
   <Table.Cell>
     <Header as="h4" image>
-      <Image src={investor.pictureUrl} shape="rounded" size="mini" />
+      <Image src={investor.picture[0].url} shape="rounded" size="mini" />
       <Header.Content>
         {investor.fullName === ' ' ? investor.email : investor.fullName}
-        <Header.Subheader>
-          {investor.companyName}
-        </Header.Subheader>
+        {/* <Header.Subheader>
+          {investor.company.name}
+        </Header.Subheader>*/}
       </Header.Content>
     </Header>
   </Table.Cell>;
