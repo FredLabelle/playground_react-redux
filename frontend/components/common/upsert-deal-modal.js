@@ -117,7 +117,7 @@ class UpsertDealModal extends Component {
   };
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onCancel} size="fullscreen">
+      <Modal open={this.props.open} onClose={this.onCancel} size="large">
         <Header
           icon="file text outline"
           content={this.props.deal.id ? 'Update deal' : ' Create deal'}

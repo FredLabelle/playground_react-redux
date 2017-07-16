@@ -39,7 +39,7 @@ export default () =>
     />
     <link
       rel="stylesheet"
-      href="http://diegoddox.github.io/react-redux-toastr/7.0/react-redux-toastr.min.css"
+      href="//diegoddox.github.io/react-redux-toastr/7.0/react-redux-toastr.min.css"
     />
     <style dangerouslySetInnerHTML={{ __html: reactDatesStyleSheet }} />
     <style dangerouslySetInnerHTML={{ __html: globalStyleSheet }} />

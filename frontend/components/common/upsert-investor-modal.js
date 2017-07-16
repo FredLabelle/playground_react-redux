@@ -75,7 +75,7 @@ class UpsertInvestorModal extends Component {
   render() {
     const { createdWarning, invitedWarning, joinedWarning } = this.state;
     return (
-      <Modal open={this.props.open} onClose={this.onCancel} size="fullscreen">
+      <Modal open={this.props.open} onClose={this.onCancel} size="large">
         <Header
           icon="user"
           content={this.props.investor.id ? 'Edit investor' : 'Create a new investor'}

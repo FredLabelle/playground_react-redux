@@ -155,7 +155,7 @@ class UpsertTicketModal extends Component {
   render() {
     const selectedDeal = this.props.deals.find(({ id }) => id === this.state.ticket.dealId);
     return (
-      <Modal open={this.props.open} onClose={this.onCancel} size="fullscreen">
+      <Modal open={this.props.open} onClose={this.onCancel} size="large">
         <Header
           icon="ticket"
           content={this.props.ticket.id ? 'Edit ticket' : 'Create a new ticket'}
