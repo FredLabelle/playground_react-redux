@@ -31,9 +31,9 @@ export const organizationQuery = gql`
   }
 `;
 
-export const meQuery = gql`
+export const investorQuery = gql`
   query {
-    me {
+    investor {
       id
       name {
         firstName
@@ -93,6 +93,26 @@ export const meQuery = gql`
         }
         email
       }
+    }
+  }
+`;
+
+export const adminQuery = gql`
+  query {
+    admin {
+      id
+      name {
+        firstName
+        lastName
+      }
+      email
+      picture {
+        name
+        url
+        image
+        uploaded
+      }
+      role
     }
   }
 `;

@@ -21,7 +21,7 @@ export default class extends Component {
     label: '',
     placeholder: '',
     required: false,
-    min: '',
+    min: '0',
     max: '',
     currencyDisabled: false,
     width: 16,

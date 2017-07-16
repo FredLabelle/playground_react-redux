@@ -29,7 +29,7 @@ const investorToResult = ({ fullName, email, picture }) => ({
 });
 
 const initialState = ({ ticket, deals, investors }) => ({
-  ticket: pick(ticket, ['id', 'dealId', 'userId', 'amount']),
+  ticket: pick(ticket, ['id', 'dealId', 'investorId', 'amount']),
   dealsResults: deals.map(dealToResult),
   deal: '',
   dealSearchOpen: false,
@@ -37,7 +37,7 @@ const initialState = ({ ticket, deals, investors }) => ({
   investor: '',
   investorSearchOpen: false,
   dealIdError: false,
-  userIdError: false,
+  investorIdError: false,
   loading: false,
   success: false,
 });
@@ -61,9 +61,9 @@ class UpsertTicketModal extends Component {
     event.preventDefault();
     if (!this.props.ticket.id) {
       const dealIdError = !this.state.ticket.dealId;
-      const userIdError = !this.state.ticket.userId;
-      this.setState({ dealIdError, userIdError });
-      if (dealIdError || userIdError) {
+      const investorIdError = !this.state.ticket.investorId;
+      this.setState({ dealIdError, investorIdError });
+      if (dealIdError || investorIdError) {
         return;
       }
     }
@@ -135,17 +135,17 @@ class UpsertTicketModal extends Component {
     const investor = this.props.investors.find(i => i.fullName === result.title);
     const ticket = {
       ...this.state.ticket,
-      userId: investor.id,
+      investorId: investor.id,
     };
     this.setState({ investor: result.title, ticket, investorSearchOpen: false });
   };
   handleInvestorSearchChange = (event, { value }) => {
     const perfectMatch = this.props.investors.find(i => i.fullName === value);
     const investor = perfectMatch ? perfectMatch.title : value;
-    const userId = perfectMatch ? perfectMatch.id : '';
+    const investorId = perfectMatch ? perfectMatch.id : '';
     const ticket = {
       ...this.state.ticket,
-      userId,
+      investorId,
     };
     const regExp = new RegExp(escapeRegExp(value), 'i');
     const isMatch = result => regExp.test(result.title) || regExp.test(result.description);
@@ -168,7 +168,7 @@ class UpsertTicketModal extends Component {
             onSubmit={this.onSubmit}
             warning={this.state.ticket.dealId !== ''}
             success={this.state.success}
-            error={this.state.dealIdError || this.state.userIdError}
+            error={this.state.dealIdError || this.state.investorIdError}
           >
             {!this.props.ticket.id &&
               <Form.Group>
@@ -220,7 +220,7 @@ class UpsertTicketModal extends Component {
               </Message>}
             {this.state.dealIdError &&
               <Message error header="Error!" content="Deal is required." />}
-            {this.state.userIdError &&
+            {this.state.investorIdError &&
               <Message error header="Error!" content="Investor is required." />}
             <Message
               success

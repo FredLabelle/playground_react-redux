@@ -4,7 +4,7 @@ const google = require('googleapis');
 
 const googleOAuth2Client = require('../../../lib/google-oauth2-client');
 const OrganizationService = require('../../../services/organization');
-const UserService = require('../../../services/user');
+const AdminService = require('../../../services/admin');
 
 const getToken = promisify(googleOAuth2Client.getToken).bind(googleOAuth2Client);
 
@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     if (!organization) {
       // create?
     }
-    const token = await UserService.adminLogin(
+    const token = await AdminService.login(
       {
         name: { firstName: profile.given_name, lastName: profile.family_name },
         email: profile.email,

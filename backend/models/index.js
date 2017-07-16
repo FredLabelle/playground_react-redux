@@ -1,20 +1,20 @@
+const Admin = require('./admin');
 const Company = require('./company');
 const DealCategory = require('./deal-category');
 const Deal = require('./deal');
-const InvestorProfile = require('./investor-profile');
+const Investor = require('./investor');
 const Organization = require('./organization');
 const Ticket = require('./ticket');
-const User = require('./user');
 
 // adds fk
-User.belongsTo(Organization, { foreignKey: 'organizationId' });
-// provides createUser
-Organization.hasMany(User, { foreignKey: 'organizationId' });
+Admin.belongsTo(Organization, { foreignKey: 'organizationId' });
+// provides createAdmin
+Organization.hasMany(Admin, { foreignKey: 'organizationId' });
 
 // adds fk
-InvestorProfile.belongsTo(User, { foreignKey: 'userId' });
-// provides createInvestorProfile
-User.hasOne(InvestorProfile, { foreignKey: 'userId' /* , as: 'profile'*/ });
+Investor.belongsTo(Organization, { foreignKey: 'organizationId' });
+// provides createInvestor
+Organization.hasMany(Investor, { foreignKey: 'organizationId' });
 
 // adds fk
 Company.belongsTo(Organization, { foreignKey: 'organizationId' });
@@ -52,16 +52,16 @@ Ticket.belongsTo(Deal, { foreignKey: 'dealId' });
 Deal.hasMany(Ticket, { foreignKey: 'dealId' });
 
 // adds fk
-Ticket.belongsTo(User, { foreignKey: 'userId' });
+Ticket.belongsTo(Investor, { foreignKey: 'investorId' });
 // provides createTicket
-User.hasMany(Ticket, { foreignKey: 'userId' });
+Investor.hasMany(Ticket, { foreignKey: 'investorId' });
 
 module.exports = {
+  Admin,
   Company,
   DealCategory,
   Deal,
-  InvestorProfile,
+  Investor,
   Organization,
   Ticket,
-  User,
 };

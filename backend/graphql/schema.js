@@ -58,7 +58,7 @@ type Advisor {
   email: String!
 }
 
-type User {
+type Investor {
   id: ID!
   shortId: ID!
   picture: [File]!
@@ -78,6 +78,16 @@ type User {
   status: String!
   createdAt: Date!
   updatedAt: Date!
+}
+
+type Admin {
+  id: ID!
+  shortId: ID!
+  picture: [File]!
+  fullName: String!
+  name: Name!
+  email: String!
+  role: String!
 }
 
 type GeneralSettings {
@@ -144,14 +154,14 @@ type Deal {
   deck: [File]!
   ticketsSum: TicketsSum!
   investorsCommited: Int!
-  investors: [User]
+  investors: [Investor]
   tickets: [Ticket]
   createdAt: Date!
 }
 
 type Ticket {
   id: ID!
-  investor: User!
+  investor: Investor!
   deal: Deal!
   amount: Amount!
   status: String!
@@ -160,8 +170,9 @@ type Ticket {
 
 type Query {
   organization(shortId: ID!): Organization
-  me: User
-  investors: [User]
+  investor: Investor
+  admin: Admin
+  investors: [Investor]
   companies: [Company]
   deals: [Deal]
   tickets: [Ticket]
@@ -198,11 +209,14 @@ const resolvers = {
     organization(root, { shortId }, context) {
       return context.Organization.organization(shortId);
     },
-    me(root, params, context) {
-      return context.User.me(context.user);
+    investor(root, params, context) {
+      return context.Investor.investor(context.user);
+    },
+    admin(root, params, context) {
+      return context.Admin.admin(context.user);
     },
     investors(root, params, context) {
-      return adminQuery(context.User.investors)(context.user);
+      return adminQuery(context.Investor.investors)(context.user);
     },
     companies(root, params, context) {
       return adminQuery(context.Company.companies)(context.user);

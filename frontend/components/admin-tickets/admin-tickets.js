@@ -32,7 +32,7 @@ export default class extends Component {
           onClose={this.onUpsertTicketModalClose}
           ticket={{
             dealId: '',
-            userId: '',
+            investorId: '',
             amount: {
               amount: '',
               currency: '',

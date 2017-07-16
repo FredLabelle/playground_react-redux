@@ -7,9 +7,9 @@ import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
 import { sleep, omitDeep, handleChange } from '../../lib/util';
-import { MePropType, FormPropType } from '../../lib/prop-types';
+import { InvestorPropType, FormPropType } from '../../lib/prop-types';
 import { upsertInvestorMutation } from '../../lib/mutations';
-import { meQuery } from '../../lib/queries';
+import { investorQuery } from '../../lib/queries';
 import { setUnsavedChanges } from '../../actions/form';
 import AdministrativeFields from '../common/administrative-fields';
 
@@ -25,13 +25,13 @@ const administrativeFields = [
 class SettingsAdministrative extends Component {
   static propTypes = {
     form: FormPropType.isRequired,
-    me: MePropType,
+    investor: InvestorPropType,
     upsertInvestor: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
-  static defaultProps = { me: null };
+  static defaultProps = { investor: null };
   state = {
-    investor: pick(this.props.me, administrativeFields),
+    investor: pick(this.props.investor, administrativeFields),
     saving: false,
     success: false,
   };
@@ -50,15 +50,15 @@ class SettingsAdministrative extends Component {
     }
   };
   handleChange = handleChange(() => {
-    const me = pick(this.props.me, administrativeFields);
-    const meOmitted = omitDeep(me, '__typename');
-    const unsavedChanges = !isEqual(this.update(), meOmitted);
+    const investor = pick(this.props.investor, administrativeFields);
+    const investorOmitted = omitDeep(investor, '__typename');
+    const unsavedChanges = !isEqual(this.update(), investorOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
   update = () => omitDeep(this.state.investor, '__typename');
   render() {
     return (
-      this.props.me &&
+      this.props.investor &&
       <Segment attached="bottom" className="tab active">
         <Form onSubmit={this.onSubmit} success={this.state.success}>
           <AdministrativeFields investor={this.state.investor} handleChange={this.handleChange} />
@@ -81,15 +81,15 @@ class SettingsAdministrative extends Component {
 
 export default compose(
   connect(({ form }) => ({ form }), { setUnsavedChanges }),
-  graphql(meQuery, {
-    props: ({ data: { me } }) => ({ me }),
+  graphql(investorQuery, {
+    props: ({ data: { investor } }) => ({ investor }),
   }),
   graphql(upsertInvestorMutation, {
     props: ({ mutate }) => ({
       upsertInvestor: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: meQuery }],
+          refetchQueries: [{ query: investorQuery }],
         }),
     }),
   }),

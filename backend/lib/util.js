@@ -13,12 +13,16 @@ module.exports.gravatarPicture = email => {
   };
 };
 
-module.exports.generateInvitationEmailContent = ({ subject, body }, organizationName, userName) => {
+module.exports.generateInvitationEmailContent = (
+  { subject, body },
+  organizationName,
+  { firstName, lastName },
+) => {
   const replace = string =>
     string
       .replace(/{{organization}}/g, organizationName)
-      .replace(/{{firstname}}/g, userName.firstName)
-      .replace(/{{lastname}}/g, userName.lastName)
+      .replace(/{{firstname}}/g, firstName)
+      .replace(/{{lastname}}/g, lastName)
       .replace('Dear ,', 'Hello,');
   const replacedBody = replace(body);
   const { index } = replacedBody.match(/{{signup_link}}/);

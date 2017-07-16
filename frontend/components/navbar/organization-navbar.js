@@ -1,18 +1,24 @@
+import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
 import { Menu, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 
 import { linkHref, linkAs } from '../../lib/url';
-import { RouterPropType, OrganizationPropType, MePropType } from '../../lib/prop-types';
-import { organizationQuery, meQuery } from '../../lib/queries';
+import {
+  RouterPropType,
+  OrganizationPropType,
+  InvestorPropType,
+  AdminPropType,
+} from '../../lib/prop-types';
+import { organizationQuery, investorQuery, adminQuery } from '../../lib/queries';
 import LoginMenuItem from './login-menu-item';
 import UserDropdownMenu from './user-dropdown-menu';
 
-const OrganizationNavBar = ({ router, organization, me }) =>
+const OrganizationNavBar = ({ router, organization, user }) =>
   organization &&
   <Menu secondary>
     <Menu.Item className="horizontally fitted">
-      <Link prefetch href={linkHref('/', router, me)} as={linkAs('/', router, me)}>
+      <Link prefetch href={linkHref('/', router, user)} as={linkAs('/', router, user)}>
         <a>
           <Image
             src={`//logo.clearbit.com/${organization.domain}?size=35`}
@@ -22,20 +28,20 @@ const OrganizationNavBar = ({ router, organization, me }) =>
       </Link>
     </Menu.Item>
     <Menu.Item className="horizontally fitted">
-      <Link prefetch href={linkHref('/', router, me)} as={linkAs('/', router, me)}>
+      <Link prefetch href={linkHref('/', router, user)} as={linkAs('/', router, user)}>
         <a>Home</a>
       </Link>
     </Menu.Item>
     <Menu className="right" secondary>
-      {me ? <UserDropdownMenu router={router} me={me} /> : <LoginMenuItem router={router} />}
+      {user ? <UserDropdownMenu router={router} user={user} /> : <LoginMenuItem router={router} />}
     </Menu>
   </Menu>;
 OrganizationNavBar.propTypes = {
   router: RouterPropType.isRequired,
   organization: OrganizationPropType,
-  me: MePropType,
+  user: PropTypes.oneOfType([InvestorPropType, AdminPropType]),
 };
-OrganizationNavBar.defaultProps = { organization: null, me: null };
+OrganizationNavBar.defaultProps = { organization: null, user: null };
 
 export default compose(
   graphql(organizationQuery, {
@@ -44,7 +50,10 @@ export default compose(
     }),
     props: ({ data: { organization } }) => ({ organization }),
   }),
-  graphql(meQuery, {
-    props: ({ data: { me } }) => ({ me }),
+  graphql(investorQuery, {
+    props: ({ data: { investor } }) => (investor ? { user: investor } : {}),
+  }),
+  graphql(adminQuery, {
+    props: ({ data: { admin } }) => (admin ? { user: admin } : {}),
   }),
 )(OrganizationNavBar);

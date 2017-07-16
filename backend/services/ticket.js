@@ -1,16 +1,14 @@
-const { Ticket, User, InvestorProfile, Deal, Company, DealCategory } = require('../models');
-const UserService = require('./user');
+const { Ticket, Investor, Deal, Company, DealCategory } = require('../models');
 
 const TicketService = {
   async tickets(user) {
     try {
       const organization = await user.getOrganization();
       const tickets = await organization.getTickets({
-        where: user.role === 'investor' && { userId: user.id },
+        where: user.role === 'investor' && { investorId: user.id },
         include: [
           {
-            model: User,
-            include: [{ model: InvestorProfile }],
+            model: Investor,
           },
           {
             model: Deal,
@@ -20,7 +18,7 @@ const TicketService = {
       });
       return tickets.map(ticket =>
         Object.assign({}, ticket.toJSON(), {
-          investor: UserService.toInvestor(ticket.User),
+          investor: ticket.Investor,
           deal: Object.assign({}, ticket.Deal.toJSON(), {
             company: ticket.Deal.Company.toJSON(),
             category: ticket.Deal.DealCategory.toJSON(),
@@ -32,11 +30,11 @@ const TicketService = {
       return null;
     }
   },
-  async upsert(user, input) {
+  async upsert(admin, input) {
     try {
       let ticket = await Ticket.findById(input.id);
       if (!ticket) {
-        const organization = await user.getOrganization();
+        const organization = await admin.getOrganization();
         ticket = await organization.createTicket(Object.assign({ status: 'accepted' }, input));
       }
       const result = await ticket.update(input);

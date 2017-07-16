@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs');
 
 const sequelize = require('../../models/sequelize');
 const { Organization } = require('../../models');
-const { gravatarPicture } = require('../../lib/util');
 
 module.exports.seedDatabase = async (req, res) => {
   if (process.env.NODE_ENV === 'production') {
@@ -48,17 +47,13 @@ module.exports.seedDatabase = async (req, res) => {
     });
     const email = 'simon.arvaux@gmail.com';
     const password = await bcrypt.hash('password', 10);
-    const user = await organization.createUser({
+    const investor = await organization.createInvestor({
       name: {
         firstName: 'Simon',
         lastName: 'Arvaux',
       },
       email,
       password,
-      picture: [gravatarPicture(email)],
-      role: 'investor',
-    });
-    await user.createInvestorProfile({
       status: 'joined',
       investmentSettings: {
         [laterStage.id]: { interested: true },
@@ -137,7 +132,7 @@ module.exports.seedDatabase = async (req, res) => {
       hurdle: '10',
     });
     await organization.createTicket({
-      userId: user.id,
+      investorId: investor.id,
       dealId: deal.id,
       amount: {
         amount: '50000',
@@ -145,7 +140,7 @@ module.exports.seedDatabase = async (req, res) => {
       },
     });
     await organization.createTicket({
-      userId: user.id,
+      investorId: investor.id,
       dealId: deal.id,
       amount: {
         amount: '25000',

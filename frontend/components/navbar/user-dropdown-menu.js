@@ -6,15 +6,15 @@ import { Dropdown, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import Router from 'next/router';
 
-import { RouterPropType, MePropType } from '../../lib/prop-types';
+import { RouterPropType, InvestorPropType, AdminPropType } from '../../lib/prop-types';
 import { logoutMutation } from '../../lib/mutations';
-import { meQuery } from '../../lib/queries';
+import { investorQuery, adminQuery } from '../../lib/queries';
 import { linkHref, linkAs } from '../../lib/url';
 
 class UserDropdownMenu extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
-    me: MePropType.isRequired,
+    user: PropTypes.oneOfType([InvestorPropType, AdminPropType]).isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     logout: PropTypes.func.isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
@@ -31,8 +31,8 @@ class UserDropdownMenu extends Component {
     if (logout) {
       this.props.cookies.remove('token', { path: '/' });
       Router.push(
-        linkHref('/login', this.props.router, this.props.me),
-        linkAs('/login', this.props.router, this.props.me),
+        linkHref('/login', this.props.router, this.props.user),
+        linkAs('/login', this.props.router, this.props.user),
       );
     } else {
       console.error('LOGOUT ERROR');
@@ -41,7 +41,7 @@ class UserDropdownMenu extends Component {
   render() {
     const trigger = (
       <span>
-        <Image avatar src={this.props.me.picture[0].url} /> {this.props.me.name.firstName}
+        <Image avatar src={this.props.user.picture[0].url} /> {this.props.user.name.firstName}
       </span>
     );
     return (
@@ -49,8 +49,8 @@ class UserDropdownMenu extends Component {
         <Dropdown.Menu>
           <Link
             prefetch
-            href={linkHref('/settings', this.props.router, this.props.me)}
-            as={linkAs('/settings', this.props.router, this.props.me)}
+            href={linkHref('/settings', this.props.router, this.props.user)}
+            as={linkAs('/settings', this.props.router, this.props.user)}
           >
             <Dropdown.Item>
               <a>Settings</a>
@@ -72,7 +72,7 @@ export default compose(
     props: ({ mutate }) => ({
       logout: () =>
         mutate({
-          refetchQueries: [{ query: meQuery }],
+          refetchQueries: [{ query: investorQuery }, { query: adminQuery }],
         }),
     }),
   }),

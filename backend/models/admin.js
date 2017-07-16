@@ -4,7 +4,7 @@ const shortid = require('shortid');
 const sequelize = require('./sequelize');
 
 module.exports = sequelize.define(
-  'User',
+  'Admin',
   {
     id: {
       type: Sequelize.UUID,
@@ -16,6 +16,11 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       unique: true,
     },
+    role: {
+      type: Sequelize.STRING,
+      defaultValue: 'admin',
+      allowNull: false,
+    },
     name: {
       type: Sequelize.JSONB,
       defaultValue: {
@@ -24,24 +29,7 @@ module.exports = sequelize.define(
       },
       allowNull: false,
     },
-    phone: {
-      type: Sequelize.STRING,
-      defaultValue: '',
-    },
     email: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: Sequelize.STRING,
-    },
-    resetPasswordToken: {
-      type: Sequelize.STRING,
-    },
-    changeEmailToken: {
-      type: Sequelize.STRING,
-    },
-    role: {
       type: Sequelize.STRING,
       allowNull: false,
     },
@@ -58,11 +46,11 @@ module.exports = sequelize.define(
       },
     },
     hooks: {
-      async beforeCreate(user) {
-        // generate shortId on user creation
-        if (!user.shortId) {
+      beforeCreate(admin) {
+        // generate shortId on admin creation
+        if (!admin.shortId) {
           const shortId = shortid.generate();
-          Object.assign(user, { shortId });
+          Object.assign(admin, { shortId });
         }
       },
     },

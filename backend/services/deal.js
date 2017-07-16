@@ -1,8 +1,7 @@
 const uniqBy = require('lodash/uniqBy');
 const omit = require('lodash/omit');
 
-const { Deal, Company, DealCategory, Ticket, User, InvestorProfile } = require('../models');
-const UserService = require('../services/user');
+const { Deal, Company, DealCategory, Ticket, Investor } = require('../models');
 const { handleFilesUpdate } = require('../lib/util');
 
 const DealService = {
@@ -17,12 +16,7 @@ const DealService = {
         { model: DealCategory },
         {
           model: Ticket,
-          include: [
-            {
-              model: User,
-              include: InvestorProfile,
-            },
-          ],
+          include: [{ model: Investor }],
         },
       ],
     });
@@ -37,7 +31,7 @@ const DealService = {
           {
             model: Ticket,
             required: false,
-            where: user.role === 'investor' && { userId: user.id },
+            where: user.role === 'investor' && { investorId: user.id },
           },
         ],
       });
@@ -57,7 +51,8 @@ const DealService = {
             },
           },
           investorsCommited: deal.Tickets.reduce(
-            (result, { userId }) => (result.includes(userId) ? result : [...result, userId]),
+            (result, { investorId }) =>
+              result.includes(investorId) ? result : [...result, investorId],
             [],
           ).length,
         }),
@@ -67,15 +62,15 @@ const DealService = {
       return null;
     }
   },
-  async deal(user, shortId) {
+  async deal(admin, shortId) {
     try {
       const deal = await DealService.findByShortId(shortId);
-      if (user.organizationId !== deal.organizationId) {
+      if (admin.organizationId !== deal.organizationId) {
         return null;
       }
-      const ticketsSumCounts = deal.Tickets.reduce((result, { userId }) => {
-        const count = result[userId] === undefined ? 1 : result[userId] + 1;
-        return Object.assign(result, { [userId]: count });
+      const ticketsSumCounts = deal.Tickets.reduce((result, { investorId }) => {
+        const count = result[investorId] === undefined ? 1 : result[investorId] + 1;
+        return Object.assign(result, { [investorId]: count });
       }, {});
       return Object.assign({}, deal.toJSON(), {
         company: deal.Company.toJSON(),
@@ -92,8 +87,8 @@ const DealService = {
         },
         investors: uniqBy(
           deal.Tickets.map(ticket =>
-            Object.assign(UserService.toInvestor(ticket.User), {
-              ticketsSum: { count: ticketsSumCounts[ticket.User.id] },
+            Object.assign(ticket.Investor, {
+              ticketsSum: { count: ticketsSumCounts[ticket.Investor.id] },
             }),
           ),
           'id',
@@ -101,7 +96,7 @@ const DealService = {
         tickets: deal.Tickets.map(ticket =>
           Object.assign(
             {
-              investor: UserService.toInvestor(ticket.User),
+              investor: ticket.Investor,
             },
             ticket.toJSON(),
           ),
@@ -112,14 +107,14 @@ const DealService = {
       return null;
     }
   },
-  async upsert(user, input) {
+  async upsert(admin, input) {
     try {
       let deal = await DealService.findById(input.id);
-      if (deal && user.organizationId !== deal.organizationId) {
+      if (deal && admin.organizationId !== deal.organizationId) {
         return null;
       }
       if (!deal) {
-        const organization = await user.getOrganization();
+        const organization = await admin.getOrganization();
         deal = await organization.createDeal(omit(input, 'deck'));
       }
       const deck = await handleFilesUpdate(deal.shortId, input, 'deck');

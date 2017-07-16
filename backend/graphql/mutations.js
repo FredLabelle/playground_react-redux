@@ -166,7 +166,7 @@ input ChangePasswordInput {
 
 input UpsertTicketInput {
   id: ID
-  userId: ID
+  investorId: ID
   dealId: ID
   amount: AmountInput!
 }
@@ -182,7 +182,7 @@ type Mutation {
   adminLoginAck: Boolean!
   updateOrganization(input: UpdateOrganizationInput!): Boolean!
   updateDealCategories(input: [DealCategoryInput]!): Boolean!
-  upsertInvestor(input: UpsertInvestorInput!): User
+  upsertInvestor(input: UpsertInvestorInput!): Investor
   invitationStatus(input: InvitationStatusInput!): String!
   inviteInvestor(input: InviteInvestorInput!): String!
   upsertCompany(input: UpsertCompanyInput!): Company
@@ -212,28 +212,28 @@ const adminMutation = (mutation, errorValue) => (user, input) => {
 exports.resolvers = {
   Mutation: {
     investorSignup(root, { input }, context) {
-      return context.User.signup(input);
+      return context.Investor.signup(input);
     },
     investorLogin(root, { input }, context) {
-      return context.User.login(input);
+      return context.Investor.login(input);
     },
     logout(root, params, context) {
-      return authedMutation(context.User.logout)(context.user);
+      return authedMutation(() => true, false)(context.user);
     },
     forgotPassword(root, { input }, context) {
-      return context.User.forgotPassword(input);
+      return context.Investor.forgotPassword(input);
     },
     resetPassword(root, { input }, context) {
-      return context.User.resetPassword(input);
+      return context.Investor.resetPassword(input);
     },
     changeEmail(root, { input }, context) {
-      return authedMutation(context.User.changeEmail, false)(context.user, input);
+      return authedMutation(context.Investor.changeEmail, false)(context.user, input);
     },
     changePassword(root, { input }, context) {
-      return authedMutation(context.User.changePassword, false)(context.user, input);
+      return authedMutation(context.Investor.changePassword, false)(context.user, input);
     },
     adminLoginAck(root, variables, context) {
-      return context.User.adminLoginAck();
+      return context.Admin.loginAck(context.user);
     },
     updateOrganization(root, { input }, context) {
       return adminMutation(context.Organization.update, false)(context.user, input);
@@ -242,13 +242,13 @@ exports.resolvers = {
       return adminMutation(context.Organization.updateDealCategories, false)(context.user, input);
     },
     upsertInvestor(root, { input }, context) {
-      return authedMutation(context.User.upsertInvestor, null)(context.user, input);
+      return authedMutation(context.Investor.upsert, null)(context.user, input);
     },
     invitationStatus(root, { input }, context) {
-      return context.User.invitationStatus(input);
+      return context.Investor.invitationStatus(input);
     },
     inviteInvestor(root, { input }, context) {
-      return adminMutation(context.User.inviteInvestor, false)(context.user, input);
+      return adminMutation(context.Admin.inviteInvestor, false)(context.user, input);
     },
     upsertCompany(root, { input }, context) {
       return adminMutation(context.Company.upsert, null)(context.user, input);
@@ -257,7 +257,7 @@ exports.resolvers = {
       return adminMutation(context.Deal.upsert, null)(context.user, input);
     },
     sendInvitation(root, { input }, context) {
-      return adminMutation(context.User.sendInvitation, false)(context.user, input);
+      return adminMutation(context.Admin.sendInvitation, false)(context.user, input);
     },
     upsertTicket(root, { input }, context) {
       return adminMutation(context.Ticket.upsert, null)(context.user, input);

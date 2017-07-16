@@ -45,9 +45,9 @@ const OrganizationService = {
       return null;
     }
   },
-  async update(user, input) {
+  async update(admin, input) {
     try {
-      const organization = await user.getOrganization();
+      const organization = await admin.getOrganization();
       await organization.update(input);
       return true;
     } catch (error) {
@@ -55,9 +55,9 @@ const OrganizationService = {
       return false;
     }
   },
-  async updateDealCategories(user, input) {
+  async updateDealCategories(admin, input) {
     try {
-      const organization = await user.getOrganization();
+      const organization = await admin.getOrganization();
       const dealCategories = await organization.getDealCategories();
       const promises = input.map((inputDealCategory, index) => {
         const dealCategory = dealCategories.find(category => category.id === inputDealCategory.id);

@@ -2,8 +2,8 @@ import { stringify } from 'querystring';
 
 const whitelist = ['users', 'parameters', 'administrative'];
 
-export const linkHref = (rawPathname, { admin, organizationShortId }, me) => {
-  const adminProp = me ? me.role === 'admin' : admin;
+export const linkHref = (rawPathname, { admin, organizationShortId }, user) => {
+  const adminProp = user ? user.role === 'admin' : admin;
   const adminPath = adminProp ? '/admin' : '';
   const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
   const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;
@@ -20,8 +20,8 @@ console.log(linkHref('/deals/new', { admin: true, organizationShortId: 'eclub' }
 console.log(linkHref('/deals/abc-_', { admin: true, organizationShortId: 'eclub' }));
 console.log('--------');*/
 
-export const linkAs = (rawPathname, { admin, organizationShortId }, me) => {
-  const adminProp = me ? me.role === 'admin' : admin;
+export const linkAs = (rawPathname, { admin, organizationShortId }, user) => {
+  const adminProp = user ? user.role === 'admin' : admin;
   const adminPath = adminProp ? '/admin' : '';
   const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
   const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;

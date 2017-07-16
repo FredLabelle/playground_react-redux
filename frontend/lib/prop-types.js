@@ -85,27 +85,6 @@ export const DealPropType = PropTypes.shape({
   updatedAt: PropTypes.string,
 });
 
-export const InvestorPropType = PropTypes.shape({
-  picture: PropTypes.arrayOf(FilePropType),
-  name: NamePropType,
-  fullName: PropTypes.string,
-  company: CompanyPropType,
-  email: PropTypes.string,
-  status: PropTypes.string,
-  ticketsSum: TicketsSumPropType,
-  createdAt: PropTypes.string,
-  updatedAt: PropTypes.string,
-});
-
-export const TicketPropType = PropTypes.shape({
-  investor: InvestorPropType,
-  deal: DealPropType,
-  amount: AmountPropType.isRequired,
-  status: PropTypes.string,
-  createdAt: PropTypes.string,
-  updatedAt: PropTypes.string,
-});
-
 export const OrganizationPropType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   shortId: PropTypes.string.isRequired,
@@ -128,8 +107,10 @@ export const OrganizationPropType = PropTypes.shape({
   domain: PropTypes.string,
 });
 
-export const MePropType = PropTypes.shape({
+export const InvestorPropType = PropTypes.shape({
   name: NamePropType,
+  fullName: PropTypes.string,
+  phone: PropTypes.string,
   email: PropTypes.string,
   role: PropTypes.string,
   picture: PropTypes.arrayOf(FilePropType),
@@ -151,4 +132,21 @@ export const MePropType = PropTypes.shape({
     name: NamePropType.isRequired,
     email: PropTypes.string.isRequired,
   }),
+});
+
+export const TicketPropType = PropTypes.shape({
+  investor: InvestorPropType,
+  deal: DealPropType,
+  amount: AmountPropType.isRequired,
+  status: PropTypes.string,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
+});
+
+export const AdminPropType = PropTypes.shape({
+  name: NamePropType,
+  fullName: PropTypes.string,
+  email: PropTypes.string,
+  role: PropTypes.string,
+  picture: PropTypes.arrayOf(FilePropType),
 });

@@ -7,9 +7,9 @@ import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
 import { sleep, omitDeep, handleChange } from '../../lib/util';
-import { FormPropType, MePropType, OrganizationPropType } from '../../lib/prop-types';
+import { FormPropType, InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
-import { meQuery, organizationQuery } from '../../lib/queries';
+import { investorQuery, organizationQuery } from '../../lib/queries';
 import { upsertInvestorMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FilesField from '../fields/files-field';
@@ -22,14 +22,14 @@ const accountFields = ['id', 'name', 'phone', 'picture', 'investmentSettings'];
 class SettingsAccount extends Component {
   static propTypes = {
     form: FormPropType.isRequired,
-    me: MePropType,
+    investor: InvestorPropType,
     organization: OrganizationPropType.isRequired,
     upsertInvestor: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
-  static defaultProps = { me: null };
+  static defaultProps = { investor: null };
   state = {
-    me: pick(this.props.me, accountFields),
+    investor: pick(this.props.investor, accountFields),
     investmentSettingsError: false,
     saving: false,
     saved: false,
@@ -48,7 +48,7 @@ class SettingsAccount extends Component {
   };
   onSubmit = async event => {
     event.preventDefault();
-    const { investmentSettings } = this.state.me;
+    const { investmentSettings } = this.state.investor;
     const investmentSettingsError = Object.values(investmentSettings).length === 0;
     this.setState({ investmentSettingsError });
     if (investmentSettingsError) {
@@ -67,12 +67,12 @@ class SettingsAccount extends Component {
     }
   };
   handleChange = handleChange(() => {
-    const me = pick(this.props.me, accountFields);
-    const meOmitted = omitDeep(me, '__typename');
-    const unsavedChanges = !isEqual(this.update(), meOmitted);
+    const investor = pick(this.props.investor, accountFields);
+    const investorOmitted = omitDeep(investor, '__typename');
+    const unsavedChanges = !isEqual(this.update(), investorOmitted);
     this.props.setUnsavedChanges(unsavedChanges);
   }).bind(this);
-  update = () => omitDeep(this.state.me, '__typename');
+  update = () => omitDeep(this.state.investor, '__typename');
   changeEmail = event => {
     event.preventDefault();
     this.setState({ changeEmailModalOpen: true });
@@ -82,7 +82,7 @@ class SettingsAccount extends Component {
     this.setState({ changePasswordModalOpen: true });
   };
   render() {
-    if (!this.props.me || !this.props.organization) {
+    if (!this.props.investor || !this.props.organization) {
       return null;
     }
     const { dealCategories, parametersSettings } = this.props.organization;
@@ -97,17 +97,21 @@ class SettingsAccount extends Component {
           <Header as="h3" dividing>
             Investor identity
           </Header>
-          <NameField name="me.name" value={this.state.me.name} onChange={this.handleChange} />
+          <NameField
+            name="investor.name"
+            value={this.state.investor.name}
+            onChange={this.handleChange}
+          />
           <Form.Input
-            name="me.phone"
-            value={this.state.me.phone}
+            name="investor.phone"
+            value={this.state.investor.phone}
             onChange={this.handleChange}
             label="Phone"
             placeholder="Phone"
             type="tel"
           />
           <Form.Input
-            defaultValue={this.props.me.email}
+            defaultValue={this.props.investor.email}
             label="Email"
             action={{ type: 'button', content: 'Change it?', onClick: this.changeEmail }}
             type="email"
@@ -119,8 +123,8 @@ class SettingsAccount extends Component {
             type="password"
           />
           <FilesField
-            name="me.picture"
-            value={this.state.me.picture}
+            name="investor.picture"
+            value={this.state.investor.picture}
             onChange={this.handleChange}
             label="Profile picture"
             imagesOnly
@@ -134,8 +138,8 @@ class SettingsAccount extends Component {
             For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
           </p>
           <InvestmentField
-            name="me.investmentSettings"
-            value={this.state.me.investmentSettings}
+            name="investor.investmentSettings"
+            value={this.state.investor.investmentSettings}
             onChange={this.handleChange}
             dealCategories={dealCategories}
             defaultCurrency={defaultCurrency}
@@ -168,8 +172,8 @@ class SettingsAccount extends Component {
 
 export default compose(
   connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
-  graphql(meQuery, {
-    props: ({ data: { me } }) => ({ me }),
+  graphql(investorQuery, {
+    props: ({ data: { investor } }) => ({ investor }),
   }),
   graphql(organizationQuery, {
     options: ({ router }) => ({
@@ -182,7 +186,7 @@ export default compose(
       upsertInvestor: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: meQuery }],
+          refetchQueries: [{ query: investorQuery }],
         }),
     }),
   }),
