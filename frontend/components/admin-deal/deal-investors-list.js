@@ -31,7 +31,6 @@ const DealInvestorsList = ({ investors }) =>
         </Table.Body>
       </Table>
     : null;
-DealInvestorsList.propTypes = { investors: PropTypes.arrayOf(InvestorPropType) };
-DealInvestorsList.defaultProps = { investors: [] };
+DealInvestorsList.propTypes = { investors: PropTypes.arrayOf(InvestorPropType).isRequired };
 
 export default DealInvestorsList;

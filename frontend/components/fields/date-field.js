@@ -26,12 +26,12 @@ DatePicker.defaultProps = { date: null, focused: false };
 export default class extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string,
     width: PropTypes.number,
   };
-  static defaultProps = { label: 'Date', width: 16 };
+  static defaultProps = { value: '', label: 'Date', width: 16 };
   state = { focused: false };
   onFocusChange = ({ focused }) => {
     this.setState({ focused });

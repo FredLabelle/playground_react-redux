@@ -29,7 +29,6 @@ const DealTicketsList = ({ tickets }) =>
         </Table.Body>
       </Table>
     : null;
-DealTicketsList.propTypes = { tickets: PropTypes.arrayOf(TicketPropType) };
-DealTicketsList.defaultProps = { tickets: [] };
+DealTicketsList.propTypes = { tickets: PropTypes.arrayOf(TicketPropType).isRequired };
 
 export default DealTicketsList;
