@@ -37,6 +37,10 @@ export default () =>
       rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="http://diegoddox.github.io/react-redux-toastr/7.0/react-redux-toastr.min.css"
+    />
     <style dangerouslySetInnerHTML={{ __html: reactDatesStyleSheet }} />
     <style dangerouslySetInnerHTML={{ __html: globalStyleSheet }} />
     <UploadcareScript />

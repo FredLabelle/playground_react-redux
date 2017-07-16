@@ -2,6 +2,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 // import promiseMiddleware from 'redux-promise-middleware';
 import Router from 'next/router';
+import { reducer as toastrReducer } from 'react-redux-toastr';
 
 import reducers from '../reducers';
 import { onRouteChangeStart } from '../actions/router';
@@ -17,6 +18,7 @@ const create = (apollo, initialState = {}) => {
   return createStore(
     combineReducers({
       ...reducers,
+      toastr: toastrReducer,
       apollo: apollo.reducer(),
     }),
     initialState,

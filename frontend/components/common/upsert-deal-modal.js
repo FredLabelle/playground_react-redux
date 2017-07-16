@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
 
-import { sleep, handleChange, omitDeep } from '../../lib/util';
+import { handleChange, omitDeep } from '../../lib/util';
 import { DealPropType, OrganizationPropType } from '../../lib/prop-types';
 import { upsertDealMutation } from '../../lib/mutations';
 import { dealQuery, dealsQuery } from '../../lib/queries';
@@ -36,8 +37,6 @@ const initialState = ({ deal }) => ({
   companyIdError: false,
   categoryIdError: false,
   loading: false,
-  error: false,
-  success: false,
 });
 
 class UpsertDealModal extends Component {
@@ -59,15 +58,15 @@ class UpsertDealModal extends Component {
         return;
       }
     }
-    this.setState({ loading: true });
     const deal = omitDeep(this.state.deal, '__typename');
+    this.setState({ loading: true });
     const { data: { upsertDeal } } = await this.props.upsertDeal(deal);
+    this.setState({ loading: false });
     if (upsertDeal) {
-      this.setState({ error: false, success: true });
-      await sleep(2000);
-      this.onCancel();
+      toastr.success('Success!', this.props.deal.id ? 'Deal updated.' : 'Deal created.');
+      this.props.onClose();
     } else {
-      this.setState({ error: true, loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onCancel = () => {
@@ -134,8 +133,7 @@ class UpsertDealModal extends Component {
           <Form
             id="upsert-deal"
             onSubmit={this.onSubmit}
-            error={this.state.error || this.state.companyIdError || this.state.categoryIdError}
-            success={this.state.success}
+            error={this.state.companyIdError || this.state.categoryIdError}
           >
             <Form.Group>
               <Form.Input
@@ -254,12 +252,6 @@ class UpsertDealModal extends Component {
               <Message error header="Error!" content="Company is required." />}
             {this.state.categoryIdError &&
               <Message error header="Error!" content="Category is required." />}
-            <Message error header="Error!" content="Something went wrong!" />
-            <Message
-              success
-              header="Success!"
-              content={this.props.deal.id ? 'Deal has been updated!' : 'Deal has been created!'}
-            />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -276,6 +268,7 @@ class UpsertDealModal extends Component {
             form="upsert-deal"
             color="green"
             disabled={this.state.loading}
+            loading={this.state.loading}
             content={this.props.deal.id ? 'Update' : 'Create'}
             icon="save"
             labelPosition="left"

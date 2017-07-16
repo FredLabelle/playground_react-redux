@@ -2,11 +2,12 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Header, Form, Message, Button } from 'semantic-ui-react';
+import { Segment, Header, Form, Button } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
-import { sleep, handleChange, omitDeep } from '../../lib/util';
+import { handleChange, omitDeep } from '../../lib/util';
 import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import { updateOrganizationMutation } from '../../lib/mutations';
@@ -19,24 +20,19 @@ class InvestmentMechanismsParameters extends Component {
     setUnsavedChanges: PropTypes.func.isRequired,
   };
   state = {
-    organization: {
-      ...pick(this.props.organization, 'parametersSettings'),
-    },
-    saving: false,
-    saved: false,
+    organization: pick(this.props.organization, 'parametersSettings'),
+    loading: false,
   };
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ saving: true });
+    this.setState({ loading: true });
     const { data: { updateOrganization } } = await this.props.updateOrganization(this.update());
-    this.setState({ saving: false });
+    this.setState({ loading: false });
     if (updateOrganization) {
       this.props.setUnsavedChanges(false);
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
+      toastr.success('Success!', 'Your changes have been saved.');
     } else {
-      console.error('UPDATE ORGANIZATION ERROR');
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   handleChange = handleChange(() => {
@@ -72,7 +68,7 @@ class InvestmentMechanismsParameters extends Component {
           This guarantees the investor allocation in the deal.<br />
           The investor can opt-out if he feels not attracted by the deal.
         </p>
-        <Form onSubmit={this.onSubmit} success={this.state.success}>
+        <Form onSubmit={this.onSubmit}>
           <Form.Input
             name="organization.parametersSettings.investmentMechanisms.optOutTime"
             value={this.state.organization.parametersSettings.investmentMechanisms.optOutTime}
@@ -91,13 +87,13 @@ class InvestmentMechanismsParameters extends Component {
             options={options}
             placeholder="Default currency"
           />
-          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
               type="submit"
               primary
-              disabled={this.state.saving || !this.props.form.unsavedChanges}
-              content={this.state.saving ? 'Saving…' : 'Save'}
+              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              loading={this.state.loading}
+              content="Save"
               icon="save"
               labelPosition="left"
             />

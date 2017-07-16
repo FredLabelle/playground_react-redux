@@ -3,10 +3,11 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Form, Header, Button, Message } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
-import { sleep, omitDeep, handleChange } from '../../lib/util';
+import { omitDeep, handleChange } from '../../lib/util';
 import { FormPropType, InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
 import { investorQuery, organizationQuery } from '../../lib/queries';
@@ -31,8 +32,7 @@ class SettingsAccount extends Component {
   state = {
     investor: pick(this.props.investor, accountFields),
     investmentSettingsError: false,
-    saving: false,
-    saved: false,
+    loading: false,
     changeEmailModalOpen: false,
     changePasswordModalOpen: false,
   };
@@ -54,16 +54,14 @@ class SettingsAccount extends Component {
     if (investmentSettingsError) {
       return;
     }
-    this.setState({ saving: true });
+    this.setState({ loading: true });
     const { data: { upsertInvestor } } = await this.props.upsertInvestor(this.update());
-    this.setState({ saving: false });
+    this.setState({ loading: false });
     if (upsertInvestor) {
       this.props.setUnsavedChanges(false);
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
+      toastr.success('Success!', 'Your changes have been saved.');
     } else {
-      console.error('UPDATE INVESTOR ERROR');
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   handleChange = handleChange(() => {
@@ -89,11 +87,7 @@ class SettingsAccount extends Component {
     const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
       <Segment attached="bottom" className="tab active">
-        <Form
-          onSubmit={this.onSubmit}
-          success={this.state.success}
-          error={this.state.investmentSettingsError}
-        >
+        <Form onSubmit={this.onSubmit} error={this.state.investmentSettingsError}>
           <Header as="h3" dividing>
             Investor identity
           </Header>
@@ -145,13 +139,13 @@ class SettingsAccount extends Component {
             defaultCurrency={defaultCurrency}
           />
           <Message error header="Error!" content="You must chose at least one investment method." />
-          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
               type="submit"
               primary
               disabled={this.state.saving || !this.props.form.unsavedChanges}
-              content={this.state.saving ? 'Saving…' : 'Save'}
+              loading={this.state.loading}
+              content="Save"
               icon="save"
               labelPosition="left"
             />

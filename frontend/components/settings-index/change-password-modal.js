@@ -2,20 +2,14 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
+import { Button, Form, Modal, Header } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import { sleep } from '../../lib/util';
 import { changePasswordMutation } from '../../lib/mutations';
 import PasswordField from '../fields/password-field';
 
-const initialState = {
-  currentPassword: '',
-  password: '',
-  loading: false,
-  error: false,
-  success: false,
-};
+const initialState = { currentPassword: '', password: '', loading: false };
 
 class ChangePasswordModal extends Component {
   static propTypes = {
@@ -27,15 +21,15 @@ class ChangePasswordModal extends Component {
   state = initialState;
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ loading: true });
     const update = pick(this.state, 'currentPassword', 'password');
+    this.setState({ loading: true });
     const { data: { changePassword } } = await this.props.changePassword(update);
+    this.setState({ loading: false });
     if (changePassword) {
-      this.setState({ error: false, success: true });
-      await sleep(2000);
+      toastr.success('Success!', 'Your password has been changed.');
       this.onClose();
     } else {
-      this.setState({ error: true, loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onClose = () => {
@@ -51,32 +45,21 @@ class ChangePasswordModal extends Component {
         <Header icon="privacy" content="Change password" />
         <Modal.Content>
           <p>Change your password by typing it twice.</p>
-          <Form
-            id="change-password"
-            onSubmit={this.onSubmit}
-            success={this.state.success}
-            warning={this.props.warning}
-            error={this.state.error}
-          >
-            {!this.state.success &&
-              <div>
-                <Form.Input
-                  name="currentPassword"
-                  value={this.state.currentPassword}
-                  onChange={this.handleChange}
-                  label="Current password"
-                  placeholder="Current password"
-                  type="password"
-                  required
-                />
-                <PasswordField
-                  name="password"
-                  value={this.state.password}
-                  onChange={this.handleChange}
-                />
-              </div>}
-            <Message error header="Error!" content="Something went wrong!" />
-            <Message success header="Success!" content="Your password has been changed!" />
+          <Form id="change-password" onSubmit={this.onSubmit} warning={this.props.warning}>
+            <Form.Input
+              name="currentPassword"
+              value={this.state.currentPassword}
+              onChange={this.handleChange}
+              label="Current password"
+              placeholder="Current password"
+              type="password"
+              required
+            />
+            <PasswordField
+              name="password"
+              value={this.state.password}
+              onChange={this.handleChange}
+            />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -85,6 +68,7 @@ class ChangePasswordModal extends Component {
             form="change-password"
             color="green"
             disabled={this.state.loading || this.props.warning}
+            loading={this.state.loading}
             content="Change password"
             icon="checkmark"
             labelPosition="left"

@@ -3,10 +3,11 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Modal, Header, Form, Search, Message, Button } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import escapeRegExp from 'lodash/escapeRegExp';
 
-import { sleep, handleChange, omitDeep, numberFormatter } from '../../lib/util';
+import { handleChange, omitDeep, numberFormatter } from '../../lib/util';
 import { TicketPropType, DealPropType, InvestorPropType } from '../../lib/prop-types';
 import { dealsQuery, investorsQuery, ticketsQuery } from '../../lib/queries';
 import { upsertTicketMutation } from '../../lib/mutations';
@@ -39,7 +40,6 @@ const initialState = ({ ticket, deals, investors }) => ({
   dealIdError: false,
   investorIdError: false,
   loading: false,
-  success: false,
 });
 
 class UpsertTicketModal extends Component {
@@ -67,17 +67,15 @@ class UpsertTicketModal extends Component {
         return;
       }
     }
-    this.setState({ loading: true });
     const ticket = omitDeep(this.state.ticket, '__typename');
+    this.setState({ loading: true });
     const { data: { upsertTicket } } = await this.props.upsertTicket(ticket);
+    this.setState({ loading: false });
     if (upsertTicket) {
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
-      this.onCancel();
+      toastr.success('Success!', this.props.ticket.id ? 'Ticket updated.' : 'Ticket created.');
+      this.props.onClose();
     } else {
-      console.error('UPSERT TICKET ERROR');
-      this.setState({ loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onDealSearchFocus = () => {
@@ -167,7 +165,6 @@ class UpsertTicketModal extends Component {
             id="upsert-ticket"
             onSubmit={this.onSubmit}
             warning={this.state.ticket.dealId !== ''}
-            success={this.state.success}
             error={this.state.dealIdError || this.state.investorIdError}
           >
             {!this.props.ticket.id &&
@@ -222,11 +219,6 @@ class UpsertTicketModal extends Component {
               <Message error header="Error!" content="Deal is required." />}
             {this.state.investorIdError &&
               <Message error header="Error!" content="Investor is required." />}
-            <Message
-              success
-              header="Success!"
-              content={this.props.ticket.id ? 'Ticket updated.' : 'New ticket created.'}
-            />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -243,6 +235,7 @@ class UpsertTicketModal extends Component {
             form="upsert-ticket"
             primary
             disabled={this.state.loading}
+            loading={this.state.loading}
             content={this.props.ticket.id ? 'Update' : 'Create'}
             icon="checkmark"
             labelPosition="left"

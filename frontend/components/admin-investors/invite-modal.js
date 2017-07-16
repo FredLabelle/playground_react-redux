@@ -2,29 +2,18 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import { sleep, handleChange, omitDeep } from '../../lib/util';
+import { handleChange, omitDeep } from '../../lib/util';
 import { NamePropType, OrganizationPropType } from '../../lib/prop-types';
 import { invitationStatusMutation, inviteInvestorMutation } from '../../lib/mutations';
 import { investorsQuery } from '../../lib/queries';
 import NameField from '../fields/name-field';
 import InvitationEmailFields from '../common/invitation-email-fields';
 
-const InviteInvestorForm = ({
-  onSubmit,
-  investor,
-  onChange,
-  createdWarning,
-  joinedWarning,
-  error,
-}) =>
-  <Form
-    id="invite-investor"
-    onSubmit={onSubmit}
-    warning={createdWarning || joinedWarning}
-    error={error}
-  >
+const InviteInvestorForm = ({ onSubmit, investor, onChange, createdWarning, joinedWarning }) =>
+  <Form id="invite-investor" onSubmit={onSubmit} warning={createdWarning || joinedWarning}>
     <Form.Input
       name="investor.email"
       value={investor.email}
@@ -38,7 +27,6 @@ const InviteInvestorForm = ({
     {createdWarning &&
       <Message warning header="Warning!" content="This user is already created!" />}
     {joinedWarning && <Message warning header="Warning!" content="This user has already joined!" />}
-    <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvestorForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -49,40 +37,18 @@ InviteInvestorForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   createdWarning: PropTypes.bool.isRequired,
   joinedWarning: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired,
 };
 
-const InviteInvitationEmailForm = ({
-  onSubmit,
-  invitationEmail,
-  onChange,
-  success,
-  info,
-  warning,
-  error,
-}) =>
-  <Form
-    id="invite-invitation-email"
-    onSubmit={onSubmit}
-    success={success}
-    warning={warning}
-    error={error}
-  >
+const InviteInvitationEmailForm = ({ onSubmit, invitationEmail, onChange, info, warning }) =>
+  <Form id="invite-invitation-email" onSubmit={onSubmit} warning={warning}>
     {info &&
       <Message
         info
         header="Information!"
         content="This user has already been invited, send a reminder email?"
       />}
-    {!success &&
-      <InvitationEmailFields invitationEmail={invitationEmail} handleChange={onChange} />}
-    <Message
-      success
-      header="Success!"
-      content={info ? 'Your reminder has been sent.' : 'Your invite has been sent.'}
-    />
+    <InvitationEmailFields invitationEmail={invitationEmail} handleChange={onChange} />
     <Message warning header="Warning!" content="You must include {{signup_link}} in the body!" />
-    <Message error header="Error!" content="Something went wrong with your invite!" />
   </Form>;
 InviteInvitationEmailForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -91,10 +57,8 @@ InviteInvitationEmailForm.propTypes = {
     body: PropTypes.string,
   }).isRequired,
   onChange: PropTypes.func.isRequired,
-  success: PropTypes.bool.isRequired,
   info: PropTypes.bool.isRequired,
   warning: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired,
 };
 
 const initialState = ({ parametersSettings }) => ({
@@ -104,12 +68,11 @@ const initialState = ({ parametersSettings }) => ({
   },
   invitationEmail: parametersSettings.invitationEmail,
   form: 'invite-investor',
-  success: false,
+  loading: false,
   info: false,
   createdWarning: false,
   joinedWarning: false,
   invitationEmailWarning: false,
-  error: false,
 });
 
 class InviteModal extends Component {
@@ -130,20 +93,24 @@ class InviteModal extends Component {
   };
   onInvestorSubmit = async event => {
     event.preventDefault();
+    this.setState({ loading: true });
     const { data: { invitationStatus } } = await this.props.invitationStatus({
       email: this.state.investor.email,
       organizationId: this.props.organization.id,
     });
+    this.setState({ loading: false });
     if (invitationStatus === 'invitable' || invitationStatus === 'invited') {
       this.setState({
         form: 'invite-invitation-email',
         info: invitationStatus === 'invited',
       });
     } else {
+      if (invitationStatus === 'error') {
+        toastr.error('Error!', 'Something went wrong with your invite.');
+      }
       this.setState({
         createdWarning: invitationStatus === 'created',
         joinedWarning: invitationStatus === 'joined',
-        error: invitationStatus === 'error',
       });
     }
   };
@@ -157,11 +124,18 @@ class InviteModal extends Component {
     }
     const newInvestor = pick(this.state, 'investor', 'invitationEmail');
     const newInvestorOmitted = omitDeep(newInvestor, '__typename');
+    this.setState({ loading: true });
     const { data: { inviteInvestor } } = await this.props.inviteInvestor(newInvestorOmitted);
-    const state = inviteInvestor ? 'success' : 'error';
-    this.setState({ info: false, [state]: true });
-    await sleep(2000);
-    this.onCancel();
+    this.setState({ loading: false });
+    if (inviteInvestor) {
+      const message = this.state.info
+        ? 'Your reminder has been sent.'
+        : 'Your invite has been sent.';
+      toastr.success('Success!', message);
+      this.onCancel();
+    } else {
+      toastr.error('Error!', 'Something went wrong.');
+    }
   };
   handleChange = handleChange().bind(this);
   render() {
@@ -177,16 +151,13 @@ class InviteModal extends Component {
                 onChange={this.handleChange}
                 createdWarning={this.state.createdWarning}
                 joinedWarning={this.state.joinedWarning}
-                error={this.state.error}
               />
             : <InviteInvitationEmailForm
                 onSubmit={this.onInvitationEmailSubmit}
                 invitationEmail={this.state.invitationEmail}
                 onChange={this.handleChange}
                 info={this.state.info}
-                success={this.state.success}
                 warning={this.state.invitationEmailWarning}
-                error={this.state.error}
               />}
         </Modal.Content>
         <Modal.Actions>
@@ -202,7 +173,8 @@ class InviteModal extends Component {
             type="submit"
             form={this.state.form}
             color="green"
-            disabled={this.state.error || this.state.success}
+            disabled={this.state.loading}
+            loading={this.state.loading}
             content={this.state.form === 'invite-investor' ? 'Continue' : sendCaption}
             icon={this.state.form === 'invite-investor' ? 'checkmark' : 'mail'}
             labelPosition="left"

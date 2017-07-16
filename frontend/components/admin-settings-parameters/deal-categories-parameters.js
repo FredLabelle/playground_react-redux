@@ -2,13 +2,14 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Header, Form, Message, Button, Grid } from 'semantic-ui-react';
+import { Segment, Header, Form, Button, Grid } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import { SortableContainer, arrayMove } from 'react-sortable-hoc';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import uniqueId from 'lodash/uniqueId';
 
-import { sleep, handleChange, omitDeep } from '../../lib/util';
+import { handleChange, omitDeep } from '../../lib/util';
 import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
 import { organizationQuery } from '../../lib/queries';
 import { updateDealCategoriesMutation } from '../../lib/mutations';
@@ -51,21 +52,18 @@ class DealCategoriesParameters extends Component {
   };
   state = {
     dealCategories: this.props.organization.dealCategories,
-    saving: false,
-    saved: false,
+    loading: false,
   };
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ saving: true });
+    this.setState({ loading: true });
     const { data: { updateDealCategories } } = await this.props.updateDealCategories(this.update());
-    this.setState({ saving: false });
+    this.setState({ loading: false });
     if (updateDealCategories) {
       this.props.setUnsavedChanges(false);
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
+      toastr.success('Success!', 'Your changes have been saved.');
     } else {
-      console.error('UPDATE DEAL CATEGORIES ERROR');
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -116,13 +114,13 @@ class DealCategoriesParameters extends Component {
             helperClass="sortable-helper"
           />
           <AddDealCategoryField onNewDealCategoryClick={this.onNewDealCategoryClick} />
-          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
               type="submit"
               primary
-              disabled={this.state.saving || !this.props.form.unsavedChanges}
-              content={this.state.saving ? 'Saving…' : 'Save'}
+              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              loading={this.state.loading}
+              content="Save"
               icon="save"
               labelPosition="left"
             />

@@ -2,10 +2,19 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import { CookiesProvider, Cookies } from 'react-cookie';
+import ReduxToastr from 'react-redux-toastr';
 
 import initApollo from './initApollo';
 import initRedux from './initRedux';
 import { onRouteChangeStart } from '../actions/router';
+
+const reduxToastrProps = {
+  timeOut: 3000,
+  newestOnTop: true,
+  position: 'top-center',
+  transitionIn: 'bounceIn',
+  transitionOut: 'bounceOut',
+};
 
 export default ComposedComponent =>
   class WithData extends Component {
@@ -28,7 +37,10 @@ export default ComposedComponent =>
         const app = (
           <CookiesProvider cookies={universalCookies}>
             <ApolloProvider client={apollo} store={redux}>
-              <ComposedComponent url={url} {...composedInitialProps} />
+              <div>
+                <ComposedComponent url={url} {...composedInitialProps} />
+                <ReduxToastr {...reduxToastrProps} />
+              </div>
             </ApolloProvider>
           </CookiesProvider>
         );
@@ -57,7 +69,10 @@ export default ComposedComponent =>
       return (
         <CookiesProvider cookies={this.cookies}>
           <ApolloProvider client={this.apollo} store={this.redux}>
-            <ComposedComponent {...this.props} />
+            <div>
+              <ComposedComponent {...this.props} />
+              <ReduxToastr {...reduxToastrProps} />
+            </div>
           </ApolloProvider>
         </CookiesProvider>
       );

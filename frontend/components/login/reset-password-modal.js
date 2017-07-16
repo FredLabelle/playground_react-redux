@@ -3,17 +3,17 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
-import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
+import { Button, Form, Modal, Header } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import Router from 'next/router';
 
-import { sleep } from '../../lib/util';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
 import { resetPasswordMutation } from '../../lib/mutations';
 import { investorQuery } from '../../lib/queries';
 import PasswordField from '../fields/password-field';
 
-const initialState = { password: '', loading: false, success: false };
+const initialState = { password: '', loading: false };
 
 class ResetPasswordModal extends Component {
   static propTypes = {
@@ -34,15 +34,14 @@ class ResetPasswordModal extends Component {
       password: this.state.password,
       token: this.props.router.query.resetPasswordToken,
     });
+    this.setState({ loading: false });
     if (resetPassword) {
       this.props.cookies.set('token', resetPassword, { path: '/' });
-      this.setState({ success: true });
-      await sleep(2000);
+      toastr.success('Success!', 'Your password has been reset.');
       const route = this.props.router.query.invited === 'true' ? '/settings/administrative' : '/';
       Router.push(linkHref(route, this.props.router), linkAs(route, this.props.router));
     } else {
-      console.error('RESET PASSWORD ERROR');
-      this.setState({ loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onClose = () => {
@@ -58,18 +57,12 @@ class ResetPasswordModal extends Component {
         <Header icon="privacy" content="Reset password" />
         <Modal.Content>
           <p>Reset your password by typing it twice.</p>
-          <Form
-            id="reset-password"
-            onSubmit={this.onSubmit}
-            warning={this.props.warning}
-            success={this.state.success}
-          >
+          <Form id="reset-password" onSubmit={this.onSubmit} warning={this.props.warning}>
             <PasswordField
               name="password"
               value={this.state.password}
               onChange={this.handleChange}
             />
-            <Message success header="Success!" content="Your password has been reset." />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -78,6 +71,7 @@ class ResetPasswordModal extends Component {
             form="reset-password"
             color="green"
             disabled={this.state.loading || this.props.warning}
+            loading={this.state.loading}
             content="Reset password"
             icon="checkmark"
             labelPosition="left"

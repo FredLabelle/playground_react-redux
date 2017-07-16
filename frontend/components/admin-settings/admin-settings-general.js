@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
-import { Segment, Form, Header, Image, Message, Button } from 'semantic-ui-react';
+import { Segment, Form, Header, Image, Button } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 
-import { sleep, handleChange, omitDeep } from '../../lib/util';
+import { handleChange, omitDeep } from '../../lib/util';
 import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
 import { updateOrganizationMutation } from '../../lib/mutations';
 import { organizationQuery } from '../../lib/queries';
@@ -28,21 +29,18 @@ class AdminSettingsGeneral extends Component {
         emailDomains: this.props.organization.generalSettings.emailDomains.join(', '),
       },
     },
-    saving: false,
-    saved: false,
+    loading: false,
   };
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ saving: true });
+    this.setState({ loading: true });
     const { data: { updateOrganization } } = await this.props.updateOrganization(this.update());
-    this.setState({ saving: false });
+    this.setState({ loading: false });
     if (updateOrganization) {
       this.props.setUnsavedChanges(false);
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
+      toastr.success('Success!', 'Your changes have been saved.');
     } else {
-      console.error('UPDATE ORGANIZATION ERROR');
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   handleChange = handleChange(() => {
@@ -62,7 +60,7 @@ class AdminSettingsGeneral extends Component {
     return (
       this.props.organization &&
       <Segment attached="bottom" className="tab active">
-        <Form onSubmit={this.onSubmit} success={this.state.success}>
+        <Form onSubmit={this.onSubmit}>
           <Header as="h3" dividing>
             Organization information
           </Header>
@@ -102,13 +100,13 @@ class AdminSettingsGeneral extends Component {
             label="Email domains (comma separated list)"
             placeholder="Email domains"
           />
-          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
               type="submit"
               primary
-              disabled={this.state.saving || !this.props.form.unsavedChanges}
-              content={this.state.saving ? 'Saving…' : 'Save'}
+              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              loading={this.state.loading}
+              content="Save"
               icon="save"
               labelPosition="left"
             />

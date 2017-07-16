@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
+import { Button, Form, Modal, Header } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import { sleep } from '../../lib/util';
 import { changeEmailMutation } from '../../lib/mutations';
 
-const initialState = { password: '', email: '', loading: false, error: false, success: false };
+const initialState = { password: '', email: '', loading: false };
 
 class ChangeEmailModal extends Component {
   static propTypes = {
@@ -18,15 +18,15 @@ class ChangeEmailModal extends Component {
   state = initialState;
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ loading: true });
     const update = pick(this.state, 'password', 'email');
+    this.setState({ loading: true });
     const { data: { changeEmail } } = await this.props.changeEmail(update);
+    this.setState({ loading: false });
     if (changeEmail) {
-      this.setState({ error: false, success: true });
-      await sleep(2000);
+      toastr.success('Success!', 'Your email has been changed.');
       this.onClose();
     } else {
-      this.setState({ error: true, loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onClose = () => {
@@ -45,35 +45,25 @@ class ChangeEmailModal extends Component {
             Enter the new email address you want to use and we{"'"}ll send you a link to confirm you
             have access to it.
           </p>
-          <Form
-            id="change-email"
-            onSubmit={this.onSubmit}
-            error={this.state.error}
-            success={this.state.success}
-          >
-            {!this.state.success &&
-              <div>
-                <Form.Input
-                  name="password"
-                  value={this.state.password}
-                  onChange={this.handleChange}
-                  label="Password"
-                  placeholder="Password"
-                  type="password"
-                  required
-                />
-                <Form.Input
-                  name="email"
-                  value={this.state.email}
-                  onChange={this.handleChange}
-                  label="Email"
-                  placeholder="Email"
-                  type="email"
-                  required
-                />
-              </div>}
-            <Message error header="Error!" content="Something went wrong!" />
-            <Message success header="Success!" content="Your email has been changed!" />
+          <Form id="change-email" onSubmit={this.onSubmit}>
+            <Form.Input
+              name="password"
+              value={this.state.password}
+              onChange={this.handleChange}
+              label="Password"
+              placeholder="Password"
+              type="password"
+              required
+            />
+            <Form.Input
+              name="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+              label="Email"
+              placeholder="Email"
+              type="email"
+              required
+            />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -82,6 +72,7 @@ class ChangeEmailModal extends Component {
             form="change-email"
             color="green"
             disabled={this.state.loading}
+            loading={this.state.loading}
             content="Change email"
             icon="mail"
             labelPosition="left"

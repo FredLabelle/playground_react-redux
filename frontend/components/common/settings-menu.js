@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Menu } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import Router from 'next/router';
 
 import { RouterPropType, FormPropType } from '../../lib/prop-types';
@@ -22,18 +23,15 @@ class SettingsMenu extends Component {
   onClick = (event, { name }) => {
     event.preventDefault();
     if (this.props.form.unsavedChanges) {
-      const message = [
-        'You have unsaved changes!',
-        '',
-        'Are you sure you want to leave this page?',
-      ].join('\n');
-      const confirm = window.confirm(message); // eslint-disable-line no-alert
-      if (!confirm) {
-        return;
-      }
-      this.props.setUnsavedChanges(false);
+      toastr.confirm('You have unsaved changes! Are you sure you want to leave this page?', {
+        onOk: () => {
+          this.props.setUnsavedChanges(false);
+          Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
+        },
+      });
+    } else {
+      Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
     }
-    Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
   };
   render() {
     const active = (...pathnames) => pathnames.includes(this.props.router.pathname);

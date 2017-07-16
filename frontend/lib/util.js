@@ -4,11 +4,6 @@ import isObject from 'lodash/isObject';
 import cloneDeep from 'lodash/cloneDeep';
 import set from 'lodash/set';
 
-export const sleep = duration =>
-  new Promise(resolve => {
-    setTimeout(resolve, duration);
-  });
-
 export const omitDeep = (object, ...omittedKeys) => {
   const omittedKeysFlattened = flatten(omittedKeys);
   const iteratee = (result, value, key) => {

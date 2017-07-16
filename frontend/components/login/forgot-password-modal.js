@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
+import { Button, Form, Modal, Header } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 
-import { sleep } from '../../lib/util';
 import { OrganizationPropType } from '../../lib/prop-types';
 import { forgotPasswordMutation } from '../../lib/mutations';
 
-const initialState = { email: '', loading: false, success: false };
+const initialState = { email: '', loading: false };
 
 class ForgotPasswordModal extends Component {
   static propTypes = {
@@ -28,13 +28,12 @@ class ForgotPasswordModal extends Component {
       email: this.state.email,
       organizationId: this.props.organization.id,
     });
+    this.setState({ loading: false });
     if (forgotPassword) {
-      this.setState({ success: true });
-      await sleep(2000);
+      toastr.success('Success!', 'Forgot password request sent!');
       this.onClose();
     } else {
-      console.error('FORGOT PASSWORD ERROR');
-      this.setState({ loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   onClose = () => {
@@ -53,7 +52,7 @@ class ForgotPasswordModal extends Component {
             Please enter the email address you signed up with and we{"'"}ll send you a link to reset
             your password.
           </p>
-          <Form id="forgot-password" onSubmit={this.onSubmit} success={this.state.success}>
+          <Form id="forgot-password" onSubmit={this.onSubmit}>
             <Form.Input
               name="email"
               value={this.state.email}
@@ -63,7 +62,6 @@ class ForgotPasswordModal extends Component {
               type="email"
               required
             />
-            <Message success header="Success!" content="Forgot password request sent!" />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -72,6 +70,7 @@ class ForgotPasswordModal extends Component {
             form="forgot-password"
             color="green"
             disabled={this.state.loading}
+            loading={this.state.loading}
             content="Send email"
             icon="mail"
             labelPosition="left"

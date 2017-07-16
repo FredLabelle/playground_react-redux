@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Form, Button, Header, Grid, Image, Search, Message } from 'semantic-ui-react';
+import { Segment, Form, Button, Header, Grid, Image, Search } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import escapeRegExp from 'lodash/escapeRegExp';
 import omit from 'lodash/omit';
 
-import { sleep, handleChange } from '../../lib/util';
+import { handleChange } from '../../lib/util';
 import { CompanyPropType } from '../../lib/prop-types';
 import { companiesQuery } from '../../lib/queries';
 import { upsertCompanyMutation } from '../../lib/mutations';
@@ -25,24 +26,19 @@ class Company extends Component {
     },
     results: [],
     loading: false,
-    success: false,
   };
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ loading: true });
     const company = omit(this.state.company, 'domain', '__typename');
+    this.setState({ loading: true });
     const { data: { upsertCompany } } = await this.props.upsertCompany(company);
     this.setState({ loading: false });
     if (upsertCompany) {
       this.props.onChange(upsertCompany);
-      this.setState({
-        company: upsertCompany,
-        success: true,
-      });
-      await sleep(2000);
-      this.setState({ success: false });
+      this.setState({ company: upsertCompany });
+      toastr.success('Success!', this.state.company.id ? 'Company updated.' : 'Company created.');
     } else {
-      console.error('UPSERT COMPANY ERROR');
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   companyToResult = company => ({
@@ -85,7 +81,7 @@ class Company extends Component {
             />
           </Grid.Column>
           <Grid.Column width={13}>
-            <Form id="upsert-company" onSubmit={this.onSubmit} success={this.state.success}>
+            <Form id="upsert-company" onSubmit={this.onSubmit}>
               <Form.Group>
                 <Form.Field
                   label="Name"
@@ -119,7 +115,6 @@ class Company extends Component {
                 placeholder="Description"
                 autoHeight
               />
-              <Message success header="Success!" content="Company saved." />
             </Form>
           </Grid.Column>
         </Grid>
@@ -129,6 +124,7 @@ class Company extends Component {
             form="upsert-company"
             primary
             disabled={this.state.loading}
+            loading={this.state.loading}
             content={this.state.company.id ? 'Update company' : 'Create company'}
             icon="checkmark"
             labelPosition="left"

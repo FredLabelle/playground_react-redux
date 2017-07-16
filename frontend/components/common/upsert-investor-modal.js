@@ -3,9 +3,10 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Modal, Header, Form, Message, Button } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import { sleep, handleChange, omitDeep } from '../../lib/util';
+import { handleChange, omitDeep } from '../../lib/util';
 import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { investorsQuery } from '../../lib/queries';
 import { invitationStatusMutation, upsertInvestorMutation } from '../../lib/mutations';
@@ -29,7 +30,6 @@ const initialState = ({ investor }) => ({
   joinedWarning: false,
   investmentSettingsError: false,
   loading: false,
-  success: false,
 });
 
 class UpsertInvestorModal extends Component {
@@ -47,12 +47,7 @@ class UpsertInvestorModal extends Component {
   };
   onSubmit = async event => {
     event.preventDefault();
-    /* const { investmentSettings } = this.state.investor;
-    const investmentSettingsError = Object.values(investmentSettings).length === 0;
-    this.setState({ investmentSettingsError });
-    if (investmentSettingsError) {
-      return;
-    }*/
+    this.setState({ loading: true });
     const { data: { invitationStatus } } = await this.props.invitationStatus({
       email: this.state.investor.email,
       organizationId: this.props.organization.id,
@@ -62,19 +57,18 @@ class UpsertInvestorModal extends Component {
     const joinedWarning = !this.props.investor.id && invitationStatus === 'joined';
     this.setState({ createdWarning, invitedWarning, joinedWarning });
     if (createdWarning || invitedWarning || joinedWarning) {
+      this.setState({ loading: false });
       return;
     }
-    this.setState({ loading: true });
     const investor = omitDeep(this.state.investor, '__typename');
     const { data: { upsertInvestor } } = await this.props.upsertInvestor(investor);
+    this.setState({ loading: false });
     if (upsertInvestor) {
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
-      this.onCancel();
+      const message = this.props.investor.id ? 'Investor updated.' : 'Investor created.';
+      toastr.success('Success!', message);
+      this.props.onClose();
     } else {
-      console.error('UPSERT INVESTOR ERROR');
-      this.setState({ loading: false });
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   handleChange = handleChange().bind(this);
@@ -90,9 +84,7 @@ class UpsertInvestorModal extends Component {
           <Form
             id="upsert-investor"
             onSubmit={this.onSubmit}
-            success={this.state.success}
             warning={createdWarning || invitedWarning || joinedWarning}
-            error={this.state.investmentSettingsError}
           >
             <Header as="h2" dividing>
               Account
@@ -112,16 +104,6 @@ class UpsertInvestorModal extends Component {
               <Message warning header="Warning!" content="This user has already been invited!" />}
             {joinedWarning &&
               <Message warning header="Warning!" content="This user has already joined!" />}
-            <Message
-              error
-              header="Error!"
-              content="You must chose at least one investment method."
-            />
-            <Message
-              success
-              header="Success!"
-              content={this.props.investor.id ? 'Investor updated.' : 'New investor created.'}
-            />
           </Form>
         </Modal.Content>
         <Modal.Actions>
@@ -138,6 +120,7 @@ class UpsertInvestorModal extends Component {
             form="upsert-investor"
             primary
             disabled={this.state.loading}
+            loading={this.state.loading}
             content={this.props.investor.id ? 'Update' : 'Create'}
             icon="checkmark"
             labelPosition="left"

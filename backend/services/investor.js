@@ -6,7 +6,7 @@ const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
 
-const { Investor, Organization, Ticket } = require('../models');
+const { Admin, Investor, Organization, Ticket } = require('../models');
 const { gravatarPicture, handleFilesUpdate } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
 
@@ -179,12 +179,15 @@ const InvestorService = {
       return null;
     }
   },
-  async invitationStatus(input) {
+  async invitationStatus({ email, organizationId }) {
     try {
-      const investor = await InvestorService.findByEmail(input.email, input.organizationId);
-      if (investor && investor.role !== 'investor') {
+      const admin = await Admin.findOne({
+        where: { email, organizationId },
+      });
+      if (admin) {
         return 'error';
       }
+      const investor = await InvestorService.findByEmail(email, organizationId);
       if (investor) {
         return investor.status;
       }

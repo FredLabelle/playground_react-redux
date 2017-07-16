@@ -2,11 +2,12 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Form, Segment, Button, Message } from 'semantic-ui-react';
+import { Form, Segment, Button } from 'semantic-ui-react';
+import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
-import { sleep, omitDeep, handleChange } from '../../lib/util';
+import { omitDeep, handleChange } from '../../lib/util';
 import { InvestorPropType, FormPropType } from '../../lib/prop-types';
 import { upsertInvestorMutation } from '../../lib/mutations';
 import { investorQuery } from '../../lib/queries';
@@ -32,21 +33,18 @@ class SettingsAdministrative extends Component {
   static defaultProps = { investor: null };
   state = {
     investor: pick(this.props.investor, administrativeFields),
-    saving: false,
-    success: false,
+    loading: false,
   };
   onSubmit = async event => {
     event.preventDefault();
-    this.setState({ saving: true });
+    this.setState({ loading: true });
     const { data: { upsertInvestor } } = await this.props.upsertInvestor(this.update());
-    this.setState({ saving: false });
+    this.setState({ loading: false });
     if (upsertInvestor) {
       this.props.setUnsavedChanges(false);
-      this.setState({ success: true });
-      await sleep(2000);
-      this.setState({ success: false });
+      toastr.success('Success!', 'Your changes have been saved.');
     } else {
-      console.error('UPDATE INVESTOR ERROR');
+      toastr.error('Error!', 'Something went wrong.');
     }
   };
   handleChange = handleChange(() => {
@@ -60,15 +58,15 @@ class SettingsAdministrative extends Component {
     return (
       this.props.investor &&
       <Segment attached="bottom" className="tab active">
-        <Form onSubmit={this.onSubmit} success={this.state.success}>
+        <Form onSubmit={this.onSubmit}>
           <AdministrativeFields investor={this.state.investor} handleChange={this.handleChange} />
-          <Message success header="Success!" content="Your changes have been saved." />
           <Segment basic textAlign="center">
             <Button
               type="submit"
               primary
-              disabled={this.state.saving || !this.props.form.unsavedChanges}
-              content={this.state.saving ? 'Saving…' : 'Save'}
+              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              loading={this.state.loading}
+              content="Save"
               icon="save"
               labelPosition="left"
             />
