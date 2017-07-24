@@ -21,7 +21,7 @@ const DealsListHeader = ({ router }) =>
       <Table.HeaderCell>Investors</Table.HeaderCell>
       {router.admin && <Table.HeaderCell>Tickets</Table.HeaderCell>}
       {/* <Table.HeaderCell>Reports</Table.HeaderCell>
-      <Table.HeaderCell>Status</Table.HeaderCell>*/}
+      <Table.HeaderCell>Status</Table.HeaderCell> */}
     </Table.Row>
   </Table.Header>;
 DealsListHeader.propTypes = { router: RouterPropType.isRequired };
@@ -54,7 +54,7 @@ class DealsListRow extends Component {
         {/* <Table.Cell>
           <strong>Open</strong><br />
           {moment(deal.createdAt).format('DD/MM/YYYY')}
-        </Table.Cell>*/}
+        </Table.Cell> */}
         <style jsx>{`
           strong {
             color: #21ba45;

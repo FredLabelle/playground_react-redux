@@ -18,7 +18,7 @@ export const linkHref = (rawPathname, { admin, organizationShortId }, user) => {
 console.log(linkHref('/deals', { admin: true, organizationShortId: 'eclub' }));
 console.log(linkHref('/deals/new', { admin: true, organizationShortId: 'eclub' }));
 console.log(linkHref('/deals/abc-_', { admin: true, organizationShortId: 'eclub' }));
-console.log('--------');*/
+console.log('--------'); */
 
 export const linkAs = (rawPathname, { admin, organizationShortId }, user) => {
   const adminProp = user ? user.role === 'admin' : admin;
@@ -35,4 +35,4 @@ export const linkAs = (rawPathname, { admin, organizationShortId }, user) => {
 console.log(linkAs('/deals', { admin: true, organizationShortId: 'eclub' }));
 console.log(linkAs('/deals/new', { admin: true, organizationShortId: 'eclub' }));
 console.log(linkAs('/deals/abc-_', { admin: true, organizationShortId: 'eclub' }));
-console.log('--------');*/
+console.log('--------'); */

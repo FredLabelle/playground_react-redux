@@ -53,7 +53,7 @@ class SettingsMenu extends Component {
           onClick={this.onClick}
         >
           Parameters
-        </Menu.Item>*/}
+        </Menu.Item> */}
       </Menu>
     );
   }

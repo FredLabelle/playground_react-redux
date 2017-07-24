@@ -30,7 +30,7 @@ Company.init({
   },
 }, { sequelize });
 
-module.exports = Company;*/
+module.exports = Company; */
 
 module.exports = sequelize.define(
   'Company',

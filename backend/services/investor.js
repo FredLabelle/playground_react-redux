@@ -19,7 +19,7 @@ const InvestorService = {
   },
   /* findById(id) {
     return this.loader.load(id);
-  },*/
+  }, */
   findByEmail(email, organizationId) {
     return Investor.findOne({
       where: { email, organizationId },

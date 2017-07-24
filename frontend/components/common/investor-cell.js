@@ -10,7 +10,7 @@ const InvestorCell = ({ investor }) =>
         {investor.fullName === ' ' ? investor.email : investor.fullName}
         {/* <Header.Subheader>
           {investor.company.name}
-        </Header.Subheader>*/}
+        </Header.Subheader> */}
       </Header.Content>
     </Header>
   </Table.Cell>;

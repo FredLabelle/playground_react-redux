@@ -14,7 +14,7 @@ const devTools =
     : f => f;
 
 const create = (apollo, initialState = {}) => {
-  const middlewares = [apollo.middleware() /* , promiseMiddleware()*/];
+  const middlewares = [apollo.middleware() /* , promiseMiddleware() */];
   return createStore(
     combineReducers({
       ...reducers,
