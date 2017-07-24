@@ -11,7 +11,7 @@ services:
       - database
     build: ./backend
     volumes:
-      - ./backend:/opt/app
+      - ./backend:/opt/app:cached
     entrypoint: ["yarn", "dev"]
     ports:
       - 8080:8080
@@ -19,7 +19,7 @@ services:
     container_name: investorx_frontend
     build: ./frontend
     volumes:
-      - ./frontend:/opt/app
+      - ./frontend:/opt/app:cached
     entrypoint: ["yarn", "dev"]
     ports:
       - 3000:3000

@@ -7,7 +7,7 @@ import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import escapeRegExp from 'lodash/escapeRegExp';
 
-import { handleChange, omitDeep, numberFormatter } from '../../lib/util';
+import { handleChange, omitDeep, formatAmount } from '../../lib/util';
 import { TicketPropType, DealPropType, InvestorPropType } from '../../lib/prop-types';
 import { dealsQuery, investorsQuery, ticketsQuery } from '../../lib/queries';
 import { upsertTicketMutation } from '../../lib/mutations';
@@ -17,9 +17,7 @@ const dealTitle = deal => `${deal.company.name} ${deal.name} ${deal.category.nam
 
 const dealToResult = deal => ({
   title: dealTitle(deal),
-  description: numberFormatter(deal.amountAllocatedToOrganization.currency).format(
-    deal.amountAllocatedToOrganization.amount,
-  ),
+  description: formatAmount(deal.amountAllocatedToOrganization),
   image: `//logo.clearbit.com/${deal.company.domain}?size=192`,
 });
 
@@ -32,10 +30,10 @@ const investorToResult = ({ fullName, email, picture }) => ({
 const initialState = ({ ticket, deals, investors }) => ({
   ticket: pick(ticket, ['id', 'dealId', 'investorId', 'amount']),
   dealsResults: deals.map(dealToResult),
-  deal: '',
+  deal: ticket.deal && dealTitle(ticket.deal),
   dealSearchOpen: false,
   investorsResults: investors.map(investorToResult),
-  investor: '',
+  investor: ticket.investor && ticket.investor.fullName,
   investorSearchOpen: false,
   dealIdError: false,
   investorIdError: false,
@@ -94,10 +92,8 @@ class UpsertTicketModal extends Component {
       this.setState({ investorSearchOpen: false });
     }, 200);
   };
-  getDealMinBoundary = ({ minTicket }) =>
-    numberFormatter(minTicket.currency).format(minTicket.amount);
-  getDealMaxBoundary = ({ maxTicket }) =>
-    maxTicket.amount ? numberFormatter(maxTicket.currency).format(maxTicket.amount) : 'No Limit';
+  getDealMinBoundary = ({ minTicket }) => formatAmount(minTicket);
+  getDealMaxBoundary = ({ maxTicket }) => maxTicket.amount ? formatAmount(maxTicket) : 'No Limit';
   handleDealResultSelect = (event, { result }) => {
     const deal = this.props.deals.find(d => dealTitle(d) === result.title);
     const ticket = {
@@ -167,35 +163,34 @@ class UpsertTicketModal extends Component {
             warning={this.state.ticket.dealId !== ''}
             error={this.state.dealIdError || this.state.investorIdError}
           >
-            {!this.props.ticket.id &&
-              <Form.Group>
-                <Form.Field
-                  label="Deal"
-                  width={8}
-                  control={Search}
-                  onResultSelect={this.handleDealResultSelect}
-                  onSearchChange={this.handleDealSearchChange}
-                  results={this.state.dealsResults}
-                  value={this.state.deal}
-                  required
-                  open={this.state.dealSearchOpen}
-                  onFocus={this.onDealSearchFocus}
-                  onBlur={this.onDealSearchBlur}
-                />
-                <Form.Field
-                  label="Investor"
-                  width={8}
-                  control={Search}
-                  onResultSelect={this.handleInvestorResultSelect}
-                  onSearchChange={this.handleInvestorSearchChange}
-                  results={this.state.investorsResults}
-                  value={this.state.investor}
-                  required
-                  open={this.state.investorSearchOpen}
-                  onFocus={this.onInvestorSearchFocus}
-                  onBlur={this.onInvestorSearchBlur}
-                />
-              </Form.Group>}
+            <Form.Group>
+              <Form.Field
+                label="Deal"
+                width={8}
+                control={Search}
+                onResultSelect={this.handleDealResultSelect}
+                onSearchChange={this.handleDealSearchChange}
+                results={this.state.dealsResults}
+                value={this.state.deal}
+                required
+                open={this.state.dealSearchOpen}
+                onFocus={this.onDealSearchFocus}
+                onBlur={this.onDealSearchBlur}
+              />
+              <Form.Field
+                label="Investor"
+                width={8}
+                control={Search}
+                onResultSelect={this.handleInvestorResultSelect}
+                onSearchChange={this.handleInvestorSearchChange}
+                results={this.state.investorsResults}
+                value={this.state.investor}
+                required
+                open={this.state.investorSearchOpen}
+                onFocus={this.onInvestorSearchFocus}
+                onBlur={this.onInvestorSearchBlur}
+              />
+            </Form.Group>
             <AmountField
               name="ticket.amount"
               value={this.state.ticket.amount}

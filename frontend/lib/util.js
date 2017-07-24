@@ -35,3 +35,5 @@ export const numberFormatter = currency =>
     currency,
     minimumFractionDigits: 0,
   });
+
+export const formatAmount = ({ currency, amount }) => numberFormatter(currency).format(amount);

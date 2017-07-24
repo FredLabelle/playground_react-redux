@@ -218,6 +218,10 @@ export const dealsQuery = gql`
         amount
         currency
       }
+      roundSize {
+        amount
+        currency
+      }
       minTicket {
         amount
         currency
@@ -265,6 +269,10 @@ export const ticketsQuery = gql`
         }
         name
         amountAllocatedToOrganization {
+          amount
+          currency
+        }
+        roundSize {
           amount
           currency
         }

@@ -5,7 +5,7 @@ import { Segment, Grid, Image, Menu, Button } from 'semantic-ui-react';
 import { stringify } from 'querystring';
 import Link from 'next/link';
 
-import { numberFormatter } from '../../lib/util';
+import { formatAmount } from '../../lib/util';
 import { RouterPropType, OrganizationPropType, DealPropType } from '../../lib/prop-types';
 import { organizationQuery, dealQuery } from '../../lib/queries';
 import UpsertDealModal from '../common/upsert-deal-modal';
@@ -31,17 +31,15 @@ class AdminDeal extends Component {
     if (!organization || !deal) {
       return null;
     }
+    const amountAllocatedToOrganization = formatAmount(deal.amountAllocatedToOrganization);
+    const roundSize = formatAmount(deal.roundSize);
     const dealTitle = [
       deal.company.name,
       deal.name,
       deal.category.name,
-      numberFormatter(deal.amountAllocatedToOrganization.currency).format(
-        deal.amountAllocatedToOrganization.amount,
-      ),
+      `${amountAllocatedToOrganization} (size of the round: ${roundSize})`,
     ].join(' - ');
-    const ticketsSumAmount = numberFormatter(deal.ticketsSum.sum.currency).format(
-      deal.ticketsSum.sum.amount,
-    );
+    const ticketsSumAmount = formatAmount(deal.ticketsSum.sum);
     const ticketsPlural = deal.ticketsSum.count === 1 ? '' : 's';
     const { organizationShortId } = this.props.router;
     const { shortId: resourceShortId } = deal;

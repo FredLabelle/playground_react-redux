@@ -20,7 +20,7 @@ const TicketsListHeader = ({ admin }) =>
       <Table.HeaderCell>Company</Table.HeaderCell>
       <Table.HeaderCell>Deal</Table.HeaderCell>
       <Table.HeaderCell>Ticket</Table.HeaderCell>
-      {admin && <Table.HeaderCell>Status</Table.HeaderCell>}
+      {/* admin && <Table.HeaderCell>Status</Table.HeaderCell> */}
       {admin && <Table.HeaderCell>Actions</Table.HeaderCell>}
     </Table.Row>
   </Table.Header>;
@@ -47,14 +47,14 @@ class TicketsListRow extends Component {
         <CompanyCell company={ticket.deal.company} />
         <DealCell deal={ticket.deal} />
         <TicketsSumCell ticketsSum={{ sum: ticket.amount }} />
-        {admin &&
+        {/* admin &&
           <Table.Cell>
             <strong className={ticket.status}>
               {ticket.status}
             </strong>
             <br />
             {moment(ticket.updatedAt).format('DD/MM/YYYY')}
-          </Table.Cell>}
+          </Table.Cell> */}
         {admin &&
           <Table.Cell>
             <Button
