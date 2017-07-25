@@ -1,0 +1,3 @@
+mutation updateDealCategories($input: [DealCategoryInput]!) {
+  updateDealCategories(input: $input)
+}

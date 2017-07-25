@@ -1,0 +1,3 @@
+mutation inviteInvestor($input: InviteInvestorInput!) {
+  inviteInvestor(input: $input)
+}

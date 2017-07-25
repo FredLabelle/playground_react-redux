@@ -8,8 +8,14 @@ import omit from 'lodash/omit';
 
 import { handleChange } from '../../lib/util';
 import { CompanyPropType } from '../../lib/prop-types';
-import { companiesQuery } from '../../lib/queries';
-import { upsertCompanyMutation } from '../../lib/mutations';
+import companiesQuery from '../../graphql/queries/companies.gql';
+import upsertCompanyMutation from '../../graphql/mutations/upsert-company.gql';
+
+const companyToResult = company => ({
+  title: company.name,
+  description: company.description,
+  image: `//logo.clearbit.com/${company.domain}?size=192`,
+});
 
 class Company extends Component {
   static propTypes = {
@@ -24,8 +30,17 @@ class Company extends Component {
       description: '',
       domain: '',
     },
-    results: [],
+    results: this.props.companies.map(companyToResult),
+    searchOpen: false,
     loading: false,
+  };
+  onSearchFocus = () => {
+    this.setState({ searchOpen: true });
+  };
+  onSearchBlur = () => {
+    setTimeout(() => {
+      this.setState({ searchOpen: false });
+    }, 200);
   };
   onSubmit = async event => {
     event.preventDefault();
@@ -41,11 +56,6 @@ class Company extends Component {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
-  companyToResult = company => ({
-    title: company.name,
-    description: company.description,
-    image: `//logo.clearbit.com/${company.domain}?size=192`,
-  });
   handleResultSelect = (event, { result }) => {
     const company = this.props.companies.find(({ name }) => name === result.title);
     this.props.onChange(company);
@@ -57,7 +67,7 @@ class Company extends Component {
     const company = perfectMatch || { name: value, website: '', description: '' };
     const regExp = new RegExp(escapeRegExp(value), 'i');
     const isMatch = result => regExp.test(result.title);
-    const companies = this.props.companies.map(this.companyToResult);
+    const companies = this.props.companies.map(companyToResult);
     const results = companies.filter(isMatch);
     this.setState({ company, results });
   };
@@ -92,6 +102,9 @@ class Company extends Component {
                   results={this.state.results}
                   value={this.state.company.name}
                   required
+                  open={this.state.searchOpen}
+                  onFocus={this.onSearchFocus}
+                  onBlur={this.onSearchBlur}
                 />
                 <div className="field">
                   <label htmlFor="name">&nbsp;</label>

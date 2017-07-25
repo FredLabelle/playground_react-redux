@@ -7,8 +7,9 @@ import pick from 'lodash/pick';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { NamePropType, OrganizationPropType } from '../../lib/prop-types';
-import { invitationStatusMutation, inviteInvestorMutation } from '../../lib/mutations';
-import { investorsQuery } from '../../lib/queries';
+import invitationStatusMutation from '../../graphql/mutations/invitation-status.gql';
+import inviteInvestorMutation from '../../graphql/mutations/invite-investor.gql';
+import investorsQuery from '../../graphql/queries/investors.gql';
 import NameField from '../fields/name-field';
 import InvitationEmailFields from '../common/invitation-email-fields';
 

@@ -9,8 +9,8 @@ import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
-import { resetPasswordMutation } from '../../lib/mutations';
-import { investorQuery } from '../../lib/queries';
+import resetPasswordMutation from '../../graphql/mutations/reset-password.gql';
+import investorQuery from '../../graphql/queries/investor.gql';
 import PasswordField from '../fields/password-field';
 
 const initialState = { password: '', loading: false };
@@ -44,7 +44,7 @@ class ResetPasswordModal extends Component {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
-  onClose = () => {
+  onCancel = () => {
     this.setState(initialState);
     this.props.onClose();
   };
@@ -53,7 +53,7 @@ class ResetPasswordModal extends Component {
   };
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onClose} size="small">
+      <Modal open={this.props.open} onClose={this.onCancel} size="small">
         <Header icon="privacy" content="Reset password" />
         <Modal.Content>
           <p>Reset your password by typing it twice.</p>
@@ -66,6 +66,14 @@ class ResetPasswordModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
+          <Button
+            type="button"
+            color="red"
+            content="Cancel"
+            icon="remove"
+            labelPosition="left"
+            onClick={this.onCancel}
+          />
           <Button
             type="submit"
             form="reset-password"

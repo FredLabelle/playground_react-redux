@@ -4,7 +4,7 @@ import { compose, graphql } from 'react-apollo';
 import { Segment, Button } from 'semantic-ui-react';
 
 import { OrganizationPropType } from '../../lib/prop-types';
-import { organizationQuery } from '../../lib/queries';
+import organizationQuery from '../../graphql/queries/organization.gql';
 import DealsList from '../common/deals-list';
 import UpsertDealModal from '../common/upsert-deal-modal';
 
@@ -14,8 +14,6 @@ const defaultAmount = ({ parametersSettings }) => ({
 });
 
 const newDeal = organization => ({
-  companyId: '',
-  categoryId: '',
   name: '',
   spvName: '',
   description: '',

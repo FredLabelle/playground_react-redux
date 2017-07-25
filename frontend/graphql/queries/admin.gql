@@ -1,0 +1,17 @@
+query {
+  admin {
+    id
+    name {
+      firstName
+      lastName
+    }
+    email
+    picture {
+      name
+      url
+      image
+      uploaded
+    }
+    role
+  }
+}

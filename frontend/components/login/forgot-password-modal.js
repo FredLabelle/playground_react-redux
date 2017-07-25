@@ -5,7 +5,7 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 
 import { OrganizationPropType } from '../../lib/prop-types';
-import { forgotPasswordMutation } from '../../lib/mutations';
+import forgotPasswordMutation from '../../graphql/mutations/forgot-password.gql';
 
 const initialState = { email: '', loading: false };
 
@@ -31,12 +31,12 @@ class ForgotPasswordModal extends Component {
     this.setState({ loading: false });
     if (forgotPassword) {
       toastr.success('Success!', 'Forgot password request sent!');
-      this.onClose();
+      this.onCancel();
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
-  onClose = () => {
+  onCancel = () => {
     this.setState(initialState);
     this.props.onClose();
   };
@@ -45,7 +45,7 @@ class ForgotPasswordModal extends Component {
   };
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onClose} size="small">
+      <Modal open={this.props.open} onClose={this.onCancel} size="small">
         <Header icon="privacy" content="Forgot password?" />
         <Modal.Content>
           <p>
@@ -65,6 +65,14 @@ class ForgotPasswordModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
+          <Button
+            type="button"
+            color="red"
+            content="Cancel"
+            icon="remove"
+            labelPosition="left"
+            onClick={this.onCancel}
+          />
           <Button
             type="submit"
             form="forgot-password"

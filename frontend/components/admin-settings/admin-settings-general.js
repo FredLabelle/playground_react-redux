@@ -9,8 +9,8 @@ import { toastr } from 'react-redux-toastr';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
-import { updateOrganizationMutation } from '../../lib/mutations';
-import { organizationQuery } from '../../lib/queries';
+import updateOrganizationMutation from '../../graphql/mutations/update-organization.gql';
+import organizationQuery from '../../graphql/queries/organization.gql';
 import { setUnsavedChanges } from '../../actions/form';
 
 class AdminSettingsGeneral extends Component {

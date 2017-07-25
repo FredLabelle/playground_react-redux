@@ -1,0 +1,3 @@
+mutation invitationStatus($input: InvitationStatusInput!) {
+  invitationStatus(input: $input)
+}

@@ -9,8 +9,8 @@ import Router from 'next/router';
 import { handleChange } from '../../lib/util';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { investorSignupMutation } from '../../lib/mutations';
-import { investorQuery } from '../../lib/queries';
+import investorSignupMutation from '../../graphql/mutations/investor-signup.gql';
+import investorQuery from '../../graphql/queries/investor.gql';
 import AccountFields from '../common/account-fields';
 
 class SignupForm extends Component {

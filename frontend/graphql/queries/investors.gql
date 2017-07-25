@@ -1,0 +1,66 @@
+query {
+  investors {
+    id
+    picture {
+      url
+    }
+    fullName
+    email
+    phone
+    name {
+      firstName
+      lastName
+    }
+    investmentSettings
+    type
+    individualSettings {
+      birthdate
+      nationality
+      idDocuments {
+        name
+        url
+        image
+        uploaded
+      }
+      fiscalAddress {
+        address1
+        address2
+        city
+        zipCode
+        country
+        state
+      }
+    }
+    corporationSettings {
+      position
+      companyName
+      companyAddress {
+        address1
+        address2
+        city
+        zipCode
+        country
+        state
+      }
+      incProof {
+        name
+        url
+        image
+        uploaded
+      }
+    }
+    advisor {
+      name {
+        firstName
+        lastName
+      }
+      email
+    }
+    status
+    ticketsSum {
+      count
+    }
+    createdAt
+    updatedAt
+  }
+}

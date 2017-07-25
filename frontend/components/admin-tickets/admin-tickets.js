@@ -31,8 +31,6 @@ export default class extends Component {
           open={this.state.upsertTicketModalOpen}
           onClose={this.onUpsertTicketModalClose}
           ticket={{
-            dealId: '',
-            investorId: '',
             amount: {
               amount: '',
               currency: '',

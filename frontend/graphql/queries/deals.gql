@@ -1,0 +1,46 @@
+query deals {
+  deals {
+    id
+    shortId
+    company {
+      name
+      website
+      description
+      domain
+    }
+    category {
+      name
+    }
+    name
+    description
+    amountAllocatedToOrganization {
+      amount
+      currency
+    }
+    roundSize {
+      amount
+      currency
+    }
+    minTicket {
+      amount
+      currency
+    }
+    maxTicket {
+      amount
+      currency
+    }
+    carried
+    deck {
+      url
+    }
+    ticketsSum {
+      count
+      sum {
+        amount
+        currency
+      }
+    }
+    investorsCommited
+    createdAt
+  }
+}

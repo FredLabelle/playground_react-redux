@@ -3,10 +3,10 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Table, Button } from 'semantic-ui-react';
-import moment from 'moment';
+// import moment from 'moment';
 
 import { TicketPropType } from '../../lib/prop-types';
-import { ticketsQuery } from '../../lib/queries';
+import ticketsQuery from '../../graphql/queries/tickets.gql';
 import InvestorCell from './investor-cell';
 import CompanyCell from './company-cell';
 import DealCell from './deal-cell';

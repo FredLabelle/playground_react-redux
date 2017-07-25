@@ -6,8 +6,9 @@ import { Cookies, withCookies } from 'react-cookie';
 import Router from 'next/router';
 
 import { RouterPropType } from '../../lib/prop-types';
-import { adminQuery, dealsQuery } from '../../lib/queries';
-import { adminLoginAckMutation } from '../../lib/mutations';
+import adminQuery from '../../graphql/queries/admin.gql';
+import dealsQuery from '../../graphql/queries/deals.gql';
+import adminLoginAckMutation from '../../graphql/mutations/admin-login-ack.gql';
 import { linkHref, linkAs } from '../../lib/url';
 import AdminMenu from '../common/admin-menu';
 import AdminDeals from './admin-deals';

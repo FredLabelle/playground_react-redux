@@ -1,0 +1,28 @@
+query organization($shortId: ID!) {
+  organization(shortId: $shortId) {
+    id
+    shortId
+    generalSettings {
+      name
+      website
+      description
+      emailDomains
+    }
+    parametersSettings {
+      investmentMechanisms {
+        optOutTime
+        defaultCurrency
+      }
+      invitationEmail {
+        subject
+        body
+      }
+    }
+    domain
+    dealCategories {
+      id
+      name
+      investmentMechanisms
+    }
+  }
+}

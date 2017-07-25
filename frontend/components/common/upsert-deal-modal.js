@@ -8,8 +8,9 @@ import pick from 'lodash/pick';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { DealPropType, OrganizationPropType } from '../../lib/prop-types';
-import { upsertDealMutation } from '../../lib/mutations';
-import { dealQuery, dealsQuery } from '../../lib/queries';
+import upsertDealMutation from '../../graphql/mutations/upsert-deal.gql';
+import dealQuery from '../../graphql/queries/deal.gql';
+import dealsQuery from '../../graphql/queries/deals.gql';
 import CompanyForm from './company-form';
 import FilesField from '../fields/files-field';
 import AmountField from '../fields/amount-field';
@@ -17,23 +18,25 @@ import DateField from '../fields/date-field';
 import PercentField from '../fields/percent-field';
 
 const initialState = ({ deal }) => ({
-  deal: pick(deal, [
-    'id',
-    'companyId',
-    'categoryId',
-    'name',
-    'spvName',
-    'description',
-    'deck',
-    'roundSize',
-    'premoneyValuation',
-    'amountAllocatedToOrganization',
-    'minTicket',
-    'maxTicket',
-    'referenceClosingDate',
-    'carried',
-    'hurdle',
-  ]),
+  deal: {
+    ...pick(deal, [
+      'id',
+      'name',
+      'spvName',
+      'description',
+      'deck',
+      'roundSize',
+      'premoneyValuation',
+      'amountAllocatedToOrganization',
+      'minTicket',
+      'maxTicket',
+      'referenceClosingDate',
+      'carried',
+      'hurdle',
+    ]),
+    companyId: deal.company && deal.company.id,
+    categoryId: deal.category && deal.category.id,
+  },
   companyIdError: false,
   categoryIdError: false,
   loading: false,
@@ -64,13 +67,14 @@ class UpsertDealModal extends Component {
     this.setState({ loading: false });
     if (upsertDeal) {
       toastr.success('Success!', this.props.deal.id ? 'Deal updated.' : 'Deal created.');
-      this.props.onClose();
+      this.onCancel();
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
   onCancel = () => {
-    this.setState(initialState(this.props), this.props.onClose);
+    this.setState(initialState(this.props));
+    this.props.onClose();
   };
   handleCompanyChange = ({ id: companyId }) => {
     this.setState({
@@ -143,7 +147,7 @@ class UpsertDealModal extends Component {
                 label="Name"
                 placeholder="Name"
                 required
-                width={8}
+                width={5}
               />
               <Form.Input
                 name="deal.spvName"
@@ -151,7 +155,14 @@ class UpsertDealModal extends Component {
                 onChange={this.handleChange}
                 label="SPV Name"
                 placeholder="SPV Name"
-                width={8}
+                width={5}
+              />
+              <DateField
+                name="deal.referenceClosingDate"
+                value={this.state.deal.referenceClosingDate}
+                onChange={this.handleChange}
+                label="Reference closing date"
+                width={6}
               />
             </Form.Group>
             <Form.TextArea
@@ -169,48 +180,50 @@ class UpsertDealModal extends Component {
               label="Deck"
               multiple
             />
-            {!this.props.deal.id &&
+            <Form.Group>
               <Form.Select
                 name="deal.categoryId"
-                value={this.state.deal.categoryId}
+                defaultValue={this.state.deal.categoryId}
                 onChange={this.handleChange}
                 options={this.dealCategoriesOptions()}
                 label="Category"
                 placeholder="Category"
                 required
-              />}
-            <AmountField
-              name="deal.roundSize"
-              value={this.state.deal.roundSize}
-              onChange={this.handleChange}
-              label="Size of the round"
-              required
-              width={8}
-            />
-            <AmountField
-              name="deal.premoneyValuation"
-              value={this.state.deal.premoneyValuation}
-              onChange={this.handleChange}
-              label="Premoney valuation"
-              required
-              width={8}
-            />
-            <AmountField
-              name="deal.amountAllocatedToOrganization"
-              value={this.state.deal.amountAllocatedToOrganization}
-              onChange={this.handleChange}
-              label={`Amount allocated to ${this.props.organization.generalSettings.name}`}
-              required
-              width={8}
-            />
+                width={5}
+              />
+              <AmountField
+                name="deal.roundSize"
+                value={this.state.deal.roundSize}
+                onChange={this.handleChange}
+                label="Size of the round"
+                required
+                width={5}
+              />
+              <AmountField
+                name="deal.premoneyValuation"
+                value={this.state.deal.premoneyValuation}
+                onChange={this.handleChange}
+                label="Premoney valuation"
+                required
+                width={6}
+              />
+            </Form.Group>
             <Form.Group>
+              <AmountField
+                name="deal.amountAllocatedToOrganization"
+                value={this.state.deal.amountAllocatedToOrganization}
+                onChange={this.handleChange}
+                label={`Amount allocated to ${this.props.organization.generalSettings.name}`}
+                required
+                width={5}
+              />
               <AmountField
                 name="deal.minTicket"
                 value={this.state.deal.minTicket}
                 onChange={this.handleChange}
                 label="Min ticket"
                 required
-                width={8}
+                width={5}
               />
               <AmountField
                 name="deal.maxTicket"
@@ -218,16 +231,9 @@ class UpsertDealModal extends Component {
                 onChange={this.handleChange}
                 label="Max ticket"
                 placeholder="No Limit"
-                width={8}
+                width={6}
               />
             </Form.Group>
-            <DateField
-              name="deal.referenceClosingDate"
-              value={this.state.deal.referenceClosingDate}
-              onChange={this.handleChange}
-              label="Reference closing date"
-              width={8}
-            />
             <Form.Group>
               <PercentField
                 name="deal.carried"

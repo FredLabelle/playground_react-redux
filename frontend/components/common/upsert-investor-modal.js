@@ -8,8 +8,9 @@ import pick from 'lodash/pick';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
-import { investorsQuery } from '../../lib/queries';
-import { invitationStatusMutation, upsertInvestorMutation } from '../../lib/mutations';
+import investorsQuery from '../../graphql/queries/investors.gql';
+import invitationStatusMutation from '../../graphql/mutations/invitation-status.gql';
+import upsertInvestorMutation from '../../graphql/mutations/upsert-investor.gql';
 import AccountFields from './account-fields';
 import AdministrativeFields from './administrative-fields';
 
@@ -66,7 +67,7 @@ class UpsertInvestorModal extends Component {
     if (upsertInvestor) {
       const message = this.props.investor.id ? 'Investor updated.' : 'Investor created.';
       toastr.success('Success!', message);
-      this.props.onClose();
+      this.onCancel();
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }

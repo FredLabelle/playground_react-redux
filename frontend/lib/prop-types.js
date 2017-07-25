@@ -53,13 +53,13 @@ export const FormPropType = PropTypes.shape({
 });
 
 export const CompanyPropType = PropTypes.shape({
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   website: PropTypes.string,
-  domain: PropTypes.string.isRequired,
+  domain: PropTypes.string,
 });
 
 export const DealCategoryPropType = PropTypes.shape({
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   investmentMechanisms: PropTypes.arrayOf(PropTypes.string),
 });
 

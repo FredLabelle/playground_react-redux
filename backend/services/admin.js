@@ -43,6 +43,9 @@ const AdminService = {
     try {
       const organization = await admin.getOrganization();
       const investor = await InvestorService.findByEmail(input.investor.email, organization.id);
+      if (investor && investor.resetPasswordToken) {
+        return AdminService.sendInvitation(admin, input);
+      }
       if (!investor) {
         const investorInput = Object.assign(input.investor, { status: 'invited' });
         await organization.createInvestor(investorInput);
@@ -85,7 +88,7 @@ const AdminService = {
         return false;
       }
       const resetPasswordToken = uuid();
-      investor.update({ resetPasswordToken });
+      investor.update({ status: 'invited', resetPasswordToken });
       const { shortId } = organization;
       const queryString = stringify({ resetPasswordToken, invited: true });
       const { subject, beforeLink, afterLink } = generateInvitationEmailContent(

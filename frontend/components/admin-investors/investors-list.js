@@ -6,8 +6,8 @@ import { Table, Button } from 'semantic-ui-react';
 import moment from 'moment';
 
 import { RouterPropType, OrganizationPropType, InvestorPropType } from '../../lib/prop-types';
-import { organizationQuery, investorsQuery } from '../../lib/queries';
-// import { sendInvitationMutation } from '../../lib/mutations';
+import organizationQuery from '../../graphql/queries/organization.gql';
+import investorsQuery from '../../graphql/queries/investors.gql';
 import InvestorCell from '../common/investor-cell';
 import TicketsSumCell from '../common/tickets-sum-cell';
 import SendInvitationModal from './send-invitation-modal';

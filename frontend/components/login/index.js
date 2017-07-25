@@ -5,7 +5,7 @@ import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { organizationQuery } from '../../lib/queries';
+import organizationQuery from '../../graphql/queries/organization.gql';
 import Login from '../common/login';
 import Form from './form';
 import ForgotPasswordModal from './forgot-password-modal';

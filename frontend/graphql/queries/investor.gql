@@ -1,0 +1,63 @@
+query {
+  investor {
+    id
+    name {
+      firstName
+      lastName
+    }
+    phone
+    email
+    picture {
+      name
+      url
+      image
+      uploaded
+    }
+    role
+    type
+    investmentSettings
+    individualSettings {
+      birthdate
+      nationality
+      idDocuments {
+        name
+        url
+        image
+        uploaded
+      }
+      fiscalAddress {
+        address1
+        address2
+        city
+        zipCode
+        country
+        state
+      }
+    }
+    corporationSettings {
+      position
+      companyName
+      companyAddress {
+        address1
+        address2
+        city
+        zipCode
+        country
+        state
+      }
+      incProof {
+        name
+        url
+        image
+        uploaded
+      }
+    }
+    advisor {
+      name {
+        firstName
+        lastName
+      }
+      email
+    }
+  }
+}

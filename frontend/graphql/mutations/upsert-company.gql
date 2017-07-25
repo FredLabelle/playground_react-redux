@@ -1,0 +1,9 @@
+mutation upsertCompany($input: UpsertCompanyInput!) {
+  upsertCompany(input: $input) {
+    id
+    name
+    website
+    description
+    domain
+  }
+}

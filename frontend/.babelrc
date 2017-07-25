@@ -4,7 +4,8 @@
     [
       "wrap-in-js",
       { "extensions": ["css$", "scss$"] }
-    ]
+    ],
+    "babel-plugin-inline-import-graphql-ast"
   ],
   "presets": ["next/babel"]
 }

@@ -4,7 +4,7 @@ import { compose, graphql } from 'react-apollo';
 import { Segment, Button } from 'semantic-ui-react';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { organizationQuery } from '../../lib/queries';
+import organizationQuery from '../../graphql/queries/organization.gql';
 import InvestorsList from './investors-list';
 import UpsertInvestorModal from '../common/upsert-investor-modal';
 import InviteModal from './invite-modal';

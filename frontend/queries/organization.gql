@@ -1,8 +1,0 @@
-query organization($shortId: String!) {
-  organization(shortId: $shortId) {
-    name
-    domain
-    dealCategories
-    defaultCurrency
-  }
-}

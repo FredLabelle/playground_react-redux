@@ -1,0 +1,5 @@
+mutation upsertDeal($input: UpsertDealInput!) {
+  upsertDeal(input: $input) {
+    id
+  }
+}

@@ -12,7 +12,9 @@ const TicketsSumCell = ({ ticketsSum }) =>
             <br />
           </span>}
         {ticketsSum.sum &&
-          <span>{formatAmount(ticketsSum.sum)}</span>}
+          <span>
+            {formatAmount(ticketsSum.sum)}
+          </span>}
       </Table.Cell>
     : <Table.Cell>No tickets</Table.Cell>;
 TicketsSumCell.propTypes = { ticketsSum: TicketsSumPropType.isRequired };

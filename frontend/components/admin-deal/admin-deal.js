@@ -7,7 +7,8 @@ import Link from 'next/link';
 
 import { formatAmount } from '../../lib/util';
 import { RouterPropType, OrganizationPropType, DealPropType } from '../../lib/prop-types';
-import { organizationQuery, dealQuery } from '../../lib/queries';
+import organizationQuery from '../../graphql/queries/organization.gql';
+import dealQuery from '../../graphql/queries/deal.gql';
 import UpsertDealModal from '../common/upsert-deal-modal';
 import DealInvestorsList from './deal-investors-list';
 import DealTicketsList from './deal-tickets-list';

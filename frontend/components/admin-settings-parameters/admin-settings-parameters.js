@@ -6,7 +6,7 @@ import { stringify } from 'querystring';
 import Link from 'next/link';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { organizationQuery } from '../../lib/queries';
+import organizationQuery from '../../graphql/queries/organization.gql';
 import DealCategoriesParameters from './deal-categories-parameters';
 import InvestmentMechanismsParameters from './investment-mechanisms-parameters';
 import InvitationEmailParameters from './invitation-email-parameters';

@@ -529,6 +529,14 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-inline-import-graphql-ast@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-inline-import-graphql-ast/-/babel-plugin-inline-import-graphql-ast-2.0.0.tgz#d897b88e122db74e5909adb06977877a01e121ac"
+  dependencies:
+    babylon "^6.17.0"
+    graphql "^0.9.6"
+    graphql-tag "^2.0.0"
+
 babel-plugin-module-resolver@2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-module-resolver/-/babel-plugin-module-resolver-2.6.2.tgz#66845c8855865dd7fd4d5256be93272e3d16701d"
@@ -2366,6 +2374,12 @@ graphql@^0.10.0:
   dependencies:
     iterall "^1.1.0"
 
+graphql@^0.9.6:
+  version "0.9.6"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.6.tgz#514421e9d225c29dfc8fd305459abae58815ef2c"
+  dependencies:
+    iterall "^1.0.0"
+
 har-schema@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/har-schema/-/har-schema-1.0.5.tgz#d263135f43307c02c602afc8fe95970c0151369e"
@@ -2775,7 +2789,7 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-iterall@^1.1.0:
+iterall@^1.0.0, iterall@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.1.1.tgz#f7f0af11e9a04ec6426260f5019d9fcca4d50214"
 
@@ -3941,9 +3955,9 @@ react-proxy@^3.0.0-alpha.0:
   dependencies:
     lodash "^4.6.1"
 
-react-redux-toastr@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/react-redux-toastr/-/react-redux-toastr-7.0.0.tgz#455beda58f7f75c7eccce430112f3ec8df362a42"
+react-redux-toastr@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/react-redux-toastr/-/react-redux-toastr-7.1.0.tgz#e9558ad069b896e41be0094c1c5e0ef3d948b9ec"
   dependencies:
     classnames "^2.2.3"
     eventemitter3 "^2.0.3"
@@ -4264,9 +4278,9 @@ schema-utils@^0.3.0:
   dependencies:
     ajv "^5.0.0"
 
-semantic-ui-react@^0.71.1:
-  version "0.71.1"
-  resolved "https://registry.yarnpkg.com/semantic-ui-react/-/semantic-ui-react-0.71.1.tgz#241055be740bf0a73363f484446b360e944a792b"
+semantic-ui-react@^0.71.2:
+  version "0.71.2"
+  resolved "https://registry.yarnpkg.com/semantic-ui-react/-/semantic-ui-react-0.71.2.tgz#686173f2327ec8788b535575ea92a39ab182bfc7"
   dependencies:
     babel-runtime "^6.22.0"
     classnames "^2.1.5"
@@ -4767,9 +4781,9 @@ unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
 
-uploadcare-widget@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/uploadcare-widget/-/uploadcare-widget-3.1.0.tgz#1cfb0ce6265c1baf98af3f11b2c08f3886789b70"
+uploadcare-widget@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/uploadcare-widget/-/uploadcare-widget-3.1.1.tgz#35b826e178a7c303bf12311c9db81442c8ff24be"
   dependencies:
     jquery ">=1.10.2"
 

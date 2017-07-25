@@ -5,7 +5,7 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import { changeEmailMutation } from '../../lib/mutations';
+import changeEmailMutation from '../../graphql/mutations/change-email.gql';
 
 const initialState = { password: '', email: '', loading: false };
 
@@ -24,12 +24,12 @@ class ChangeEmailModal extends Component {
     this.setState({ loading: false });
     if (changeEmail) {
       toastr.success('Success!', 'Your email has been changed.');
-      this.onClose();
+      this.onCancel();
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
-  onClose = () => {
+  onCancel = () => {
     this.setState(initialState);
     this.props.onClose();
   };
@@ -38,7 +38,7 @@ class ChangeEmailModal extends Component {
   };
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onClose} size="small">
+      <Modal open={this.props.open} onClose={this.onCancel} size="small">
         <Header icon="mail" content="Change email" />
         <Modal.Content>
           <p>
@@ -67,6 +67,14 @@ class ChangeEmailModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
+          <Button
+            type="button"
+            color="red"
+            content="Cancel"
+            icon="remove"
+            labelPosition="left"
+            onClick={this.onCancel}
+          />
           <Button
             type="submit"
             form="change-email"

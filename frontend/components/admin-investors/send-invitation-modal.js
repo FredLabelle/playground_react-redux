@@ -7,7 +7,9 @@ import pick from 'lodash/pick';
 
 import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { omitDeep, handleChange } from '../../lib/util';
-import { sendInvitationMutation, inviteInvestorMutation } from '../../lib/mutations';
+import sendInvitationMutation from '../../graphql/mutations/send-invitation.gql';
+import inviteInvestorMutation from '../../graphql/mutations/invite-investor.gql';
+import investorsQuery from '../../graphql/queries/investors.gql';
 import InvitationEmailFields from '../common/invitation-email-fields';
 
 const initialState = ({ parametersSettings }) => ({
@@ -104,6 +106,7 @@ export default compose(
       sendInvitation: input =>
         mutate({
           variables: { input },
+          refetchQueries: [{ query: investorsQuery }],
         }),
     }),
   }),

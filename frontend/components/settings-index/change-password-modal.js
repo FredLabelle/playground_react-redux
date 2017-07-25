@@ -6,7 +6,7 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import { changePasswordMutation } from '../../lib/mutations';
+import changePasswordMutation from '../../graphql/mutations/change-password.gql';
 import PasswordField from '../fields/password-field';
 
 const initialState = { currentPassword: '', password: '', loading: false };
@@ -27,12 +27,12 @@ class ChangePasswordModal extends Component {
     this.setState({ loading: false });
     if (changePassword) {
       toastr.success('Success!', 'Your password has been changed.');
-      this.onClose();
+      this.onCancel();
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
-  onClose = () => {
+  onCancel = () => {
     this.setState(initialState);
     this.props.onClose();
   };
@@ -41,7 +41,7 @@ class ChangePasswordModal extends Component {
   };
   render() {
     return (
-      <Modal open={this.props.open} onClose={this.onClose} size="small">
+      <Modal open={this.props.open} onClose={this.onCancel} size="small">
         <Header icon="privacy" content="Change password" />
         <Modal.Content>
           <p>Change your password by typing it twice.</p>
@@ -63,6 +63,14 @@ class ChangePasswordModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
+          <Button
+            type="button"
+            color="red"
+            content="Cancel"
+            icon="remove"
+            labelPosition="left"
+            onClick={this.onCancel}
+          />
           <Button
             type="submit"
             form="change-password"

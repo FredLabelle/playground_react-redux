@@ -8,8 +8,8 @@ import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
-import { investorLoginMutation } from '../../lib/mutations';
-import { investorQuery } from '../../lib/queries';
+import investorLoginMutation from '../../graphql/mutations/investor-login.gql';
+import investorQuery from '../../graphql/queries/investor.gql';
 
 class LoginForm extends Component {
   static propTypes = {

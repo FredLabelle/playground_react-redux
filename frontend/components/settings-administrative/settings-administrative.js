@@ -9,8 +9,8 @@ import isEqual from 'lodash/isEqual';
 
 import { omitDeep, handleChange } from '../../lib/util';
 import { InvestorPropType, FormPropType } from '../../lib/prop-types';
-import { upsertInvestorMutation } from '../../lib/mutations';
-import { investorQuery } from '../../lib/queries';
+import upsertInvestorMutation from '../../graphql/mutations/upsert-investor.gql';
+import investorQuery from '../../graphql/queries/investor.gql';
 import { setUnsavedChanges } from '../../actions/form';
 import AdministrativeFields from '../common/administrative-fields';
 

@@ -9,11 +9,13 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import { handleChange, omitDeep, formatAmount } from '../../lib/util';
 import { TicketPropType, DealPropType, InvestorPropType } from '../../lib/prop-types';
-import { dealsQuery, investorsQuery, ticketsQuery } from '../../lib/queries';
-import { upsertTicketMutation } from '../../lib/mutations';
+import dealsQuery from '../../graphql/queries/deals.gql';
+import investorsQuery from '../../graphql/queries/investors.gql';
+import ticketsQuery from '../../graphql/queries/tickets.gql';
+import upsertTicketMutation from '../../graphql/mutations/upsert-ticket.gql';
 import AmountField from '../fields/amount-field';
 
-const dealTitle = deal => `${deal.company.name} ${deal.name} ${deal.category.name}`;
+const dealTitle = ({ company, name, category }) => `${company.name} ${name} ${category.name}`;
 
 const dealToResult = deal => ({
   title: dealTitle(deal),
@@ -21,14 +23,20 @@ const dealToResult = deal => ({
   image: `//logo.clearbit.com/${deal.company.domain}?size=192`,
 });
 
-const investorToResult = ({ fullName, email, picture }) => ({
-  title: fullName,
-  description: email,
-  image: picture[0].url,
+const investorTitle = ({ fullName, email }) => (fullName === ' ' ? email : fullName);
+
+const investorToResult = investor => ({
+  title: investorTitle(investor),
+  description: investor.email,
+  image: investor.picture[0].url,
 });
 
 const initialState = ({ ticket, deals, investors }) => ({
-  ticket: pick(ticket, ['id', 'dealId', 'investorId', 'amount']),
+  ticket: {
+    ...pick(ticket, ['id', 'amount']),
+    dealId: ticket.deal && ticket.deal.id,
+    investorId: ticket.investor && ticket.investor.id,
+  },
   dealsResults: deals.map(dealToResult),
   deal: ticket.deal && dealTitle(ticket.deal),
   dealSearchOpen: false,
@@ -71,7 +79,7 @@ class UpsertTicketModal extends Component {
     this.setState({ loading: false });
     if (upsertTicket) {
       toastr.success('Success!', this.props.ticket.id ? 'Ticket updated.' : 'Ticket created.');
-      this.props.onClose();
+      this.onCancel();
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
@@ -93,7 +101,7 @@ class UpsertTicketModal extends Component {
     }, 200);
   };
   getDealMinBoundary = ({ minTicket }) => formatAmount(minTicket);
-  getDealMaxBoundary = ({ maxTicket }) => maxTicket.amount ? formatAmount(maxTicket) : 'No Limit';
+  getDealMaxBoundary = ({ maxTicket }) => (maxTicket.amount ? formatAmount(maxTicket) : 'No Limit');
   handleDealResultSelect = (event, { result }) => {
     const deal = this.props.deals.find(d => dealTitle(d) === result.title);
     const ticket = {
@@ -126,7 +134,7 @@ class UpsertTicketModal extends Component {
     this.setState({ ticket, dealsResults, deal });
   };
   handleInvestorResultSelect = (event, { result }) => {
-    const investor = this.props.investors.find(i => i.fullName === result.title);
+    const investor = this.props.investors.find(i => investorTitle(i) === result.title);
     const ticket = {
       ...this.state.ticket,
       investorId: investor.id,
