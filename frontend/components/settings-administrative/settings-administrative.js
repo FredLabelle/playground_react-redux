@@ -3,12 +3,14 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Form, Segment, Button } from 'semantic-ui-react';
+import Router from 'next/router';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
 import { omitDeep, handleChange } from '../../lib/util';
-import { InvestorPropType, FormPropType } from '../../lib/prop-types';
+import { linkHref, linkAs } from '../../lib/url';
+import { RouterPropType, InvestorPropType } from '../../lib/prop-types';
 import upsertInvestorMutation from '../../graphql/mutations/upsert-investor.gql';
 import investorQuery from '../../graphql/queries/investor.gql';
 import { setUnsavedChanges } from '../../actions/form';
@@ -25,7 +27,7 @@ const administrativeFields = [
 
 class SettingsAdministrative extends Component {
   static propTypes = {
-    form: FormPropType.isRequired,
+    router: RouterPropType.isRequired,
     investor: InvestorPropType,
     upsertInvestor: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
@@ -43,6 +45,11 @@ class SettingsAdministrative extends Component {
     if (upsertInvestor) {
       this.props.setUnsavedChanges(false);
       toastr.success('Success!', 'Your changes have been saved.');
+      if (this.props.router.query.invited === 'true') {
+        const router = { ...this.props.router };
+        delete router.query.invited;
+        Router.push(linkHref('/', router), linkAs('/', router));
+      }
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
@@ -64,7 +71,7 @@ class SettingsAdministrative extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              disabled={this.state.loading}
               loading={this.state.loading}
               content="Save"
               icon="save"
@@ -78,7 +85,7 @@ class SettingsAdministrative extends Component {
 }
 
 export default compose(
-  connect(({ form }) => ({ form }), { setUnsavedChanges }),
+  connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
   graphql(investorQuery, {
     props: ({ data: { investor } }) => ({ investor }),
   }),

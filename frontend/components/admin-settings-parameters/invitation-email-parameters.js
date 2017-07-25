@@ -8,14 +8,13 @@ import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
 import { handleChange, omitDeep } from '../../lib/util';
-import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
+import { OrganizationPropType } from '../../lib/prop-types';
 import organizationQuery from '../../graphql/queries/organization.gql';
 import updateOrganizationMutation from '../../graphql/mutations/update-organization.gql';
 import { setUnsavedChanges } from '../../actions/form';
 
 class InvitationEmailParameters extends Component {
   static propTypes = {
-    form: FormPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
   };
@@ -85,7 +84,7 @@ class InvitationEmailParameters extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              disabled={this.state.loading}
               loading={this.state.loading}
               content="Save"
               icon="save"

@@ -3,12 +3,14 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Segment, Form, Header, Button, Message } from 'semantic-ui-react';
+import Router from 'next/router';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 import isEqual from 'lodash/isEqual';
 
 import { omitDeep, handleChange } from '../../lib/util';
-import { FormPropType, InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
+import { linkHref, linkAs } from '../../lib/url';
+import { RouterPropType, InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
 import investorQuery from '../../graphql/queries/investor.gql';
 import organizationQuery from '../../graphql/queries/organization.gql';
@@ -23,7 +25,7 @@ const accountFields = ['id', 'name', 'phone', 'picture', 'investmentSettings'];
 
 class SettingsAccount extends Component {
   static propTypes = {
-    form: FormPropType.isRequired,
+    router: RouterPropType.isRequired,
     investor: InvestorPropType,
     organization: OrganizationPropType.isRequired,
     upsertInvestor: PropTypes.func.isRequired,
@@ -61,6 +63,11 @@ class SettingsAccount extends Component {
     if (upsertInvestor) {
       this.props.setUnsavedChanges(false);
       toastr.success('Success!', 'Your changes have been saved.');
+      if (this.props.router.query.invited === 'true') {
+        const router = { ...this.props.router };
+        delete router.query.invited;
+        Router.push(linkHref('/', router), linkAs('/', router));
+      }
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
@@ -144,7 +151,7 @@ class SettingsAccount extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.saving || !this.props.form.unsavedChanges}
+              disabled={this.state.saving}
               loading={this.state.loading}
               content="Save"
               icon="save"

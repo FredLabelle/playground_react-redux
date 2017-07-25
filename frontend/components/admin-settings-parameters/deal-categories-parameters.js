@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import uniqueId from 'lodash/uniqueId';
 
 import { handleChange, omitDeep } from '../../lib/util';
-import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
+import { OrganizationPropType } from '../../lib/prop-types';
 import organizationQuery from '../../graphql/queries/organization.gql';
 import updateDealCategoriesMutation from '../../graphql/mutations/update-deal-categories.gql';
 import { setUnsavedChanges } from '../../actions/form';
@@ -45,7 +45,6 @@ AddDealCategoryField.propTypes = { onNewDealCategoryClick: PropTypes.func.isRequ
 
 class DealCategoriesParameters extends Component {
   static propTypes = {
-    form: FormPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     updateDealCategories: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
@@ -118,7 +117,7 @@ class DealCategoriesParameters extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              disabled={this.state.loading}
               loading={this.state.loading}
               content="Save"
               icon="save"

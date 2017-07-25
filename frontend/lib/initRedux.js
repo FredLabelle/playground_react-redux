@@ -6,7 +6,6 @@ import { reducer as toastrReducer } from 'react-redux-toastr';
 
 import reducers from '../reducers';
 import { onRouteChangeStart } from '../actions/router';
-import { setUnsavedChanges } from '../actions/form';
 
 const devTools =
   process.browser && window.__REDUX_DEVTOOLS_EXTENSION__
@@ -43,7 +42,6 @@ Router.onRouteChangeStart = url => {
     return;
   }
   reduxStore.dispatch(onRouteChangeStart(url));
-  reduxStore.dispatch(setUnsavedChanges(false));
 };
 
 export const getReduxStore = () => reduxStore;

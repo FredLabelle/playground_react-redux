@@ -8,14 +8,13 @@ import { Segment, Form, Header, Image, Button } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 
 import { handleChange, omitDeep } from '../../lib/util';
-import { FormPropType, OrganizationPropType } from '../../lib/prop-types';
+import { OrganizationPropType } from '../../lib/prop-types';
 import updateOrganizationMutation from '../../graphql/mutations/update-organization.gql';
 import organizationQuery from '../../graphql/queries/organization.gql';
 import { setUnsavedChanges } from '../../actions/form';
 
 class AdminSettingsGeneral extends Component {
   static propTypes = {
-    form: FormPropType.isRequired,
     organization: OrganizationPropType,
     updateOrganization: PropTypes.func.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
@@ -104,7 +103,7 @@ class AdminSettingsGeneral extends Component {
             <Button
               type="submit"
               primary
-              disabled={this.state.loading || !this.props.form.unsavedChanges}
+              disabled={this.state.loading}
               loading={this.state.loading}
               content="Save"
               icon="save"
