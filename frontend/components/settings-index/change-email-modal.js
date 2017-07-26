@@ -5,7 +5,7 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import changeEmailMutation from '../../graphql/mutations/change-email.gql';
+import { changeEmailMutation } from '../../lib/mutations';
 
 const initialState = { password: '', email: '', loading: false };
 

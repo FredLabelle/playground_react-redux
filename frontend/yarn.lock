@@ -3975,9 +3975,9 @@ react-redux@^5.0.5:
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
 
-react-sortable-hoc@^0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.5.tgz#e6b5d414476d51a0b621931298855d4fd608c227"
+react-sortable-hoc@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-0.6.6.tgz#eaf51c5d25ce0304ae14af1f98cc31ed1db58fbd"
   dependencies:
     babel-runtime "^6.11.6"
     invariant "^2.2.1"

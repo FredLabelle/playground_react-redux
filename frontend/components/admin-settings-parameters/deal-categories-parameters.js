@@ -11,8 +11,8 @@ import uniqueId from 'lodash/uniqueId';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { OrganizationPropType } from '../../lib/prop-types';
-import organizationQuery from '../../graphql/queries/organization.gql';
-import updateDealCategoriesMutation from '../../graphql/mutations/update-deal-categories.gql';
+import { organizationQuery } from '../../lib/queries';
+import { updateDealCategoriesMutation } from '../../lib/mutations';
 import { setUnsavedChanges } from '../../actions/form';
 import DealCategoryField from './deal-category-field';
 

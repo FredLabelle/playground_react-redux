@@ -10,9 +10,7 @@ import {
   InvestorPropType,
   AdminPropType,
 } from '../../lib/prop-types';
-import organizationQuery from '../../graphql/queries/organization.gql';
-import investorQuery from '../../graphql/queries/investor.gql';
-import adminQuery from '../../graphql/queries/admin.gql';
+import { organizationQuery, investorQuery, adminQuery } from '../../lib/queries';
 import LoginMenuItem from './login-menu-item';
 import UserDropdownMenu from './user-dropdown-menu';
 

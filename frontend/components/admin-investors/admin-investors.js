@@ -4,14 +4,15 @@ import { compose, graphql } from 'react-apollo';
 import { Segment, Button } from 'semantic-ui-react';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import organizationQuery from '../../graphql/queries/organization.gql';
+import { organizationQuery } from '../../lib/queries';
 import InvestorsList from './investors-list';
 import UpsertInvestorModal from '../common/upsert-investor-modal';
 import InviteModal from './invite-modal';
 
 const newInvestor = ({ query }) => ({
   email: query.email || '',
-  phone: '',
+  phone1: '',
+  phone2: '',
   name: {
     firstName: query.firstName || '',
     lastName: query.lastName || '',

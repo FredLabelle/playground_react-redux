@@ -14,6 +14,7 @@ const DatePicker = ({ date, onDateChange, focused, onFocusChange }) =>
     onFocusChange={onFocusChange}
     showDefaultInputIcon
     displayFormat="DD/MM/YYYY"
+    isOutsideRange={() => false}
   />;
 DatePicker.propTypes = {
   date: PropTypes.instanceOf(Moment),

@@ -110,7 +110,8 @@ export const OrganizationPropType = PropTypes.shape({
 export const InvestorPropType = PropTypes.shape({
   name: NamePropType,
   fullName: PropTypes.string,
-  phone: PropTypes.string,
+  phone1: PropTypes.string,
+  phone2: PropTypes.string,
   email: PropTypes.string,
   role: PropTypes.string,
   picture: PropTypes.arrayOf(FilePropType),

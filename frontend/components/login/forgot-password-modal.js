@@ -5,7 +5,7 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 
 import { OrganizationPropType } from '../../lib/prop-types';
-import forgotPasswordMutation from '../../graphql/mutations/forgot-password.gql';
+import { forgotPasswordMutation } from '../../lib/mutations';
 
 const initialState = { email: '', loading: false };
 

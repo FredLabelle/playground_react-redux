@@ -1,3 +1,0 @@
-mutation investorSignup($input: InvestorSignupInput!) {
-  investorSignup(input: $input)
-}

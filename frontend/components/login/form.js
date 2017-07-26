@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { gql, compose, graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
-// import investorLoginMutation from '../../graphql/mutations/investor-login.gql';
-import investorQuery from '../../graphql/queries/investor.gql';
+import { investorLoginMutation } from '../../lib/mutations';
+import { investorQuery, adminQuery } from '../../lib/queries';
 
 class LoginForm extends Component {
   static propTypes = {
@@ -93,12 +93,6 @@ class LoginForm extends Component {
   }
 }
 
-const investorLoginMutation = gql`
-  mutation investorLogin($input: InvestorLoginInput!) {
-    investorLogin(input: $input)
-  }
-`;
-
 export default compose(
   withCookies,
   connect(({ router }) => ({ router })),
@@ -110,6 +104,10 @@ export default compose(
           refetchQueries: [
             {
               query: investorQuery,
+              fetchPolicy: 'network-only',
+            },
+            {
+              query: adminQuery,
               fetchPolicy: 'network-only',
             },
           ],

@@ -1,5 +1,0 @@
-mutation upsertTicket($input: UpsertTicketInput!) {
-  upsertTicket(input: $input) {
-    id
-  }
-}

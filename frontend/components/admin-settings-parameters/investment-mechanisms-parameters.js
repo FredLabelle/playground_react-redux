@@ -9,8 +9,8 @@ import isEqual from 'lodash/isEqual';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { OrganizationPropType } from '../../lib/prop-types';
-import organizationQuery from '../../graphql/queries/organization.gql';
-import updateOrganizationMutation from '../../graphql/mutations/update-organization.gql';
+import { organizationQuery } from '../../lib/queries';
+import { updateOrganizationMutation } from '../../lib/mutations';
 import { setUnsavedChanges } from '../../actions/form';
 
 class InvestmentMechanismsParameters extends Component {

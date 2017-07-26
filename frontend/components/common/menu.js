@@ -14,7 +14,7 @@ const InvestorMenu = ({ router }) =>
     </Link>
     <Link prefetch href={linkHref('/deals', router)} as={linkAs('/deals', router)}>
       <Menu.Item name="/deals" active={router.pathname.startsWith('/deals')}>
-        Deals
+        Ongoing deals
       </Menu.Item>
     </Link>
   </Menu>;

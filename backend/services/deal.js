@@ -1,5 +1,6 @@
 const uniqBy = require('lodash/uniqBy');
 const omit = require('lodash/omit');
+const moment = require('moment');
 
 const { Deal, Company, DealCategory, Ticket, Investor } = require('../models');
 const { handleFilesUpdate } = require('../lib/util');
@@ -35,7 +36,13 @@ const DealService = {
           },
         ],
       });
-      const filter = user.role === 'investor' ? deal => deal.Tickets.length === 0 : () => true;
+      const investorDealFilter = deal => {
+        const noTickets = deal.Tickets.length === 0;
+        const referenceClosingDate = moment(deal.referenceClosingDate, 'YYYY-MM-DD');
+        const ongoing = !referenceClosingDate.isValid() || referenceClosingDate.isAfter(moment());
+        return noTickets && ongoing;
+      };
+      const filter = user.role === 'investor' ? investorDealFilter : () => true;
       return deals.filter(filter).map(deal =>
         Object.assign({}, deal.toJSON(), {
           company: deal.Company.toJSON(),

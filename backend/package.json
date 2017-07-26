@@ -35,6 +35,7 @@
     "graphql-type-json": "^0.1.4",
     "jsonwebtoken": "^7.4.1",
     "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "node-mailjet": "^3.2.1",
     "pg": "^7.0.2",
     "pg-hstore": "^2.3.2",

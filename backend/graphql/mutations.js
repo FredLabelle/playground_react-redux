@@ -98,7 +98,8 @@ input UpdateOrganizationInput {
 input UpsertInvestorInput {
   id: ID
   email: String
-  phone: String
+  phone1: String
+  phone2: String
   name: NameInput
   picture: [FileInput]
   investmentSettings: JSON

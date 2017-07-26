@@ -12,16 +12,15 @@ import { omitDeep, handleChange } from '../../lib/util';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
-import investorQuery from '../../graphql/queries/investor.gql';
-import organizationQuery from '../../graphql/queries/organization.gql';
-import upsertInvestorMutation from '../../graphql/mutations/upsert-investor.gql';
+import { investorQuery, organizationQuery } from '../../lib/queries';
+import { upsertInvestorMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FilesField from '../fields/files-field';
 import InvestmentField from '../fields/investment-field';
 import ChangeEmailModal from './change-email-modal';
 import ChangePasswordModal from './change-password-modal';
 
-const accountFields = ['id', 'name', 'phone', 'picture', 'investmentSettings'];
+const accountFields = ['id', 'name', 'phone1', 'phone2', 'picture', 'investmentSettings'];
 
 class SettingsAccount extends Component {
   static propTypes = {
@@ -104,14 +103,26 @@ class SettingsAccount extends Component {
             value={this.state.investor.name}
             onChange={this.handleChange}
           />
-          <Form.Input
-            name="investor.phone"
-            value={this.state.investor.phone}
-            onChange={this.handleChange}
-            label="Phone"
-            placeholder="Phone"
-            type="tel"
-          />
+          <Form.Group>
+            <Form.Input
+              name="investor.phone1"
+              value={this.state.investor.phone1}
+              onChange={this.handleChange}
+              label="Phone 1"
+              placeholder="Phone 1"
+              type="tel"
+              width={8}
+            />
+            <Form.Input
+              name="investor.phone2"
+              value={this.state.investor.phone2}
+              onChange={this.handleChange}
+              label="Phone 2"
+              placeholder="Phone 2"
+              type="tel"
+              width={8}
+            />
+          </Form.Group>
           <Form.Input
             defaultValue={this.props.investor.email}
             label="Email"

@@ -1,5 +1,0 @@
-mutation upsertInvestor($input: UpsertInvestorInput!) {
-  upsertInvestor(input: $input) {
-    id
-  }
-}

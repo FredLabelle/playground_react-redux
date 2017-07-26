@@ -9,10 +9,8 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import { handleChange, omitDeep, formatAmount } from '../../lib/util';
 import { TicketPropType, DealPropType, InvestorPropType } from '../../lib/prop-types';
-import dealsQuery from '../../graphql/queries/deals.gql';
-import investorsQuery from '../../graphql/queries/investors.gql';
-import ticketsQuery from '../../graphql/queries/tickets.gql';
-import upsertTicketMutation from '../../graphql/mutations/upsert-ticket.gql';
+import { dealsQuery, investorsQuery, ticketsQuery } from '../../lib/queries';
+import { upsertTicketMutation } from '../../lib/mutations';
 import AmountField from '../fields/amount-field';
 
 const dealTitle = ({ company, name, category }) => `${company.name} ${name} ${category.name}`;
@@ -59,6 +57,14 @@ class UpsertTicketModal extends Component {
   };
   static defaultProps = { deals: [], investors: [] };
   state = initialState(this.props);
+  componentWillReceiveProps({ deals, investors }) {
+    if (deals) {
+      this.setState({ dealsResults: deals.map(dealToResult) });
+    }
+    if (investors) {
+      this.setState({ investorsResults: investors.map(investorToResult) });
+    }
+  }
   onCancel = () => {
     this.setState(initialState(this.props));
     this.props.onClose();

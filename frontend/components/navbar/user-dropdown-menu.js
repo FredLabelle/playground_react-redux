@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { gql, compose, graphql, withApollo, ApolloClient } from 'react-apollo';
+import { compose, graphql, withApollo, ApolloClient } from 'react-apollo';
 import { withCookies, Cookies } from 'react-cookie';
 import { Dropdown, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import Router from 'next/router';
 
 import { RouterPropType, InvestorPropType, AdminPropType } from '../../lib/prop-types';
-// import logoutMutation from '../../graphql/mutations/logout.gql';
-import investorQuery from '../../graphql/queries/investor.gql';
-import adminQuery from '../../graphql/queries/admin.gql';
+import { logoutMutation } from '../../lib/mutations';
+import { investorQuery, adminQuery } from '../../lib/queries';
 import { linkHref, linkAs } from '../../lib/url';
 
 class UserDropdownMenu extends Component {
@@ -66,12 +65,6 @@ class UserDropdownMenu extends Component {
   }
 }
 
-const logoutMutation = gql`
-  mutation logout {
-    logout
-  }
-`;
-
 export default compose(
   withApollo,
   withCookies,
@@ -79,7 +72,16 @@ export default compose(
     props: ({ mutate }) => ({
       logout: () =>
         mutate({
-          refetchQueries: [{ query: investorQuery }, { query: adminQuery }],
+          refetchQueries: [
+            {
+              query: investorQuery,
+              fetchPolicy: 'network-only',
+            },
+            {
+              query: adminQuery,
+              fetchPolicy: 'network-only',
+            },
+          ],
         }),
     }),
   }),

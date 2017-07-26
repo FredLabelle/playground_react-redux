@@ -6,7 +6,7 @@ import { Table, Button } from 'semantic-ui-react';
 // import moment from 'moment';
 
 import { TicketPropType } from '../../lib/prop-types';
-import ticketsQuery from '../../graphql/queries/tickets.gql';
+import { ticketsQuery } from '../../lib/queries';
 import InvestorCell from './investor-cell';
 import CompanyCell from './company-cell';
 import DealCell from './deal-cell';
@@ -64,12 +64,12 @@ class TicketsListRow extends Component {
               content="Edit"
               onClick={this.updateTicket}
             />
+            <UpsertTicketModal
+              open={this.state.upsertTicketModalOpen}
+              onClose={this.onUpsertTicketModalClose}
+              ticket={ticket}
+            />
           </Table.Cell>}
-        <UpsertTicketModal
-          open={this.state.upsertTicketModalOpen}
-          onClose={this.onUpsertTicketModalClose}
-          ticket={ticket}
-        />
         <style jsx>{`
           strong.accepted {
             color: #21ba45;

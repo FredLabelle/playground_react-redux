@@ -64,7 +64,8 @@ type Investor {
   picture: [File]!
   fullName: String!
   name: Name!
-  phone: String!
+  phone1: String!
+  phone2: String!
   email: String!
   role: String!
   picture: [File]

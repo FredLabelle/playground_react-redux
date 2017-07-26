@@ -8,9 +8,8 @@ import pick from 'lodash/pick';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
-import investorsQuery from '../../graphql/queries/investors.gql';
-import invitationStatusMutation from '../../graphql/mutations/invitation-status.gql';
-import upsertInvestorMutation from '../../graphql/mutations/upsert-investor.gql';
+import { investorsQuery } from '../../lib/queries';
+import { invitationStatusMutation, upsertInvestorMutation } from '../../lib/mutations';
 import AccountFields from './account-fields';
 import AdministrativeFields from './administrative-fields';
 
@@ -18,7 +17,8 @@ const initialState = ({ investor }) => ({
   investor: pick(investor, [
     'id',
     'email',
-    'phone',
+    'phone1',
+    'phone2',
     'name',
     'investmentSettings',
     'type',

@@ -8,9 +8,8 @@ import pick from 'lodash/pick';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { DealPropType, OrganizationPropType } from '../../lib/prop-types';
-import upsertDealMutation from '../../graphql/mutations/upsert-deal.gql';
-import dealQuery from '../../graphql/queries/deal.gql';
-import dealsQuery from '../../graphql/queries/deals.gql';
+import { upsertDealMutation } from '../../lib/mutations';
+import { dealQuery, dealsQuery } from '../../lib/queries';
 import CompanyForm from './company-form';
 import FilesField from '../fields/files-field';
 import AmountField from '../fields/amount-field';

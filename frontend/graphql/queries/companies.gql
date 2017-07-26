@@ -1,9 +1,0 @@
-query {
-  companies {
-    id
-    name
-    website
-    description
-    domain
-  }
-}

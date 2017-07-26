@@ -4,7 +4,7 @@ import { Segment, Button } from 'semantic-ui-react';
 
 import { BACKEND_URL_BROWSER } from '../../lib/env';
 import { OrganizationPropType } from '../../lib/prop-types';
-import organizationQuery from '../../graphql/queries/organization.gql';
+import { organizationQuery } from '../../lib/queries';
 import Login from '../common/login';
 
 const AdminLogin = ({ organization }) =>

@@ -8,8 +8,8 @@ import omit from 'lodash/omit';
 
 import { handleChange } from '../../lib/util';
 import { CompanyPropType } from '../../lib/prop-types';
-import companiesQuery from '../../graphql/queries/companies.gql';
-import upsertCompanyMutation from '../../graphql/mutations/upsert-company.gql';
+import { companiesQuery } from '../../lib/queries';
+import { upsertCompanyMutation } from '../../lib/mutations';
 
 const companyToResult = company => ({
   title: company.name,
@@ -34,6 +34,11 @@ class Company extends Component {
     searchOpen: false,
     loading: false,
   };
+  componentWillReceiveProps({ companies }) {
+    if (companies) {
+      this.setState({ results: companies.map(companyToResult) });
+    }
+  }
   onSearchFocus = () => {
     this.setState({ searchOpen: true });
   };

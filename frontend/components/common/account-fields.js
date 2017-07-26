@@ -19,24 +19,32 @@ const AccountFields = ({
     <Header as="h3" dividing>
       Investor identity
     </Header>
+    <Form.Input
+      name="investor.email"
+      value={investor.email}
+      onChange={handleChange}
+      label="Email"
+      placeholder="Email"
+      type="email"
+      required
+      disabled={signup}
+    />
     <Form.Group>
       <Form.Input
-        name="investor.email"
-        value={investor.email}
+        name="investor.phone1"
+        value={investor.phone1}
         onChange={handleChange}
-        label="Email"
-        placeholder="Email"
-        type="email"
-        required
-        disabled={signup}
+        label="Phone 1"
+        placeholder="Phone 1"
+        type="tel"
         width={8}
       />
       <Form.Input
-        name="investor.phone"
-        value={investor.phone}
+        name="investor.phone2"
+        value={investor.phone2}
         onChange={handleChange}
-        label="Phone"
-        placeholder="Phone"
+        label="Phone 2"
+        placeholder="Phone 2"
         type="tel"
         width={8}
       />

@@ -30,7 +30,11 @@ module.exports = sequelize.define(
       },
       allowNull: false,
     },
-    phone: {
+    phone1: {
+      type: Sequelize.STRING,
+      defaultValue: '',
+    },
+    phone2: {
       type: Sequelize.STRING,
       defaultValue: '',
     },
@@ -129,3 +133,12 @@ module.exports = sequelize.define(
     },
   },
 );
+
+/*
+
+phone migration
+
+ALTER TABLE "Investors" RENAME COLUMN "phone" TO "phone1";
+ALTER TABLE "Investors" ADD COLUMN "phone2" VARCHAR(255) DEFAULT '';
+
+*/

@@ -6,7 +6,7 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
 
-import changePasswordMutation from '../../graphql/mutations/change-password.gql';
+import { changePasswordMutation } from '../../lib/mutations';
 import PasswordField from '../fields/password-field';
 
 const initialState = { currentPassword: '', password: '', loading: false };

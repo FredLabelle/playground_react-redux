@@ -7,9 +7,8 @@ import pick from 'lodash/pick';
 
 import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { omitDeep, handleChange } from '../../lib/util';
-import sendInvitationMutation from '../../graphql/mutations/send-invitation.gql';
-import inviteInvestorMutation from '../../graphql/mutations/invite-investor.gql';
-import investorsQuery from '../../graphql/queries/investors.gql';
+import { sendInvitationMutation, inviteInvestorMutation } from '../../lib/mutations';
+import { investorsQuery } from '../../lib/queries';
 import InvitationEmailFields from '../common/invitation-email-fields';
 
 const initialState = ({ parametersSettings }) => ({

@@ -8,7 +8,7 @@ import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, DealPropType } from '../../lib/prop-types';
-import dealsQuery from '../../graphql/queries/deals.gql';
+import { dealsQuery } from '../../lib/queries';
 import CompanyCell from '../common/company-cell';
 import DealCell from '../common/deal-cell';
 import TicketsSumCell from '../common/tickets-sum-cell';
