@@ -63,13 +63,14 @@ const AccountFields = ({
     <p>
       For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
     </p>
-    <InvestmentField
-      name="investor.investmentSettings"
-      value={investor.investmentSettings}
-      onChange={handleChange}
-      dealCategories={dealCategories}
-      defaultCurrency={defaultCurrency}
-    />
+    {!signup &&
+      <InvestmentField
+        name="investor.investmentSettings"
+        value={investor.investmentSettings}
+        onChange={handleChange}
+        dealCategories={dealCategories}
+        defaultCurrency={defaultCurrency}
+      />}
   </div>;
 AccountFields.propTypes = {
   investor: InvestorPropType.isRequired,

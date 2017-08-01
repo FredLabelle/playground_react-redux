@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
-import { Form, Header, Message, Segment, Button } from 'semantic-ui-react';
+import { Form, Header, Segment, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { handleChange } from '../../lib/util';
@@ -33,7 +33,6 @@ class SignupForm extends Component {
       password: '',
       investmentSettings: {},
     },
-    investmentSettingsError: false,
     loading: false,
   };
   componentDidMount() {
@@ -41,12 +40,6 @@ class SignupForm extends Component {
   }
   onSubmit = async event => {
     event.preventDefault();
-    const { investmentSettings } = this.state.investor;
-    const investmentSettingsError = Object.values(investmentSettings).length === 0;
-    this.setState({ investmentSettingsError });
-    if (investmentSettingsError) {
-      return;
-    }
     this.setState({ loading: true });
     const { data: { investorSignup } } = await this.props.signup({
       ...this.state.investor,
@@ -70,7 +63,6 @@ class SignupForm extends Component {
         onSubmit={this.onSubmit}
         warning={this.props.warning}
         success={this.state.success}
-        error={this.state.investmentSettingsError}
       >
         <Header as="h2" dividing>
           Create your Investor account
@@ -81,7 +73,6 @@ class SignupForm extends Component {
           signup
           organization={this.props.organization}
         />
-        <Message error header="Error!" content="You must chose at least one investment method." />
         <Segment basic textAlign="center">
           <Button
             type="submit"

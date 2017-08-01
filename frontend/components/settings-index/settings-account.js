@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Segment, Form, Header, Button, Message } from 'semantic-ui-react';
+import { Segment, Form, Header, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 import { toastr } from 'react-redux-toastr';
 import pick from 'lodash/pick';
@@ -33,7 +33,6 @@ class SettingsAccount extends Component {
   static defaultProps = { investor: null };
   state = {
     investor: pick(this.props.investor, accountFields),
-    investmentSettingsError: false,
     loading: false,
     changeEmailModalOpen: false,
     changePasswordModalOpen: false,
@@ -50,12 +49,6 @@ class SettingsAccount extends Component {
   };
   onSubmit = async event => {
     event.preventDefault();
-    const { investmentSettings } = this.state.investor;
-    const investmentSettingsError = Object.values(investmentSettings).length === 0;
-    this.setState({ investmentSettingsError });
-    if (investmentSettingsError) {
-      return;
-    }
     this.setState({ loading: true });
     const { data: { upsertInvestor } } = await this.props.upsertInvestor(this.update());
     this.setState({ loading: false });
@@ -94,7 +87,7 @@ class SettingsAccount extends Component {
     const { defaultCurrency, optOutTime } = parametersSettings.investmentMechanisms;
     return (
       <Segment attached="bottom" className="tab active">
-        <Form onSubmit={this.onSubmit} error={this.state.investmentSettingsError}>
+        <Form onSubmit={this.onSubmit}>
           <Header as="h3" dividing>
             Investor identity
           </Header>
@@ -157,7 +150,6 @@ class SettingsAccount extends Component {
             dealCategories={dealCategories}
             defaultCurrency={defaultCurrency}
           />
-          <Message error header="Error!" content="You must chose at least one investment method." />
           <Segment basic textAlign="center">
             <Button
               type="submit"

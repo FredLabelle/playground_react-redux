@@ -52,11 +52,14 @@ class ResetPasswordModal extends Component {
     this.setState({ [name]: value });
   };
   render() {
+    const wording = this.props.router.query.invited === 'true' ? 'Set' : 'Reset';
     return (
       <Modal open={this.props.open} onClose={this.onCancel} size="small">
-        <Header icon="privacy" content="Reset password" />
+        <Header icon="privacy" content={`${wording} your password`} />
         <Modal.Content>
-          <p>Reset your password by typing it twice.</p>
+          <p>
+            {wording} your password by typing it twice.
+          </p>
           <Form id="reset-password" onSubmit={this.onSubmit} warning={this.props.warning}>
             <PasswordField
               name="password"

@@ -36,13 +36,13 @@ class AdminSettingsMenu extends Component {
   render() {
     const active = (...pathnames) => pathnames.includes(this.props.router.pathname);
     return (
-      <Menu attached="top" tabular widths={3}>
+      <Menu attached="top" tabular widths={2}>
         <Menu.Item name="/settings" active={active('/settings')} onClick={this.onClick}>
           General
         </Menu.Item>
-        <Menu.Item name="/settings/users" active={active('/settings/users')} onClick={this.onClick}>
+        {/* <Menu.Item name="/settings/users" active={active('/settings/users')} onClick={this.onClick}>
           Users
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item
           name="/settings/parameters"
           active={active('/settings/parameters')}
