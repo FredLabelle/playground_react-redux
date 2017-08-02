@@ -50,13 +50,10 @@ const InvestorService = {
       }
       const password = await bcrypt.hash(input.password, 10);
       await investor.update(
-        Object.assign(
-          input,
-          {
-            password,
-            status: 'joined',
-          },
-        ),
+        Object.assign(input, {
+          password,
+          status: 'joined',
+        }),
       );
       return sign({ userId: investor.id, role: investor.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {

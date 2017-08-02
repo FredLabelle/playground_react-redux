@@ -27,11 +27,11 @@ module.exports.seedDatabase = async (req, res) => {
           body: [
             'Dear {{firstname}},',
             '',
-            'We\'re very happy to have you join the eFounders\' {{organization}}.',
+            "We're very happy to have you join the eFounders' {{organization}}.",
             '',
             'In order to join, please click the signup button: {{signup_link}}',
             '',
-            'Once logged in, please verify that the data we\'ve already gathered is correct.',
+            "Once logged in, please verify that the data we've already gathered is correct.",
             '',
             'You are also invited to complete your investment profile with regards ' +
               'to early stage and/or later later stage opportunities.',
