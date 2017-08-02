@@ -11,8 +11,7 @@ const TicketsSumCell = ({ ticketsSum }) =>
             {ticketsSum.count} ticket{ticketsSum.count === 1 ? '' : 's'}
             <br />
           </span>}
-        {ticketsSum.sum &&
-          <FormatAmount amount={ticketsSum.sum} />}
+        {ticketsSum.sum && <FormatAmount amount={ticketsSum.sum} />}
       </Table.Cell>
     : <Table.Cell>No tickets</Table.Cell>;
 TicketsSumCell.propTypes = { ticketsSum: TicketsSumPropType.isRequired };

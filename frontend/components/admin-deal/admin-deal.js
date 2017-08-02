@@ -61,13 +61,14 @@ class AdminDeal extends Component {
                 onClick={this.updateDeal}
               />
               <p>
-                <strong>{deal.company.name} - {deal.name} - {deal.category.name}</strong>
+                <strong>
+                  {deal.company.name} - {deal.name} - {deal.category.name}
+                </strong>
               </p>
               <p>
                 <strong>
-                  <FormatAmount amount={deal.amountAllocatedToOrganization} />
-                  {' '}
-                  (size of the round: <FormatAmount amount={deal.roundSize} />)
+                  <FormatAmount amount={deal.amountAllocatedToOrganization} /> (size of the round:{' '}
+                  <FormatAmount amount={deal.roundSize} />)
                 </strong>
               </p>
             </div>
@@ -75,9 +76,7 @@ class AdminDeal extends Component {
             <br />
             <br />
             <p>
-              <FormatAmount amount={deal.ticketsSum.sum} />
-              {' '}
-              ({deal.ticketsSum.count} ticket{ticketsPlural})
+              <FormatAmount amount={deal.ticketsSum.sum} /> ({deal.ticketsSum.count} ticket{ticketsPlural})
             </p>
           </Grid.Column>
         </Grid>

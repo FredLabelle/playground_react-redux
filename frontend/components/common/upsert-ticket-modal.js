@@ -51,11 +51,10 @@ class UpsertTicketModal extends Component {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     ticket: TicketPropType.isRequired,
-    deals: PropTypes.arrayOf(DealPropType),
-    investors: PropTypes.arrayOf(InvestorPropType),
+    deals: PropTypes.arrayOf(DealPropType).isRequired,
+    investors: PropTypes.arrayOf(InvestorPropType).isRequired,
     upsertTicket: PropTypes.func.isRequired,
   };
-  static defaultProps = { deals: [], investors: [] };
   state = initialState(this.props);
   componentWillReceiveProps(nextProps) {
     this.setState(initialState(nextProps));
@@ -253,10 +252,10 @@ class UpsertTicketModal extends Component {
 export default compose(
   connect(({ router }) => ({ router })),
   graphql(dealsQuery, {
-    props: ({ data: { deals } }) => ({ deals }),
+    props: ({ data: { deals } }) => ({ deals: deals || [] }),
   }),
   graphql(investorsQuery, {
-    props: ({ data: { investors } }) => ({ investors }),
+    props: ({ data: { investors } }) => ({ investors: investors || [] }),
   }),
   graphql(upsertTicketMutation, {
     props: ({ mutate }) => ({

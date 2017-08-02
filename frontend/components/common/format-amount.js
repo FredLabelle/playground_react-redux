@@ -3,7 +3,7 @@ import NumberFormat from 'react-number-format';
 import { AmountPropType } from '../../lib/prop-types';
 
 export const prefix = currency => {
-  switch(currency) {
+  switch (currency) {
     case 'eur': {
       return '€';
     }

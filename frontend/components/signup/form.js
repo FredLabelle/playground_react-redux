@@ -59,11 +59,7 @@ class SignupForm extends Component {
   handleChange = handleChange().bind(this);
   render() {
     return (
-      <Form
-        onSubmit={this.onSubmit}
-        warning={this.props.warning}
-        success={this.state.success}
-      >
+      <Form onSubmit={this.onSubmit} warning={this.props.warning} success={this.state.success}>
         <Header as="h2" dividing>
           Create your Investor account
         </Header>

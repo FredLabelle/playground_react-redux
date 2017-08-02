@@ -19,10 +19,9 @@ const companyToResult = company => ({
 
 class Company extends Component {
   static propTypes = {
-    companies: PropTypes.arrayOf(CompanyPropType),
+    companies: PropTypes.arrayOf(CompanyPropType).isRequired,
     onChange: PropTypes.func.isRequired,
   };
-  static defaultProps = { companies: [] };
   state = {
     company: {
       name: '',
@@ -35,9 +34,7 @@ class Company extends Component {
     loading: false,
   };
   componentWillReceiveProps({ companies }) {
-    if (companies) {
-      this.setState({ results: companies.map(companyToResult) });
-    }
+    this.setState({ results: companies.map(companyToResult) });
   }
   onSearchFocus = () => {
     this.setState({ searchOpen: true });
@@ -160,7 +157,7 @@ class Company extends Component {
 
 export default compose(
   graphql(companiesQuery, {
-    props: ({ data: { companies } }) => ({ companies }),
+    props: ({ data: { companies } }) => ({ companies: companies || [] }),
   }),
   graphql(upsertCompanyMutation, {
     props: ({ mutate }) => ({

@@ -7,9 +7,8 @@ const DealCell = ({ deal }) =>
   <Table.Cell>
     {deal.name} - {deal.category.name}
     <br />
-    <FormatAmount amount={deal.amountAllocatedToOrganization} />
-    {' '}
-    (size of the round: <FormatAmount amount={deal.roundSize} />)
+    <FormatAmount amount={deal.amountAllocatedToOrganization} /> (size of the round:{' '}
+    <FormatAmount amount={deal.roundSize} />)
   </Table.Cell>;
 DealCell.propTypes = { deal: DealPropType.isRequired };
 

@@ -36,7 +36,7 @@ export default class extends Component {
             'currencyValue',
             'handleCurrencyChange',
             'currencyOptions',
-            'currencyDisabled'
+            'currencyDisabled',
           ])}
           onChange={this.handleChange}
           thousandSeparator

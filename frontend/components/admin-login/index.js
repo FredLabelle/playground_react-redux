@@ -8,6 +8,7 @@ import { organizationQuery } from '../../lib/queries';
 import Login from '../common/login';
 
 const AdminLogin = ({ organization }) =>
+  organization &&
   <Login organization={organization}>
     <Segment basic textAlign="center">
       <a href={`${BACKEND_URL_BROWSER}/auth/google`}>

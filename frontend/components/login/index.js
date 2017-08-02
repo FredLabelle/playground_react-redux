@@ -38,6 +38,7 @@ class UserLogin extends Component {
   };
   render() {
     return (
+      this.props.organization &&
       <Login organization={this.props.organization}>
         <Form
           organization={this.props.organization}
