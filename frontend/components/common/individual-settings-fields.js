@@ -32,7 +32,6 @@ const IndividualSettingsFields = ({ investor, handleChange }) =>
       value={investor.individualSettings.idDocuments}
       onChange={handleChange}
       label="ID Documents"
-      multiple
     />
     <Header as="h3" dividing>
       Fiscal Address

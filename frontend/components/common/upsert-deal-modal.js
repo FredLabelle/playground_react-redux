@@ -180,7 +180,6 @@ class UpsertDealModal extends Component {
               value={this.state.deal.deck}
               onChange={this.handleChange}
               label="Deck"
-              multiple
             />
             <Form.Group>
               <Form.Select

@@ -1,6 +1,5 @@
 const uniqBy = require('lodash/uniqBy');
 const omit = require('lodash/omit');
-const moment = require('moment');
 
 const { Deal, Company, DealCategory, Ticket, Investor } = require('../models');
 const { handleFilesUpdate } = require('../lib/util');

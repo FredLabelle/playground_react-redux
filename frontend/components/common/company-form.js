@@ -110,7 +110,9 @@ class Company extends Component {
                 />
                 <div className="field">
                   <label htmlFor="name">&nbsp;</label>
-                  <div className="company-name-hint">Enter a new company or an existing one.</div>
+                  <p className="company-name-hint">
+                    Select an existing company or create a new one.
+                  </p>
                 </div>
               </Form.Group>
               <Form.Input

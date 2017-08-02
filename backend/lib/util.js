@@ -1,12 +1,12 @@
 const { createHash } = require('crypto');
 const get = require('lodash/get');
 
-const { uploadFileFromUrl, deleteFiles } = require('./gcs');
+const { uploadFile, deleteFiles } = require('./gcs');
 
 module.exports.gravatarPicture = email => {
   const hash = createHash('md5').update(email).digest('hex');
   return {
-    name: '',
+    name: 'Gravatar',
     url: `https://www.gravatar.com/avatar/${hash}?d=retro`,
     image: true,
     uploaded: true,
@@ -42,11 +42,10 @@ module.exports.handleFilesUpdate = async (shortId, input, field) => {
   const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
   const folderName = `${fieldName}${env}/${shortId}`;
   if (files.length) {
-    if (files[0].uploaded) {
-      return null;
-    }
     const promises = files.map((file, index) =>
-      uploadFileFromUrl(file.url, `${folderName}/${index}`),
+      file.uploaded
+        ? Promise.resolve(file.url)
+        : uploadFile(file, `${folderName}/${index}`)
     );
     const urls = await Promise.all(promises);
     return urls.map((url, index) => Object.assign({}, files[index], { url, uploaded: true }));

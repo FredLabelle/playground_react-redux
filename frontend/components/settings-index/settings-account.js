@@ -136,6 +136,7 @@ class SettingsAccount extends Component {
             imagesOnly
             tabs={['camera', 'file', 'gdrive', 'dropbox', 'url']}
             crop="192x192 upscale"
+            single
           />
           <Header as="h3" dividing>
             Investment methods & criteria

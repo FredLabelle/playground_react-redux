@@ -7,13 +7,16 @@ const gcs = storage({ credentials });
 
 const bucket = gcs.bucket(credentials.project_id);
 
-const uploadFileFromUrl = (url, name) =>
+module.exports.uploadFile = ({ url, name }, fileName) =>
   new Promise((resolve, reject) => {
     request(url).on('response', response => {
       const contentType = response.headers['content-type'];
-      const file = bucket.file(name);
+      const file = bucket.file(fileName);
       const writeStream = file.createWriteStream({
-        metadata: { contentType },
+        metadata: {
+          contentType,
+          contentDisposition: `inline; filename=${name}`,
+        },
       });
       response
         .pipe(writeStream)
@@ -33,6 +36,4 @@ const uploadFileFromUrl = (url, name) =>
     });
   });
 
-const deleteFiles = name => bucket.deleteFiles({ prefix: name, force: true });
-
-module.exports = { uploadFileFromUrl, deleteFiles };
+module.exports.deleteFiles = fileName => bucket.deleteFiles({ prefix: fileName, force: true });
