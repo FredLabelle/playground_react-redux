@@ -37,10 +37,12 @@ const DealService = {
         ],
       });
       const investorDealFilter = deal => {
-        const noTickets = deal.Tickets.length === 0;
+        const hasTickets = deal.Tickets.length;
+        return hasTickets;
+        /* const noTickets = deal.Tickets.length === 0;
         const referenceClosingDate = moment(deal.referenceClosingDate, 'YYYY-MM-DD');
         const ongoing = !referenceClosingDate.isValid() || referenceClosingDate.isAfter(moment());
-        return noTickets && ongoing;
+        return noTickets && ongoing; */
       };
       const filter = user.role === 'investor' ? investorDealFilter : () => true;
       return deals.filter(filter).map(deal =>

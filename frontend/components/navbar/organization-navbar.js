@@ -51,9 +51,9 @@ export default compose(
     props: ({ data: { organization } }) => ({ organization }),
   }),
   graphql(investorQuery, {
-    props: ({ data: { investor } }) => ({ user: investor }),
+    props: ({ data: { investor } }) => (investor ? { user: investor } : {}),
   }),
   graphql(adminQuery, {
-    props: ({ data: { admin } }) => ({ user: admin }),
+    props: ({ data: { admin } }) => (admin ? { user: admin } : {}),
   }),
 )(OrganizationNavBar);

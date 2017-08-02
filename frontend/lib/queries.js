@@ -206,6 +206,7 @@ export const dealsQuery = gql`
       id
       shortId
       company {
+        id
         name
         website
         description
@@ -264,6 +265,7 @@ export const ticketsQuery = gql`
       deal {
         id
         company {
+          id
           name
           website
           description
@@ -358,6 +360,7 @@ export const dealQuery = gql`
       tickets {
         id
         investor {
+          id
           fullName
           email
           picture {
