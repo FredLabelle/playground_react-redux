@@ -1,7 +1,7 @@
 import { Table } from 'semantic-ui-react';
 
 import { TicketsSumPropType } from '../../lib/prop-types';
-import { formatAmount } from '../../lib/util';
+import FormatAmount from './format-amount';
 
 const TicketsSumCell = ({ ticketsSum }) =>
   ticketsSum.count || (ticketsSum.sum && ticketsSum.sum.amount !== '0')
@@ -12,9 +12,7 @@ const TicketsSumCell = ({ ticketsSum }) =>
             <br />
           </span>}
         {ticketsSum.sum &&
-          <span>
-            {formatAmount(ticketsSum.sum)}
-          </span>}
+          <FormatAmount amount={ticketsSum.sum} />}
       </Table.Cell>
     : <Table.Cell>No tickets</Table.Cell>;
 TicketsSumCell.propTypes = { ticketsSum: TicketsSumPropType.isRequired };

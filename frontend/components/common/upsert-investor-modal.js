@@ -42,6 +42,9 @@ class UpsertInvestorModal extends Component {
     upsertInvestor: PropTypes.func.isRequired,
   };
   state = initialState(this.props);
+  componentWillReceiveProps(nextProps) {
+    this.setState(initialState(nextProps));
+  }
   onCancel = () => {
     this.setState(initialState(this.props));
     this.props.onClose();

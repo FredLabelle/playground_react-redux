@@ -28,7 +28,7 @@ class AdminSettingsParameters extends Component {
     const as = item => `${parametersPathname}?item=${item}`;
     const active = item => item === (this.props.router.query.item || 'deal-categories');
     return (
-      <Segment attached="bottom" className="tab active" style={{ width: '99.9999%' }}>
+      <Segment attached="bottom" className="tab active">
         <Sidebar.Pushable as={Segment}>
           <Sidebar as={Menu} visible vertical style={{ width: 240 }}>
             <Link replace href={href('deal-categories')} as={as('deal-categories')}>

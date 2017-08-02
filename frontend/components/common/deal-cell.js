@@ -1,15 +1,15 @@
 import { Table } from 'semantic-ui-react';
 
 import { DealPropType } from '../../lib/prop-types';
-import { formatAmount } from '../../lib/util';
+import FormatAmount from './format-amount';
 
 const DealCell = ({ deal }) =>
   <Table.Cell>
     {deal.name} - {deal.category.name}
     <br />
-    {formatAmount(deal.amountAllocatedToOrganization)}
-    {' - '}
-    (size of the round: {formatAmount(deal.roundSize)})
+    <FormatAmount amount={deal.amountAllocatedToOrganization} />
+    {' '}
+    (size of the round: <FormatAmount amount={deal.roundSize} />)
   </Table.Cell>;
 DealCell.propTypes = { deal: DealPropType.isRequired };
 

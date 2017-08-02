@@ -39,7 +39,7 @@ const initialState = ({ ticket, deals, investors }) => ({
   deal: ticket.deal && dealTitle(ticket.deal),
   dealSearchOpen: false,
   investorsResults: investors.map(investorToResult),
-  investor: ticket.investor && ticket.investor.fullName,
+  investor: ticket.investor && investorTitle(ticket.investor),
   investorSearchOpen: false,
   dealIdError: false,
   investorIdError: false,
@@ -57,13 +57,8 @@ class UpsertTicketModal extends Component {
   };
   static defaultProps = { deals: [], investors: [] };
   state = initialState(this.props);
-  componentWillReceiveProps({ deals, investors }) {
-    if (deals) {
-      this.setState({ dealsResults: deals.map(dealToResult) });
-    }
-    if (investors) {
-      this.setState({ investorsResults: investors.map(investorToResult) });
-    }
+  componentWillReceiveProps(nextProps) {
+    this.setState(initialState(nextProps));
   }
   onCancel = () => {
     this.setState(initialState(this.props));

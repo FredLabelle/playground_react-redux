@@ -50,6 +50,9 @@ class UpsertDealModal extends Component {
     upsertDeal: PropTypes.func.isRequired,
   };
   state = initialState(this.props);
+  componentWillReceiveProps(nextProps) {
+    this.setState(initialState(nextProps));
+  }
   onSubmit = async event => {
     event.preventDefault();
     if (!this.props.deal.id) {

@@ -15,6 +15,7 @@ module.exports = async (req, res) => {
     lastName,
     email,
     token,
+    invited: true,
   });
   const url = `${process.env.FRONTEND_URL}/organization/${shortId}/signup?${queryString}`;
   res.redirect(url);

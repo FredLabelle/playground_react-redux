@@ -5,7 +5,7 @@ import { Segment, Grid, Image, Menu, Button } from 'semantic-ui-react';
 import { stringify } from 'querystring';
 import Link from 'next/link';
 
-import { formatAmount } from '../../lib/util';
+import FormatAmount from '../common/format-amount';
 import { RouterPropType, OrganizationPropType, DealPropType } from '../../lib/prop-types';
 import { organizationQuery, dealQuery } from '../../lib/queries';
 import UpsertDealModal from '../common/upsert-deal-modal';
@@ -31,15 +31,6 @@ class AdminDeal extends Component {
     if (!organization || !deal) {
       return null;
     }
-    const amountAllocatedToOrganization = formatAmount(deal.amountAllocatedToOrganization);
-    const roundSize = formatAmount(deal.roundSize);
-    const dealTitle = [
-      deal.company.name,
-      deal.name,
-      deal.category.name,
-      `${amountAllocatedToOrganization} (size of the round: ${roundSize})`,
-    ].join(' - ');
-    const ticketsSumAmount = formatAmount(deal.ticketsSum.sum);
     const ticketsPlural = deal.ticketsSum.count === 1 ? '' : 's';
     const { organizationShortId } = this.props.router;
     const { shortId: resourceShortId } = deal;
@@ -69,15 +60,24 @@ class AdminDeal extends Component {
                 labelPosition="left"
                 onClick={this.updateDeal}
               />
-              <strong>
-                {dealTitle}
-              </strong>
+              <p>
+                <strong>{deal.company.name} - {deal.name} - {deal.category.name}</strong>
+              </p>
+              <p>
+                <strong>
+                  <FormatAmount amount={deal.amountAllocatedToOrganization} />
+                  {' '}
+                  (size of the round: <FormatAmount amount={deal.roundSize} />)
+                </strong>
+              </p>
             </div>
             <br />
             <br />
             <br />
             <p>
-              {ticketsSumAmount} ({deal.ticketsSum.count} ticket{ticketsPlural})
+              <FormatAmount amount={deal.ticketsSum.sum} />
+              {' '}
+              ({deal.ticketsSum.count} ticket{ticketsPlural})
             </p>
           </Grid.Column>
         </Grid>

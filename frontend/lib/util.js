@@ -29,7 +29,7 @@ export const handleChange = afterChange =>
     });
   };
 
-export const numberFormatter = currency =>
+const numberFormatter = currency =>
   new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,

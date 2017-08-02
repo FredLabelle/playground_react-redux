@@ -347,6 +347,7 @@ export const dealQuery = gql`
       investors {
         id
         fullName
+        email
         picture {
           url
         }
@@ -358,6 +359,7 @@ export const dealQuery = gql`
         id
         investor {
           fullName
+          email
           picture {
             url
           }

@@ -29,27 +29,28 @@ const AccountFields = ({
       required
       disabled={signup}
     />
-    <Form.Group>
-      <Form.Input
-        name="investor.phone1"
-        value={investor.phone1}
-        onChange={handleChange}
-        label="Phone 1"
-        placeholder="Phone 1"
-        type="tel"
-        width={8}
-      />
-      <Form.Input
-        name="investor.phone2"
-        value={investor.phone2}
-        onChange={handleChange}
-        label="Phone 2"
-        placeholder="Phone 2"
-        type="tel"
-        width={8}
-      />
-    </Form.Group>
     <NameField name="investor.name" value={investor.name} onChange={handleChange} />
+    {!signup &&
+      <Form.Group>
+        <Form.Input
+          name="investor.phone1"
+          value={investor.phone1}
+          onChange={handleChange}
+          label="Phone 1"
+          placeholder="Phone 1"
+          type="tel"
+          width={8}
+        />
+        <Form.Input
+          name="investor.phone2"
+          value={investor.phone2}
+          onChange={handleChange}
+          label="Phone 2"
+          placeholder="Phone 2"
+          type="tel"
+          width={8}
+        />
+      </Form.Group>}
     {signup &&
       <PasswordField
         grouped
