@@ -46,7 +46,7 @@ class TicketsListRow extends Component {
         {admin && <InvestorCell investor={ticket.investor} />}
         <CompanyCell company={ticket.deal.company} />
         <DealCell deal={ticket.deal} />
-        <TicketsSumCell ticketsSum={{ sum: ticket.amount }} />
+        <TicketsSumCell ticketsSum={{ sum: ticket.amount }} createdAt={ticket.createdAt} />
         {/* admin &&
           <Table.Cell>
             <strong className={ticket.status}>

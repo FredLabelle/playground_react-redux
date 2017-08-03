@@ -38,6 +38,8 @@ const initialState = ({ deal }) => ({
   },
   companyIdError: false,
   categoryIdError: false,
+  amountAllocatedToOrganizationError: false,
+  minTicketError: false,
   loading: false,
 });
 
@@ -62,6 +64,15 @@ class UpsertDealModal extends Component {
       if (companyIdError || categoryIdError) {
         return;
       }
+    }
+    const { roundSize, amountAllocatedToOrganization, minTicket } = this.state.deal;
+    const amountAllocatedToOrganizationError =
+      parseFloat(amountAllocatedToOrganization.amount) >= parseFloat(roundSize.amount);
+    const minTicketError =
+      parseFloat(minTicket.amount) >= parseFloat(amountAllocatedToOrganization.amount);
+    this.setState({ amountAllocatedToOrganizationError, minTicketError });
+    if (amountAllocatedToOrganizationError || minTicketError) {
+      return;
     }
     const deal = omitDeep(this.state.deal, '__typename');
     this.setState({ loading: true });
@@ -139,7 +150,8 @@ class UpsertDealModal extends Component {
           <Form
             id="upsert-deal"
             onSubmit={this.onSubmit}
-            error={this.state.companyIdError || this.state.categoryIdError}
+            error={this.state.companyIdError || this.state.categoryIdError ||
+              this.state.amountAllocatedToOrganizationError || this.state.minTicketError}
           >
             <Form.Group>
               <Form.Input
@@ -259,6 +271,16 @@ class UpsertDealModal extends Component {
               <Message error header="Error!" content="Company is required." />}
             {this.state.categoryIdError &&
               <Message error header="Error!" content="Category is required." />}
+            {this.state.amountAllocatedToOrganizationError &&
+              <Message error>
+                <Message.Header>Error!</Message.Header>
+                <p>Amount allocated to organization must be inferior to the size of the round!</p>
+              </Message>}
+            {this.state.minTicketError &&
+              <Message error>
+                <Message.Header>Error!</Message.Header>
+                <p>Min ticket must be inferior to the amount allocated to organization!</p>
+              </Message>}
           </Form>
         </Modal.Content>
         <Modal.Actions>
