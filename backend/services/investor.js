@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const DataLoader = require('dataloader');
 const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
+const get = require('lodash/get');
+const cloneDeep = require('lodash/cloneDeep');
 
 const { Admin, Investor, Organization, Ticket } = require('../models');
 const { gravatarPicture, handleFilesUpdate } = require('../lib/util');
@@ -208,12 +210,22 @@ const InvestorService = {
         if (invitationStatus !== 'invitable') {
           return null;
         }
-        investor = await organization.createInvestor(input);
+        const investorFields = cloneDeep(input);
+        investorFields.picture = [];
+        if (investorFields.individualSettings) {
+          investorFields.individualSettings.idDocuments = [];
+        }
+        if (investorFields.corporationSettings) {
+          investorFields.corporationSettings.incProof = [];
+        }
+        investor = await organization.createInvestor(investorFields);
       }
-      const [picture, idDocuments, incProof] = await Promise.all([
-        handleFilesUpdate(user.shortId, input, 'picture'),
-        handleFilesUpdate(user.shortId, input, 'individualSettings.idDocuments'),
-        handleFilesUpdate(user.shortId, input, 'corporationSettings.incProof'),
+      const [picture, incProof] = await Promise.all([
+        handleFilesUpdate(get(input, 'picture'), `investors/picture/${user.shortId}`),
+        handleFilesUpdate(
+          get(input, 'corporationSettings.incProof'),
+          `investors/incProof/${user.shortId}`,
+        ),
       ]);
       if (picture) {
         if (!picture.length) {
@@ -221,10 +233,27 @@ const InvestorService = {
         }
         Object.assign(input, { picture });
       }
+      const idDocuments = cloneDeep(get(input, 'individualSettings.idDocuments'));
       const { individualSettings, corporationSettings } = investor.toJSON();
       // input lacks some fields in nested JSONB so we need to default to current values
       const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
       if (idDocuments) {
+        const promises = idDocuments.map((inputIdDocument, index) => {
+          const idDocument = individualSettings.idDocuments.find(
+            ({ id }) => inputIdDocument.id === id,
+          );
+          if (idDocument) {
+            return Promise.resolve(idDocuments[index].files);
+          }
+          return handleFilesUpdate(
+            idDocuments[index].files,
+            `investors/idDocuments/${user.shortId}/${idDocuments[index].number}`,
+          );
+        });
+        const filesList = await Promise.all(promises);
+        filesList.forEach((files, index) => {
+          Object.assign(idDocuments[index], { files });
+        });
         Object.assign(update.individualSettings, { idDocuments });
       }
       if (incProof) {

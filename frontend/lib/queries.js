@@ -45,7 +45,6 @@ export const investorQuery = gql`
       picture {
         name
         url
-        image
         uploaded
       }
       role
@@ -55,10 +54,15 @@ export const investorQuery = gql`
         birthdate
         nationality
         idDocuments {
-          name
-          url
-          image
-          uploaded
+          id
+          type
+          number
+          files {
+            name
+            url
+            uploaded
+          }
+          expirationDate
         }
         fiscalAddress {
           address1
@@ -83,7 +87,6 @@ export const investorQuery = gql`
         incProof {
           name
           url
-          image
           uploaded
         }
       }
@@ -110,7 +113,6 @@ export const adminQuery = gql`
       picture {
         name
         url
-        image
         uploaded
       }
       role
@@ -139,10 +141,15 @@ export const investorsQuery = gql`
         birthdate
         nationality
         idDocuments {
-          name
-          url
-          image
-          uploaded
+          id
+          type
+          number
+          files {
+            name
+            url
+            uploaded
+          }
+          expirationDate
         }
         fiscalAddress {
           address1
@@ -167,7 +174,6 @@ export const investorsQuery = gql`
         incProof {
           name
           url
-          image
           uploaded
         }
       }
@@ -336,7 +342,6 @@ export const dealQuery = gql`
       deck {
         name
         url
-        image
         uploaded
       }
       ticketsSum {

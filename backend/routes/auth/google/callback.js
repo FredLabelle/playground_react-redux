@@ -31,7 +31,6 @@ module.exports = async (req, res) => {
           {
             name: '',
             url: profile.picture,
-            image: true,
             uploaded: true,
           },
         ],

@@ -13,7 +13,7 @@ import { dealQuery, dealsQuery } from '../../lib/queries';
 import CompanyForm from './company-form';
 import FilesField from '../fields/files-field';
 import AmountField from '../fields/amount-field';
-import DateField from '../fields/date-field';
+import DatePickerField from '../fields/date-picker-field';
 import PercentField from '../fields/percent-field';
 
 const initialState = ({ deal }) => ({
@@ -150,8 +150,12 @@ class UpsertDealModal extends Component {
           <Form
             id="upsert-deal"
             onSubmit={this.onSubmit}
-            error={this.state.companyIdError || this.state.categoryIdError ||
-              this.state.amountAllocatedToOrganizationError || this.state.minTicketError}
+            error={
+              this.state.companyIdError ||
+              this.state.categoryIdError ||
+              this.state.amountAllocatedToOrganizationError ||
+              this.state.minTicketError
+            }
           >
             <Form.Group>
               <Form.Input
@@ -171,7 +175,7 @@ class UpsertDealModal extends Component {
                 placeholder="SPV Name"
                 width={5}
               />
-              <DateField
+              <DatePickerField
                 name="deal.referenceClosingDate"
                 value={this.state.deal.referenceClosingDate}
                 onChange={this.handleChange}

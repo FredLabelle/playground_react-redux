@@ -36,4 +36,4 @@ module.exports.uploadFile = ({ url, name }, fileName) =>
     });
   });
 
-module.exports.deleteFiles = fileName => bucket.deleteFiles({ prefix: fileName, force: true });
+module.exports.deleteFiles = prefix => bucket.deleteFiles({ prefix, force: true });

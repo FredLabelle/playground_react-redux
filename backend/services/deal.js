@@ -125,7 +125,7 @@ const DealService = {
         const organization = await admin.getOrganization();
         deal = await organization.createDeal(omit(input, 'deck'));
       }
-      const deck = await handleFilesUpdate(deal.shortId, input, 'deck');
+      const deck = await handleFilesUpdate(input.deck, `deals/deck/${deal.shortId}`);
       if (deck) {
         Object.assign(input, { deck });
       }

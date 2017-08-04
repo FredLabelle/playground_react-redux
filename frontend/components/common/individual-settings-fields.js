@@ -4,8 +4,8 @@ import { Header } from 'semantic-ui-react';
 import { InvestorPropType } from '../../lib/prop-types';
 import NameField from '../fields/name-field';
 import CountryField from '../fields/country-field';
-import BirthdateField from '../fields/birthdate-field';
-import FilesField from '../fields/files-field';
+import DateField from '../fields/date-field';
+import IdDocumentsField from '../fields/id-documents-field';
 import AddressField from '../fields/address-field';
 
 const IndividualSettingsFields = ({ investor, handleChange }) =>
@@ -21,13 +21,13 @@ const IndividualSettingsFields = ({ investor, handleChange }) =>
       label="Nationality"
       width={8}
     />
-    <BirthdateField
+    <DateField
       name="investor.individualSettings.birthdate"
       value={investor.individualSettings.birthdate}
       onChange={handleChange}
       label="Birthdate"
     />
-    <FilesField
+    <IdDocumentsField
       name="investor.individualSettings.idDocuments"
       value={investor.individualSettings.idDocuments}
       onChange={handleChange}

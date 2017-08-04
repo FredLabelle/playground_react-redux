@@ -7,7 +7,7 @@ import { toastr } from 'react-redux-toastr';
 import { SortableContainer, arrayMove } from 'react-sortable-hoc';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
-import uniqueId from 'lodash/uniqueId';
+import uuid from 'uuid/v4';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { OrganizationPropType } from '../../lib/prop-types';
@@ -73,7 +73,7 @@ class DealCategoriesParameters extends Component {
     event.preventDefault();
     const dealCategories = cloneDeep(this.state.dealCategories);
     dealCategories.push({
-      id: uniqueId(),
+      id: uuid(),
       name: '',
       investmentMechanisms: ['DealByDeal'],
     });

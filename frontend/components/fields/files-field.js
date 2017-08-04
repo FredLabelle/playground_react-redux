@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Button, Form, Progress, List } from 'semantic-ui-react';
 import uploadcare from 'uploadcare-widget';
+import cloneDeep from 'lodash/cloneDeep';
 import remove from 'lodash/remove';
 
 import { FilePropType } from '../../lib/prop-types';
@@ -101,13 +102,13 @@ export default class extends Component {
       file.fail(() => {
         this.setState({ progress: 1 });
       });
-      file.done(async ({ name, cdnUrl, originalImageInfo }) => {
-        const value = [...this.state.value, {
+      file.done(async ({ name, cdnUrl }) => {
+        const value = cloneDeep(this.state.value);
+        value.push({
           name,
           url: cdnUrl,
-          image: !!originalImageInfo,
           uploaded: false,
-        }];
+        });
         this.setState({ value });
         this.props.onChange(event, { name: this.props.name, value });
       });
@@ -115,7 +116,7 @@ export default class extends Component {
   };
   onDeleteClick = url => event => {
     event.preventDefault();
-    const value = [...this.state.value];
+    const value = cloneDeep(this.state.value);
     remove(value, file => file.url === url);
     this.setState({ value });
     this.props.onChange(event, { name: this.props.name, value });

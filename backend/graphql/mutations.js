@@ -9,6 +9,20 @@ input AmountInput {
   currency: String!
 }
 
+input FileInput {
+  name: String!
+  url: String!
+  uploaded: Boolean!
+}
+
+input IdDocumentInput {
+  id: ID!
+  type: String!
+  number: String!
+  files: [FileInput]!
+  expirationDate: String!
+}
+
 input InvestorSignupInput {
   name: NameInput!
   email: String!
@@ -45,7 +59,7 @@ input AddressInput {
 input IndividualSettingsInput {
   birthdate: String!
   nationality: String!
-  idDocuments: [FileInput]!
+  idDocuments: [IdDocumentInput]!
   fiscalAddress: AddressInput!
 }
 
@@ -59,13 +73,6 @@ input CorporationSettingsInput {
 input AdvisorInput {
   name: NameInput!
   email: String!
-}
-
-input FileInput {
-  name: String!
-  url: String!
-  image: Boolean!
-  uploaded: Boolean!
 }
 
 input GeneralSettingsInput {

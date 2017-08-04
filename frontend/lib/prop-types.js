@@ -26,6 +26,14 @@ export const FilePropType = PropTypes.shape({
   uploaded: PropTypes.bool,
 });
 
+export const IdDocumentPropType = PropTypes.shape({
+  id: PropTypes.string,
+  type: PropTypes.string,
+  number: PropTypes.string,
+  expirationDate: PropTypes.string,
+  files: PropTypes.arrayOf(FilePropType),
+});
+
 export const TicketsSumPropType = PropTypes.shape({
   count: PropTypes.number,
   sum: AmountPropType,
@@ -120,7 +128,7 @@ export const InvestorPropType = PropTypes.shape({
   individualSettings: PropTypes.shape({
     birthdate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     nationality: PropTypes.string.isRequired,
-    idDocuments: PropTypes.arrayOf(FilePropType).isRequired,
+    idDocuments: PropTypes.arrayOf(IdDocumentPropType).isRequired,
     fiscalAddress: AddressPropType.isRequired,
   }),
   corporationSettings: PropTypes.shape({

@@ -35,11 +35,11 @@ export default () =>
     <link rel="icon" type="image/png" href="//logo.clearbit.com/efounders.co?size=192" />
     <link
       rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css"
+      href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"
     />
     <link
       rel="stylesheet"
-      href="//diegoddox.github.io/react-redux-toastr/7.0/react-redux-toastr.min.css"
+      href="//diegoddox.github.io/react-redux-toastr/7.1/react-redux-toastr.min.css"
     />
     <style dangerouslySetInnerHTML={{ __html: reactDatesStyleSheet }} />
     <style dangerouslySetInnerHTML={{ __html: globalStyleSheet }} />

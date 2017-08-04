@@ -1,5 +1,4 @@
 const { createHash } = require('crypto');
-const get = require('lodash/get');
 
 const { uploadFile, deleteFiles } = require('./gcs');
 
@@ -8,7 +7,6 @@ module.exports.gravatarPicture = email => {
   return {
     name: 'Gravatar',
     url: `https://www.gravatar.com/avatar/${hash}?d=retro`,
-    image: true,
     uploaded: true,
   };
 };
@@ -33,19 +31,16 @@ module.exports.generateInvitationEmailContent = (
   };
 };
 
-module.exports.handleFilesUpdate = async (shortId, input, field) => {
-  const files = get(input, field);
+module.exports.handleFilesUpdate = async (files, path) => {
   if (!files) {
     return null;
   }
-  const fieldName = field.split('.').pop();
-  const env = process.env.NODE_ENV !== 'production' ? `-${process.env.NODE_ENV}` : '';
-  const folderName = `${fieldName}${env}/${shortId}`;
+  const folderName = `${process.env.NODE_ENV}/${path}`;
   if (files.length) {
-    const promises = files.map((file, index) =>
-      file.uploaded
-        ? Promise.resolve(file.url)
-        : uploadFile(file, `${folderName}/${index}`)
+    // TODO delete files not present in the new array!
+    const promises = files.map(
+      (file, index) =>
+        file.uploaded ? Promise.resolve(file.url) : uploadFile(file, `${folderName}/${index}`),
     );
     const urls = await Promise.all(promises);
     return urls.map((url, index) => Object.assign({}, files[index], { url, uploaded: true }));

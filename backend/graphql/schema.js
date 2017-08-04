@@ -16,8 +16,15 @@ type Name {
 type File {
   name: String!
   url: String!
-  image: Boolean!
   uploaded: Boolean!
+}
+
+type IdDocument {
+  id: ID!
+  type: String!
+  number: String!
+  files: [File]!
+  expirationDate: String!
 }
 
 type Address {
@@ -42,7 +49,7 @@ type TicketsSum {
 type IndividualSettings {
   birthdate: String!
   nationality: String!
-  idDocuments: [File]!
+  idDocuments: [IdDocument]!
   fiscalAddress: Address!
 }
 
