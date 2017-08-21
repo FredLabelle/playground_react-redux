@@ -2,6 +2,6 @@
   "name": "investorx-backend",
   "type": "npm",
   "engines": {
-    "node": "8.2.1"
+    "node": "8.4.0"
   }
 }

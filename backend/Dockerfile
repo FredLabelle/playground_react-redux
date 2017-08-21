@@ -1,4 +1,4 @@
-FROM node:8.2.1-alpine
+FROM node:8.4.0-alpine
 MAINTAINER Simon Arvaux <simon@e-founders.com>
 LABEL name="investorx-backend"
 

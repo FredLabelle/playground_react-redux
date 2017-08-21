@@ -219,6 +219,7 @@ export const dealsQuery = gql`
         domain
       }
       category {
+        id
         name
       }
       name
@@ -278,6 +279,7 @@ export const ticketsQuery = gql`
           domain
         }
         category {
+          id
           name
         }
         name
