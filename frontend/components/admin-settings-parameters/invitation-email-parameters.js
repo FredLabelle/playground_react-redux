@@ -17,6 +17,7 @@ class InvitationEmailParameters extends Component {
   static propTypes = {
     organization: OrganizationPropType.isRequired,
     setUnsavedChanges: PropTypes.func.isRequired,
+    updateOrganization: PropTypes.func.isRequired,
   };
   state = {
     organization: pick(this.props.organization, 'parametersSettings'),

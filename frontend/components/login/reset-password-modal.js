@@ -21,9 +21,7 @@ class ResetPasswordModal extends Component {
     router: RouterPropType.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     resetPassword: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
   state = initialState;

@@ -40,6 +40,7 @@ class UpsertInvestorModal extends Component {
     investor: InvestorPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     upsertInvestor: PropTypes.func.isRequired,
+    invitationStatus: PropTypes.func.isRequired,
   };
   state = initialState(this.props);
   componentWillReceiveProps(nextProps) {

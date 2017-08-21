@@ -7,18 +7,17 @@ import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { linkHref, linkAs } from '../../lib/url';
-import { RouterPropType } from '../../lib/prop-types';
+import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { investorLoginMutation } from '../../lib/mutations';
 import { investorQuery, adminQuery } from '../../lib/queries';
 
 class LoginForm extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
+    organization: OrganizationPropType.isRequired,
     forgotPassword: PropTypes.func.isRequired,
     onEmailChange: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     cookies: PropTypes.instanceOf(Cookies).isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     login: PropTypes.func.isRequired,
   };
   state = {

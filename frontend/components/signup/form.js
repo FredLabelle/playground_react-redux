@@ -18,9 +18,7 @@ class SignupForm extends Component {
     router: RouterPropType.isRequired,
     organization: OrganizationPropType.isRequired,
     warning: PropTypes.bool.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     signup: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
   state = {

@@ -15,11 +15,8 @@ class UserDropdownMenu extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
     user: PropTypes.oneOfType([InvestorPropType, AdminPropType]).isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     logout: PropTypes.func.isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     cookies: PropTypes.instanceOf(Cookies).isRequired,
-    // eslint-disable-next-line react/no-unused-prop-types
     client: PropTypes.instanceOf(ApolloClient).isRequired,
   };
   componentDidMount() {

@@ -133,14 +133,12 @@ class UpsertDealModal extends Component {
     }));
   };
   render() {
+    const { deal, organization } = this.props;
     return (
       <Modal open={this.props.open} onClose={this.onCancel} size="large">
-        <Header
-          icon="file text outline"
-          content={this.props.deal.id ? 'Update deal' : ' Create deal'}
-        />
+        <Header icon="file text outline" content={deal.id ? 'Update deal' : ' Create deal'} />
         <Modal.Content>
-          {!this.props.deal.id &&
+          {!deal.id &&
             <div>
               <CompanyForm onChange={this.handleCompanyChange} />
               <Header as="h3" dividing>
@@ -230,7 +228,7 @@ class UpsertDealModal extends Component {
                 name="deal.amountAllocatedToOrganization"
                 value={this.state.deal.amountAllocatedToOrganization}
                 onChange={this.handleChange}
-                label={`Amount allocated to ${this.props.organization.generalSettings.name}`}
+                label={`Amount allocated to ${organization.generalSettings.name}`}
                 required
                 width={5}
               />
@@ -247,7 +245,7 @@ class UpsertDealModal extends Component {
                 value={this.state.deal.maxTicket}
                 onChange={this.handleChange}
                 label="Max ticket"
-                placeholder="No Limit"
+                placeholder={`Amount allocated to ${organization.generalSettings.name}`}
                 width={6}
               />
             </Form.Group>
@@ -302,7 +300,7 @@ class UpsertDealModal extends Component {
             color="green"
             disabled={this.state.loading}
             loading={this.state.loading}
-            content={this.props.deal.id ? 'Update' : 'Create'}
+            content={deal.id ? 'Update' : 'Create'}
             icon="save"
             labelPosition="left"
           />

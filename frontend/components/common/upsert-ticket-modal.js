@@ -101,7 +101,8 @@ class UpsertTicketModal extends Component {
     }, 200);
   };
   getDealMinBoundary = ({ minTicket }) => formatAmount(minTicket);
-  getDealMaxBoundary = ({ maxTicket }) => (maxTicket.amount ? formatAmount(maxTicket) : 'No Limit');
+  getDealMaxBoundary = ({ maxTicket, amountAllocatedToOrganization }) =>
+    maxTicket.amount ? formatAmount(maxTicket) : formatAmount(amountAllocatedToOrganization);
   handleDealResultSelect = (event, { result }) => {
     const deal = this.props.deals.find(d => dealTitle(d) === result.title);
     const ticket = {
@@ -204,8 +205,9 @@ class UpsertTicketModal extends Component {
               value={this.state.ticket.amount}
               onChange={this.handleChange}
               label="Ticket amount"
-              min={selectedDeal && selectedDeal.minTicket.amount}
-              max={selectedDeal && selectedDeal.maxTicket.amount}
+              // TODO validate boundaries (on submit) in investor ticket creation only
+              // min={selectedDeal && selectedDeal.minTicket.amount}
+              // max={selectedDeal && selectedDeal.maxTicket.amount}
               currencyDisabled
               required
             />

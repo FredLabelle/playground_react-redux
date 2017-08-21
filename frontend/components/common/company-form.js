@@ -21,6 +21,7 @@ class Company extends Component {
   static propTypes = {
     companies: PropTypes.arrayOf(CompanyPropType).isRequired,
     onChange: PropTypes.func.isRequired,
+    upsertCompany: PropTypes.func.isRequired,
   };
   state = {
     company: {
