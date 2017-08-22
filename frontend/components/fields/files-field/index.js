@@ -1,66 +1,12 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { Button, Form, Progress, List } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import uploadcare from 'uploadcare-widget';
 import cloneDeep from 'lodash/cloneDeep';
 import remove from 'lodash/remove';
 
-import { FilePropType } from '../../lib/prop-types';
-
-const FileItem = ({ file: { name, url, uploaded }, onDeleteClick }) =>
-  <List.Item>
-    <List.Content floated="left">
-      <a href={url} download>
-        <Button type="button" primary icon="download" />
-      </a>
-    </List.Content>
-    <List.Content floated="right">
-      <Button type="button" color="red" icon="trash" onClick={onDeleteClick(url)} />
-    </List.Content>
-    <List.Content
-      style={{ lineHeight: '36px' }}
-      as={uploaded ? 'a' : 'span'}
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      verticalAlign="middle"
-    >
-      {name}
-    </List.Content>
-  </List.Item>;
-FileItem.propTypes = {
-  file: FilePropType.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
-};
-
-const FilesControl = ({ value, onDeleteClick, progress, uploading, onUploadClick, single }) =>
-  <div>
-    <List>
-      {value.map(file => <FileItem key={file.url} file={file} onDeleteClick={onDeleteClick} />)}
-      {uploading &&
-        <List.Item>
-          <Progress percent={progress * 100} indicating />
-        </List.Item>}
-    </List>
-    {(!single || value.length === 0) &&
-      <Button
-        type="button"
-        primary
-        disabled={uploading}
-        content={uploading ? 'Uploading…' : 'Upload'}
-        icon={uploading ? 'cloud upload' : 'upload'}
-        labelPosition="left"
-        onClick={onUploadClick}
-      />}
-  </div>;
-FilesControl.propTypes = {
-  value: PropTypes.arrayOf(FilePropType).isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
-  progress: PropTypes.number.isRequired,
-  uploading: PropTypes.bool.isRequired,
-  onUploadClick: PropTypes.func.isRequired,
-  single: PropTypes.bool.isRequired,
-};
+import { FilePropType } from '../../../lib/prop-types';
+import FilesControl from './files-control';
 
 export default class extends Component {
   static propTypes = {
@@ -73,6 +19,7 @@ export default class extends Component {
     crop: PropTypes.string,
     single: PropTypes.bool,
     width: PropTypes.number,
+    onUploadingChange: PropTypes.func,
   };
   static defaultProps = {
     value: [],
@@ -82,6 +29,7 @@ export default class extends Component {
     crop: 'disabled',
     single: false,
     width: 16,
+    onUploadingChange: () => {},
   };
   state = {
     progress: 1,
@@ -96,11 +44,13 @@ export default class extends Component {
       crop: this.props.crop,
     });
     dialog.done(file => {
+      this.props.onUploadingChange(true);
       file.progress(({ progress }) => {
         this.setState({ progress });
       });
       file.fail(() => {
         this.setState({ progress: 1 });
+        this.props.onUploadingChange(false);
       });
       file.done(async ({ name, cdnUrl }) => {
         const value = cloneDeep(this.state.value);
@@ -111,6 +61,7 @@ export default class extends Component {
         });
         this.setState({ value });
         this.props.onChange(event, { name: this.props.name, value });
+        this.props.onUploadingChange(false);
       });
     });
   };

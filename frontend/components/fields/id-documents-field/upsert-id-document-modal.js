@@ -9,6 +9,7 @@ import FilesField from '../files-field';
 
 const initialState = ({ idDocument }) => ({
   idDocument,
+  uploading: false,
   typeError: false,
 });
 
@@ -40,6 +41,9 @@ export default class extends Component {
     this.props.onChange(idDocument);
     this.onCancel();
   };
+  onUploadingChange = uploading => {
+    this.setState({ uploading });
+  }
   handleChange = handleChange().bind(this);
   render() {
     const typesOptions = [
@@ -55,7 +59,12 @@ export default class extends Component {
       },
     ];
     return (
-      <Modal closeOnEscape={false} open={this.props.open} onClose={this.onCancel} size="small">
+      <Modal
+        closeOnEscape={false}
+        open={this.props.open}
+        onClose={this.onCancel}
+        size="small"
+      >
         <Header
           icon="id card outline"
           content={this.props.idDocument.id ? 'Edit an ID document' : 'Add a new ID document'}
@@ -90,6 +99,7 @@ export default class extends Component {
               value={this.state.idDocument.files}
               onChange={this.handleChange}
               label="Files"
+              onUploadingChange={this.onUploadingChange}
             />
             <Message error header="Error!" content="Type is required!" />
           </Form>
@@ -107,6 +117,7 @@ export default class extends Component {
             type="submit"
             form="upsert-id-document"
             primary
+            disabled={this.state.uploading}
             content={this.props.idDocument.id ? 'Edit' : 'Add'}
             icon="checkmark"
             labelPosition="left"

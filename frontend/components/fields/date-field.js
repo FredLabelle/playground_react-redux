@@ -63,8 +63,8 @@ export default class extends Component {
           onChange={this.handleChange}
           label={<label htmlFor="year">&nbsp;</label>}
           type="number"
-          min="1900"
-          max={moment().year()}
+          min={moment().year() - 150}
+          max={moment().year() + 50}
           width={5}
         />
       </Form.Group>
