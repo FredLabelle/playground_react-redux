@@ -6,7 +6,7 @@ import { Cookies, withCookies } from 'react-cookie';
 import Router from 'next/router';
 
 import { RouterPropType } from '../../lib/prop-types';
-import { investorQuery, adminQuery, dealsQuery } from '../../lib/queries';
+import { investorUserQuery, adminUserQuery, dealsQuery } from '../../lib/queries';
 import { adminLoginAckMutation } from '../../lib/mutations';
 import { linkHref, linkAs } from '../../lib/url';
 import AdminMenu from '../common/admin-menu';
@@ -45,11 +45,11 @@ export default compose(
         mutate({
           refetchQueries: [
             {
-              query: investorQuery,
+              query: investorUserQuery,
               fetchPolicy: 'network-only',
             },
             {
-              query: adminQuery,
+              query: adminUserQuery,
               fetchPolicy: 'network-only',
             },
             { query: dealsQuery },

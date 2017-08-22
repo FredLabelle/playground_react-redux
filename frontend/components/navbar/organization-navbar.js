@@ -10,7 +10,7 @@ import {
   InvestorPropType,
   AdminPropType,
 } from '../../lib/prop-types';
-import { organizationQuery, investorQuery, adminQuery } from '../../lib/queries';
+import { organizationQuery, investorUserQuery, adminUserQuery } from '../../lib/queries';
 import LoginMenuItem from './login-menu-item';
 import UserDropdownMenu from './user-dropdown-menu';
 
@@ -50,10 +50,10 @@ export default compose(
     }),
     props: ({ data: { organization } }) => ({ organization }),
   }),
-  graphql(investorQuery, {
-    props: ({ data: { investor } }) => (investor ? { user: investor } : {}),
+  graphql(investorUserQuery, {
+    props: ({ data: { investorUser } }) => (investorUser ? { user: investorUser } : {}),
   }),
-  graphql(adminQuery, {
-    props: ({ data: { admin } }) => (admin ? { user: admin } : {}),
+  graphql(adminUserQuery, {
+    props: ({ data: { adminUser } }) => (adminUser ? { user: adminUser } : {}),
   }),
 )(OrganizationNavBar);

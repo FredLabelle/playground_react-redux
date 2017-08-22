@@ -55,12 +55,17 @@ app.prepare().then(() => {
   server.get(
     '/admin/organization/:organizationShortId/deals/:resourceShortId',
     redirectMiddleware,
-    route('/admin/deals'),
+    route('/admin/deals/deal'),
   );
   server.get(
     '/admin/organization/:organizationShortId/investors',
     redirectMiddleware,
     route('/admin/investors'),
+  );
+  server.get(
+    '/admin/organization/:organizationShortId/investors/:resourceShortId',
+    redirectMiddleware,
+    route('/admin/investors/investor'),
   );
   server.get(
     '/admin/organization/:organizationShortId/tickets',

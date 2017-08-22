@@ -8,7 +8,7 @@ import Router from 'next/router';
 
 import { RouterPropType, InvestorPropType, AdminPropType } from '../../lib/prop-types';
 import { logoutMutation } from '../../lib/mutations';
-import { investorQuery, adminQuery } from '../../lib/queries';
+import { investorUserQuery, adminUserQuery } from '../../lib/queries';
 import { linkHref, linkAs } from '../../lib/url';
 
 class UserDropdownMenu extends Component {
@@ -71,11 +71,11 @@ export default compose(
         mutate({
           refetchQueries: [
             {
-              query: investorQuery,
+              query: investorUserQuery,
               fetchPolicy: 'network-only',
             },
             {
-              query: adminQuery,
+              query: adminUserQuery,
               fetchPolicy: 'network-only',
             },
           ],

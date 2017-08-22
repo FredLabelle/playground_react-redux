@@ -12,7 +12,7 @@ import { omitDeep, handleChange } from '../../lib/util';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, InvestorPropType } from '../../lib/prop-types';
 import { upsertInvestorMutation } from '../../lib/mutations';
-import { investorQuery } from '../../lib/queries';
+import { investorUserQuery } from '../../lib/queries';
 import { setUnsavedChanges } from '../../actions/form';
 import AdministrativeFields from '../common/administrative-fields';
 
@@ -86,7 +86,7 @@ class SettingsAdministrative extends Component {
 
 export default compose(
   connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
-  graphql(investorQuery, {
+  graphql(investorUserQuery, {
     props: ({ data: { investor } }) => ({ investor }),
   }),
   graphql(upsertInvestorMutation, {
@@ -94,7 +94,7 @@ export default compose(
       upsertInvestor: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: investorQuery }],
+          refetchQueries: [{ query: investorUserQuery }],
         }),
     }),
   }),

@@ -9,7 +9,7 @@ import Router from 'next/router';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { investorLoginMutation } from '../../lib/mutations';
-import { investorQuery, adminQuery } from '../../lib/queries';
+import { investorUserQuery, adminUserQuery } from '../../lib/queries';
 
 class LoginForm extends Component {
   static propTypes = {
@@ -102,11 +102,11 @@ export default compose(
           variables: { input },
           refetchQueries: [
             {
-              query: investorQuery,
+              query: investorUserQuery,
               fetchPolicy: 'network-only',
             },
             {
-              query: adminQuery,
+              query: adminUserQuery,
               fetchPolicy: 'network-only',
             },
           ],

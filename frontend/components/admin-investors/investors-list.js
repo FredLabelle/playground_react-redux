@@ -3,8 +3,10 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Table, Button } from 'semantic-ui-react';
+import Link from 'next/link';
 import moment from 'moment';
 
+import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType, InvestorPropType } from '../../lib/prop-types';
 import { organizationQuery, investorsQuery } from '../../lib/queries';
 import InvestorCell from '../common/investor-cell';
@@ -49,68 +51,75 @@ class InvestorsListRow extends Component {
     const { router, organization, investor } = this.props;
     const resend = investor.status === 'invited' ? 'Resend' : '';
     const action = investor.status === 'created' ? 'Send' : resend;
+    const { shortId } = investor;
     return (
-      <Table.Row>
-        <InvestorCell investor={investor} />
-        <TicketsSumCell ticketsSum={investor.ticketsSum} />
-        <Table.Cell>
-          <strong className={investor.status}>
-            {investor.status}
-          </strong>
-          <br />
-          {moment(investor.createdAt).format('DD/MM/YYYY')}
-        </Table.Cell>
-        {router.admin &&
+      <Link
+        prefetch
+        href={linkHref(`/investors/investor/${shortId}`, router)}
+        as={linkAs(`/investors/${shortId}`, router)}
+      >
+        <Table.Row className="table-row">
+          <InvestorCell investor={investor} />
+          <TicketsSumCell ticketsSum={investor.ticketsSum} />
           <Table.Cell>
-            {investor.status === 'joined'
-              ? null
-              : <Button
-                  type="button"
-                  basic
-                  content={`${action} invitation`}
-                  icon="mail"
-                  labelPosition="left"
-                  onClick={this.sendInvitation}
-                />}
-          </Table.Cell>}
-        <Table.Cell>
-          <Button
-            type="button"
-            basic
-            className="button-link"
-            content="Edit"
-            onClick={this.updateInvestor}
+            <strong className={investor.status}>
+              {investor.status}
+            </strong>
+            <br />
+            {moment(investor.createdAt).format('DD/MM/YYYY')}
+          </Table.Cell>
+          {router.admin &&
+            <Table.Cell>
+              {investor.status === 'joined'
+                ? null
+                : <Button
+                    type="button"
+                    basic
+                    content={`${action} invitation`}
+                    icon="mail"
+                    labelPosition="left"
+                    onClick={this.sendInvitation}
+                  />}
+            </Table.Cell>}
+          <Table.Cell>
+            <Button
+              type="button"
+              basic
+              className="button-link"
+              content="Edit"
+              onClick={this.updateInvestor}
+            />
+            {' | '}
+            <a href={`mailto:${investor.email}`}>Contact</a>
+          </Table.Cell>
+          <SendInvitationModal
+            open={this.state.sendInvitationModalOpen}
+            onClose={this.onSendInvitationModalClose}
+            investor={investor}
+            organization={organization}
           />
-          {' | '}
-          <a href={`mailto:${investor.email}`}>Contact</a>
-        </Table.Cell>
-        <SendInvitationModal
-          open={this.state.sendInvitationModalOpen}
-          onClose={this.onSendInvitationModalClose}
-          investor={investor}
-          organization={organization}
-        />
-        <UpsertInvestorModal
-          open={this.state.upsertInvestorModalOpen}
-          onClose={this.onUpsertInvestorModalClose}
-          investor={investor}
-          organization={organization}
-        />
-        <style jsx>{`
-          strong.created {
-            color: #db2828;
-          }
-          strong.invited {
-            color: #f2711c;
-          }
-          strong.joined {
-            color: #21ba45;
-          }
-          strong {
-            text-transform: capitalize;
-          }
-        `}</style>
-      </Table.Row>
+          <UpsertInvestorModal
+            open={this.state.upsertInvestorModalOpen}
+            onClose={this.onUpsertInvestorModalClose}
+            investor={investor}
+            organization={organization}
+          />
+          <style jsx>{`
+            strong.created {
+              color: #db2828;
+            }
+            strong.invited {
+              color: #f2711c;
+            }
+            strong.joined {
+              color: #21ba45;
+            }
+            strong {
+              text-transform: capitalize;
+            }
+          `}</style>
+        </Table.Row>
+      </Link>
     );
   }
 }

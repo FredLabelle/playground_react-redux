@@ -12,7 +12,7 @@ import { omitDeep, handleChange } from '../../lib/util';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
-import { investorQuery, organizationQuery } from '../../lib/queries';
+import { investorUserQuery, organizationQuery } from '../../lib/queries';
 import { upsertInvestorMutation } from '../../lib/mutations';
 import NameField from '../fields/name-field';
 import FilesField from '../fields/files-field';
@@ -178,7 +178,7 @@ class SettingsAccount extends Component {
 
 export default compose(
   connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
-  graphql(investorQuery, {
+  graphql(investorUserQuery, {
     props: ({ data: { investor } }) => ({ investor }),
   }),
   graphql(organizationQuery, {
@@ -192,7 +192,7 @@ export default compose(
       upsertInvestor: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: investorQuery }],
+          refetchQueries: [{ query: investorUserQuery }],
         }),
     }),
   }),

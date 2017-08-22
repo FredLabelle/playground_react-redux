@@ -31,9 +31,9 @@ export const organizationQuery = gql`
   }
 `;
 
-export const investorQuery = gql`
+export const investorUserQuery = gql`
   query {
-    investor {
+    investorUser {
       id
       name {
         firstName
@@ -101,9 +101,9 @@ export const investorQuery = gql`
   }
 `;
 
-export const adminQuery = gql`
+export const adminUserQuery = gql`
   query {
-    admin {
+    adminUser {
       id
       name {
         firstName
@@ -124,6 +124,7 @@ export const investorsQuery = gql`
   query {
     investors {
       id
+      shortId
       picture {
         url
       }
@@ -378,6 +379,78 @@ export const dealQuery = gql`
           amount
           currency
         }
+      }
+    }
+  }
+`;
+
+export const investorQuery = gql`
+  query investor($shortId: ID!) {
+    investor(shortId: $shortId) {
+      id
+      shortId
+      name {
+        firstName
+        lastName
+      }
+      fullName
+      phone1
+      phone2
+      email
+      picture {
+        name
+        url
+        uploaded
+      }
+      role
+      type
+      investmentSettings
+      individualSettings {
+        birthdate
+        nationality
+        idDocuments {
+          id
+          type
+          number
+          files {
+            name
+            url
+            uploaded
+          }
+          expirationDate
+        }
+        fiscalAddress {
+          address1
+          address2
+          city
+          zipCode
+          country
+          state
+        }
+      }
+      corporationSettings {
+        position
+        companyName
+        companyAddress {
+          address1
+          address2
+          city
+          zipCode
+          country
+          state
+        }
+        incProof {
+          name
+          url
+          uploaded
+        }
+      }
+      advisor {
+        name {
+          firstName
+          lastName
+        }
+        email
       }
     }
   }

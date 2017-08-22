@@ -28,7 +28,7 @@ const AdminService = {
     }
     return sign({ userId: admin.id, role: admin.role }, process.env.FOREST_ENV_SECRET);
   },
-  admin(admin) {
+  adminUser(admin) {
     try {
       if (!admin) {
         return null;

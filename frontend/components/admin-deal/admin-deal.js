@@ -35,7 +35,7 @@ class AdminDeal extends Component {
     const { organizationShortId } = this.props.router;
     const { shortId: resourceShortId } = deal;
     const queryString = item => stringify({ organizationShortId, resourceShortId, item });
-    const href = item => `/admin/deals?${queryString(item)}`;
+    const href = item => `/admin/deals/deal?${queryString(item)}`;
     const dealsPathname = `/admin/organization/${organizationShortId}/deals`;
     const as = item => `${dealsPathname}/${resourceShortId}?item=${item}`;
     const active = item => item === (this.props.router.query.item || 'investors');

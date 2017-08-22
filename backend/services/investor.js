@@ -22,6 +22,11 @@ const InvestorService = {
   /* findById(id) {
     return this.loader.load(id);
   }, */
+  findByShortId(shortId) {
+    return Investor.findOne({
+      where: { shortId }
+    });
+  },
   findByEmail(email, organizationId) {
     return Investor.findOne({
       where: { email, organizationId },
@@ -166,7 +171,7 @@ const InvestorService = {
       return false;
     }
   },
-  async investor(investor) {
+  async investorUser(investor) {
     try {
       if (!investor) {
         return null;
@@ -276,6 +281,18 @@ const InvestorService = {
           ticketsSum: { count: investor.Tickets.length },
         }),
       );
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  async investor(admin, shortId) {
+    try {
+      const investor = await InvestorService.findByShortId(shortId);
+      if (admin.organizationId !== investor.organizationId) {
+        return null;
+      }
+      return investor.toJSON();
     } catch (error) {
       console.error(error);
       return null;

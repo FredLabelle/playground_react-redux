@@ -37,7 +37,7 @@ class DealsListRow extends Component {
       return;
     }
     Router.push(
-      linkHref(`/deals/${shortId}`, this.props.router),
+      linkHref(`/deals/deal/${shortId}`, this.props.router),
       linkAs(`/deals/${shortId}`, this.props.router),
     );
   };

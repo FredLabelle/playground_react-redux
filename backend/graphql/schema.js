@@ -178,13 +178,14 @@ type Ticket {
 
 type Query {
   organization(shortId: ID!): Organization
-  investor: Investor
-  admin: Admin
+  investorUser: Investor
+  adminUser: Admin
   investors: [Investor]
   companies: [Company]
   deals: [Deal]
   tickets: [Ticket]
   deal(shortId: ID!): Deal
+  investor(shortId: ID!): Investor
 }
 
 schema {
@@ -217,11 +218,11 @@ const resolvers = {
     organization(root, { shortId }, context) {
       return context.Organization.organization(shortId);
     },
-    investor(root, params, context) {
-      return context.Investor.investor(context.user);
+    investorUser(root, params, context) {
+      return context.Investor.investorUser(context.user);
     },
-    admin(root, params, context) {
-      return context.Admin.admin(context.user);
+    adminUser(root, params, context) {
+      return context.Admin.adminUser(context.user);
     },
     investors(root, params, context) {
       return adminQuery(context.Investor.investors)(context.user);
@@ -237,6 +238,9 @@ const resolvers = {
     },
     deal(root, { shortId }, context) {
       return adminQuery(context.Deal.deal)(context.user, shortId);
+    },
+    investor(root, { shortId }, context) {
+      return adminQuery(context.Investor.investor)(context.user, shortId);
     },
   },
 };

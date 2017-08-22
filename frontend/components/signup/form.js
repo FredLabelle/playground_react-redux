@@ -10,7 +10,7 @@ import { handleChange } from '../../lib/util';
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
 import { investorSignupMutation } from '../../lib/mutations';
-import { investorQuery, adminQuery } from '../../lib/queries';
+import { investorUserQuery, adminUserQuery } from '../../lib/queries';
 import AccountFields from '../common/account-fields';
 
 class SignupForm extends Component {
@@ -98,11 +98,11 @@ export default compose(
           variables: { input },
           refetchQueries: [
             {
-              query: investorQuery,
+              query: investorUserQuery,
               fetchPolicy: 'network-only',
             },
             {
-              query: adminQuery,
+              query: adminUserQuery,
               fetchPolicy: 'network-only',
             },
           ],

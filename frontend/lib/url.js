@@ -5,7 +5,7 @@ const whitelist = ['users', 'parameters', 'administrative'];
 export const linkHref = (rawPathname, { admin, organizationShortId, query }, user) => {
   const adminProp = user ? user.role === 'admin' : admin;
   const adminPath = adminProp ? '/admin' : '';
-  const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
+  const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z/]*)\/?([\w-]+)?/);
   const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;
   const newQuery = { organizationShortId };
   if (query.invited) {
