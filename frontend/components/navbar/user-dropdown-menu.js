@@ -27,10 +27,9 @@ class UserDropdownMenu extends Component {
     const { data: { logout } } = await this.props.logout();
     if (logout) {
       this.props.cookies.remove('token', { path: '/' });
-      Router.push(
-        linkHref('/login', this.props.router, this.props.user),
-        linkAs('/login', this.props.router, this.props.user),
-      );
+      const { router, user } = this.props;
+      const options = { ...router, admin: user ? user.role === 'admin' : router.admin };
+      Router.push(linkHref('/login', options), linkAs('/login', options));
     } else {
       console.error('LOGOUT ERROR');
     }
@@ -41,14 +40,12 @@ class UserDropdownMenu extends Component {
         <Image avatar src={this.props.user.picture[0].url} /> {this.props.user.name.firstName}
       </span>
     );
+    const { router, user } = this.props;
+    const options = { ...router, admin: user ? user.role === 'admin' : router.admin };
     return (
       <Dropdown item trigger={trigger}>
         <Dropdown.Menu>
-          <Link
-            prefetch
-            href={linkHref('/settings', this.props.router, this.props.user)}
-            as={linkAs('/settings', this.props.router, this.props.user)}
-          >
+          <Link prefetch href={linkHref('/settings', options)} as={linkAs('/settings', options)}>
             <Dropdown.Item>
               <a>Settings</a>
             </Dropdown.Item>

@@ -41,6 +41,7 @@ class InvestorsListRow extends Component {
   };
   sendInvitation = event => {
     event.preventDefault();
+    event.stopPropagation();
     this.setState({ sendInvitationModalOpen: true });
   };
   updateInvestor = event => {
@@ -52,11 +53,12 @@ class InvestorsListRow extends Component {
     const resend = investor.status === 'invited' ? 'Resend' : '';
     const action = investor.status === 'created' ? 'Send' : resend;
     const { shortId } = investor;
+    const options = { ...router, shortId };
     return (
       <Link
         prefetch
-        href={linkHref(`/investors/investor/${shortId}`, router)}
-        as={linkAs(`/investors/${shortId}`, router)}
+        href={linkHref('/investors/investor', options)}
+        as={linkAs('/investors', options)}
       >
         <Table.Row className="table-row">
           <InvestorCell investor={investor} />
@@ -70,16 +72,15 @@ class InvestorsListRow extends Component {
           </Table.Cell>
           {router.admin &&
             <Table.Cell>
-              {investor.status === 'joined'
-                ? null
-                : <Button
-                    type="button"
-                    basic
-                    content={`${action} invitation`}
-                    icon="mail"
-                    labelPosition="left"
-                    onClick={this.sendInvitation}
-                  />}
+              {investor.status !== 'joined' &&
+                <Button
+                  type="button"
+                  basic
+                  content={`${action} invitation`}
+                  icon="mail"
+                  labelPosition="left"
+                  onClick={this.sendInvitation}
+                />}
             </Table.Cell>}
           {/* <Table.Cell>
             <Button

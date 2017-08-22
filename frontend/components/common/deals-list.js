@@ -36,10 +36,8 @@ class DealsListRow extends Component {
     if (!this.props.router.admin) {
       return;
     }
-    Router.push(
-      linkHref(`/deals/deal/${shortId}`, this.props.router),
-      linkAs(`/deals/${shortId}`, this.props.router),
-    );
+    const options = { ...this.props.router, shortId };
+    Router.push(linkHref('/deals/deal', options), linkAs('/deals', options));
   };
   render() {
     const { router, deal } = this.props;

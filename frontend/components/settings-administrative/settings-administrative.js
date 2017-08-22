@@ -87,7 +87,7 @@ class SettingsAdministrative extends Component {
 export default compose(
   connect(({ router, form }) => ({ router, form }), { setUnsavedChanges }),
   graphql(investorUserQuery, {
-    props: ({ data: { investor } }) => ({ investor }),
+    props: ({ data: { investorUser } }) => ({ investor: investorUser }),
   }),
   graphql(upsertInvestorMutation, {
     props: ({ mutate }) => ({

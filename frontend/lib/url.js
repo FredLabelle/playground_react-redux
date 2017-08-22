@@ -2,41 +2,46 @@ import { stringify } from 'querystring';
 
 const whitelist = ['users', 'parameters', 'administrative'];
 
-export const linkHref = (rawPathname, { admin, organizationShortId, query }, user) => {
-  const adminProp = user ? user.role === 'admin' : admin;
-  const adminPath = adminProp ? '/admin' : '';
-  const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z/]*)\/?([\w-]+)?/);
-  const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;
+export const linkHref = (pathname, { admin, organizationShortId, query = {}, shortId }) => {
+  const adminPath = admin ? '/admin' : '';
   const newQuery = { organizationShortId };
   if (query.invited) {
     newQuery.invited = query.invited;
   }
-  if (resourceShortId && !whitelist.includes(resourceShortId)) {
-    newQuery.resourceShortId = resourceShortId;
+  if (shortId && !whitelist.includes(shortId)) {
+    newQuery.resourceShortId = shortId;
   }
   const queryString = stringify(newQuery);
-  return `${adminPath}${finalPathname}?${queryString}`;
+  return `${adminPath}${pathname}?${queryString}`;
 };
 /* console.log('--------');
-console.log(linkHref('/deals', { admin: true, organizationShortId: 'eclub' }));
-console.log(linkHref('/deals/new', { admin: true, organizationShortId: 'eclub' }));
-console.log(linkHref('/deals/abc-_', { admin: true, organizationShortId: 'eclub' }));
+console.log(linkHref('/', {
+  admin: false,
+  organizationShortId: 'eclub',
+  query: { invited: 'true' },
+}));
+console.log(linkHref('/deals', {
+  admin: true,
+  organizationShortId: 'eclub',
+}));
+console.log(linkHref('/deals', {
+  admin: true,
+  organizationShortId: 'eclub',
+  resourceShortId: 'SkeS17a8Z',
+}));
 console.log('--------'); */
 
-export const linkAs = (rawPathname, { admin, organizationShortId, query }, user) => {
-  const adminProp = user ? user.role === 'admin' : admin;
-  const adminPath = adminProp ? '/admin' : '';
-  const [, pathname, resourceShortId] = rawPathname.match(/(\/[a-z]*)\/?([\w-]+)?/);
-  const finalPathname = whitelist.includes(resourceShortId) ? rawPathname : pathname;
-  const as = `${adminPath}/organization/${organizationShortId}${finalPathname}`;
+export const linkAs = (pathname, { admin, organizationShortId, query = {}, shortId }) => {
+  const adminPath = admin ? '/admin' : '';
+  const as = `${adminPath}/organization/${organizationShortId}${pathname}`;
   const newQuery = {};
   if (query.invited) {
     newQuery.invited = query.invited;
   }
   const queryString = stringify(newQuery);
   const finalQueryString = queryString ? `?${queryString}` : '';
-  if (resourceShortId && !whitelist.includes(resourceShortId)) {
-    return `${as}/${resourceShortId}${finalQueryString}`;
+  if (shortId && !whitelist.includes(shortId)) {
+    return `${as}/${shortId}${finalQueryString}`;
   }
   return `${as}${finalQueryString}`;
 };
