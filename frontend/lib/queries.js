@@ -129,62 +129,6 @@ export const investorsQuery = gql`
         url
       }
       fullName
-      email
-      phone1
-      phone2
-      name {
-        firstName
-        lastName
-      }
-      investmentSettings
-      type
-      individualSettings {
-        birthdate
-        nationality
-        idDocuments {
-          id
-          type
-          number
-          files {
-            name
-            url
-            uploaded
-          }
-          expirationDate
-        }
-        fiscalAddress {
-          address1
-          address2
-          city
-          zipCode
-          country
-          state
-        }
-      }
-      corporationSettings {
-        position
-        companyName
-        companyAddress {
-          address1
-          address2
-          city
-          zipCode
-          country
-          state
-        }
-        incProof {
-          name
-          url
-          uploaded
-        }
-      }
-      advisor {
-        name {
-          firstName
-          lastName
-        }
-        email
-      }
       status
       ticketsSum {
         count

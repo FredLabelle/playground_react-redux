@@ -46,6 +46,11 @@ class UpsertInvestorModal extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState(initialState(nextProps));
   }
+  componentDidUpdate() {
+    setTimeout(() => {
+      document.body.classList.add('dimmable', 'dimmed');
+    }, 0);
+  }
   onCancel = () => {
     this.setState(initialState(this.props));
     this.props.onClose();

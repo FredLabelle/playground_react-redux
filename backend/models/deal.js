@@ -24,7 +24,7 @@ module.exports = sequelize.define(
       defaultValue: '',
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       defaultValue: '',
     },
     deck: {
@@ -68,3 +68,11 @@ module.exports = sequelize.define(
     },
   },
 );
+
+/*
+
+description migration
+
+ALTER TABLE "Deals" ALTER COLUMN "description" TYPE TEXT;
+
+*/

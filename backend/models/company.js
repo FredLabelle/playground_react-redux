@@ -50,7 +50,7 @@ module.exports = sequelize.define(
       allowNull: false,
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     },
   },
   {
@@ -61,3 +61,11 @@ module.exports = sequelize.define(
     },
   },
 );
+
+/*
+
+description migration
+
+ALTER TABLE "Companies" ALTER COLUMN "description" TYPE TEXT;
+
+*/

@@ -21,7 +21,7 @@ const InvestorsListHeader = ({ router }) =>
       <Table.HeaderCell>Tickets</Table.HeaderCell>
       <Table.HeaderCell>Status</Table.HeaderCell>
       {router.admin && <Table.HeaderCell />}
-      <Table.HeaderCell>Actions</Table.HeaderCell>
+      {/* <Table.HeaderCell>Actions</Table.HeaderCell> */}
     </Table.Row>
   </Table.Header>;
 InvestorsListHeader.propTypes = { router: RouterPropType.isRequired };
@@ -81,7 +81,7 @@ class InvestorsListRow extends Component {
                     onClick={this.sendInvitation}
                   />}
             </Table.Cell>}
-          <Table.Cell>
+          {/* <Table.Cell>
             <Button
               type="button"
               basic
@@ -91,7 +91,7 @@ class InvestorsListRow extends Component {
             />
             {' | '}
             <a href={`mailto:${investor.email}`}>Contact</a>
-          </Table.Cell>
+          </Table.Cell> */}
           <SendInvitationModal
             open={this.state.sendInvitationModalOpen}
             onClose={this.onSendInvitationModalClose}
