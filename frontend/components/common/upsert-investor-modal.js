@@ -46,11 +46,6 @@ class UpsertInvestorModal extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState(initialState(nextProps));
   }
-  componentDidUpdate() {
-    setTimeout(() => {
-      document.body.classList.add('dimmable', 'dimmed');
-    }, 0);
-  }
   onCancel = () => {
     this.setState(initialState(this.props));
     this.props.onClose();
@@ -81,7 +76,12 @@ class UpsertInvestorModal extends Component {
       toastr.error('Error!', 'Something went wrong.');
     }
   };
-  handleChange = handleChange().bind(this);
+  handleChange = handleChange(() => {
+    if (this.state.investor.type !== this.previousType) {
+      document.body.classList.add('dimmable', 'dimmed');
+    }
+    this.previousType = this.state.investor.type;
+  }).bind(this);
   render() {
     const { createdWarning, invitedWarning, joinedWarning } = this.state;
     return (
