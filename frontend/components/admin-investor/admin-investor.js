@@ -48,7 +48,7 @@ class AdminInvestor extends Component {
     const href = item => `/admin/investors/investor?${queryString(item)}`;
     const investorsPathname = `/admin/organization/${organizationShortId}/investors`;
     const as = item => `${investorsPathname}/${resourceShortId}?item=${item}`;
-    const active = item => item === (this.props.router.query.item || 'account');
+    const active = item => item === (this.props.router.query.item || 'deals');
     const colors = {
       created: 'red',
       invited: 'orange',
@@ -93,13 +93,13 @@ class AdminInvestor extends Component {
             </div>
           </Grid.Column>
         </Grid>
-        <Menu pointing widths={4}>
-          <Link replace href={href('account')} as={as('account')}>
+        <Menu pointing widths={2}>
+          {/* <Link replace href={href('account')} as={as('account')}>
             <Menu.Item name="account" active={active('account')} />
           </Link>
           <Link replace href={href('administrative')} as={as('administrative')}>
             <Menu.Item name="administrative" active={active('administrative')} />
-          </Link>
+          </Link> */}
           <Link replace href={href('deals')} as={as('deals')}>
             <Menu.Item name="deals" active={active('deals')} />
           </Link>
