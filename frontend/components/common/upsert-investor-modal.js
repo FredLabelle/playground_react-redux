@@ -8,7 +8,7 @@ import pick from 'lodash/pick';
 
 import { handleChange, omitDeep } from '../../lib/util';
 import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
-import { investorsQuery } from '../../lib/queries';
+import { investorsQuery, investorQuery } from '../../lib/queries';
 import { invitationStatusMutation, upsertInvestorMutation } from '../../lib/mutations';
 import AccountFields from './account-fields';
 import AdministrativeFields from './administrative-fields';
@@ -149,11 +149,18 @@ export default compose(
     }),
   }),
   graphql(upsertInvestorMutation, {
-    props: ({ mutate }) => ({
+    props: ({ mutate, ownProps: { investor } }) => ({
       upsertInvestor: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: investorsQuery }],
+          refetchQueries: [
+            investor.id
+              ? {
+                  query: investorQuery,
+                  variables: { shortId: investor.shortId },
+                }
+              : { query: investorsQuery },
+          ],
         }),
     }),
   }),

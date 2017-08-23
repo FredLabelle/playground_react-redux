@@ -317,7 +317,7 @@ export default compose(
         mutate({
           variables: { input },
           refetchQueries: [
-            deal.shortId
+            deal.id
               ? {
                   query: dealQuery,
                   variables: { shortId: deal.shortId },

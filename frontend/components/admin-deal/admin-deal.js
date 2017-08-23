@@ -10,7 +10,7 @@ import { RouterPropType, OrganizationPropType, DealPropType } from '../../lib/pr
 import { organizationQuery, dealQuery } from '../../lib/queries';
 import UpsertDealModal from '../common/upsert-deal-modal';
 import DealInvestorsList from './deal-investors-list';
-import DealTicketsList from './deal-tickets-list';
+import DealTickets from './deal-tickets';
 
 class AdminDeal extends Component {
   static propTypes = {
@@ -92,7 +92,7 @@ class AdminDeal extends Component {
           </Link>
         </Menu>
         {active('investors') && <DealInvestorsList investors={deal.investors} />}
-        {active('tickets') && <DealTicketsList tickets={deal.tickets} />}
+        {active('tickets') && <DealTickets deal={deal} />}
         {active('reports') && <span>REPORTS</span>}
         <UpsertDealModal
           open={this.state.upsertDealModalOpen}

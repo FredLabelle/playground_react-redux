@@ -43,7 +43,7 @@ export default class extends Component {
   };
   onUploadingChange = uploading => {
     this.setState({ uploading });
-  }
+  };
   handleChange = handleChange().bind(this);
   render() {
     const typesOptions = [
@@ -59,12 +59,7 @@ export default class extends Component {
       },
     ];
     return (
-      <Modal
-        closeOnEscape={false}
-        open={this.props.open}
-        onClose={this.onCancel}
-        size="small"
-      >
+      <Modal closeOnEscape={false} open={this.props.open} onClose={this.onCancel} size="small">
         <Header
           icon="id card outline"
           content={this.props.idDocument.id ? 'Edit an ID document' : 'Add a new ID document'}

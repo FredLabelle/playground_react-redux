@@ -95,19 +95,17 @@ const DealService = {
         },
         investors: uniqBy(
           deal.Tickets.map(ticket =>
-            Object.assign(ticket.Investor, {
+            Object.assign({}, ticket.Investor.toJSON(), {
               ticketsSum: { count: ticketsSumCounts[ticket.Investor.id] },
             }),
           ),
           'id',
         ),
         tickets: deal.Tickets.map(ticket =>
-          Object.assign(
-            {
-              investor: ticket.Investor,
-            },
-            ticket.toJSON(),
-          ),
+          Object.assign({}, ticket.toJSON(), {
+            deal: deal.toJSON(),
+            investor: ticket.Investor.toJSON(),
+          }),
         ),
       });
     } catch (error) {

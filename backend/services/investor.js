@@ -7,8 +7,9 @@ const uuid = require('uuid/v4');
 const defaultsDeep = require('lodash/defaultsDeep');
 const get = require('lodash/get');
 const cloneDeep = require('lodash/cloneDeep');
+const uniqBy = require('lodash/uniqBy');
 
-const { Admin, Investor, Organization, Ticket } = require('../models');
+const { Admin, Investor, Organization, Ticket, Deal, DealCategory, Company } = require('../models');
 const { gravatarPicture, handleFilesUpdate } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
 
@@ -24,7 +25,18 @@ const InvestorService = {
   }, */
   findByShortId(shortId) {
     return Investor.findOne({
-      where: { shortId }
+      where: { shortId },
+      include: [
+        {
+          model: Ticket,
+          include: [
+            {
+              model: Deal,
+              include: [{ model: DealCategory }, { model: Company }],
+            },
+          ],
+        },
+      ],
     });
   },
   findByEmail(email, organizationId) {
@@ -176,7 +188,8 @@ const InvestorService = {
       if (!investor) {
         return null;
       }
-      return InvestorService.findByEmail(investor.email, investor.organizationId);
+      const result = await InvestorService.findByEmail(investor.email, investor.organizationId);
+      return result && result.toJSON();
     } catch (error) {
       console.error(error);
       return null;
@@ -277,7 +290,7 @@ const InvestorService = {
         include: [{ model: Ticket }],
       });
       return investors.map(investor =>
-        Object.assign(investor, {
+        Object.assign({}, investor.toJSON(), {
           ticketsSum: { count: investor.Tickets.length },
         }),
       );
@@ -292,7 +305,27 @@ const InvestorService = {
       if (admin.organizationId !== investor.organizationId) {
         return null;
       }
-      return investor.toJSON();
+      return Object.assign({}, investor.toJSON(), {
+        deals: uniqBy(
+          investor.Tickets.map(ticket =>
+            Object.assign({}, ticket.Deal.toJSON(), {
+              category: ticket.Deal.DealCategory.toJSON(),
+              company: ticket.Deal.Company.toJSON(),
+            }),
+          ),
+          'id',
+        ),
+        ticketsSum: { count: investor.Tickets.length },
+        tickets: investor.Tickets.map(ticket =>
+          Object.assign({}, ticket.toJSON(), {
+            investor: investor.toJSON(),
+            deal: Object.assign({}, ticket.Deal.toJSON(), {
+              category: ticket.Deal.DealCategory.toJSON(),
+              company: ticket.Deal.Company.toJSON(),
+            }),
+          }),
+        ),
+      });
     } catch (error) {
       console.error(error);
       return null;

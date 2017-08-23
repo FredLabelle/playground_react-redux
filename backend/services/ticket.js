@@ -18,7 +18,7 @@ const TicketService = {
       });
       return tickets.map(ticket =>
         Object.assign({}, ticket.toJSON(), {
-          investor: ticket.Investor,
+          investor: ticket.Investor.toJSON(),
           deal: Object.assign({}, ticket.Deal.toJSON(), {
             company: ticket.Deal.Company.toJSON(),
             category: ticket.Deal.DealCategory.toJSON(),

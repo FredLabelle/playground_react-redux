@@ -3,20 +3,22 @@ import { Component } from 'react';
 import { Table, Button } from 'semantic-ui-react';
 
 import { TicketPropType } from '../../lib/prop-types';
-import InvestorCell from '../common/investor-cell';
+import CompanyCell from '../common/company-cell';
+import DealCell from '../common/deal-cell';
 import TicketsSumCell from '../common/tickets-sum-cell';
 import UpsertTicketModal from '../common/upsert-ticket-modal';
 
-const DealTicketsListHeader = () =>
+const InvestorTicketsListHeader = () =>
   <Table.Header>
     <Table.Row>
-      <Table.HeaderCell>Investors</Table.HeaderCell>
-      <Table.HeaderCell>Tickets</Table.HeaderCell>
+      <Table.HeaderCell>Company</Table.HeaderCell>
+      <Table.HeaderCell>Deal</Table.HeaderCell>
+      <Table.HeaderCell>Ticket</Table.HeaderCell>
       <Table.HeaderCell>Actions</Table.HeaderCell>
     </Table.Row>
   </Table.Header>;
 
-class DealTicketsListRow extends Component {
+class InvestorTicketsListRow extends Component {
   static propTypes = { ticket: TicketPropType.isRequired };
   state = { upsertTicketModalOpen: false };
   onUpsertTicketModalClose = () => {
@@ -30,8 +32,9 @@ class DealTicketsListRow extends Component {
     const { ticket } = this.props;
     return (
       <Table.Row>
-        <InvestorCell investor={ticket.investor} />
-        <TicketsSumCell ticketsSum={{ sum: ticket.amount }} />
+        <CompanyCell company={ticket.deal.company} />
+        <DealCell deal={ticket.deal} />
+        <TicketsSumCell ticketsSum={{ sum: ticket.amount }} createdAt={ticket.createdAt} />
         <Table.Cell style={{ textAlign: 'center' }}>
           <Button
             type="button"
@@ -44,7 +47,7 @@ class DealTicketsListRow extends Component {
             open={this.state.upsertTicketModalOpen}
             onClose={this.onUpsertTicketModalClose}
             ticket={ticket}
-            deal={ticket.deal}
+            investor={ticket.investor}
           />
         </Table.Cell>
       </Table.Row>
@@ -52,15 +55,15 @@ class DealTicketsListRow extends Component {
   }
 }
 
-const DealTicketsList = ({ tickets }) =>
+const InvestorTicketsList = ({ tickets }) =>
   tickets.length
     ? <Table basic="very" celled>
-        <DealTicketsListHeader />
+        <InvestorTicketsListHeader />
         <Table.Body>
-          {tickets.map(ticket => <DealTicketsListRow key={ticket.id} ticket={ticket} />)}
+          {tickets.map(ticket => <InvestorTicketsListRow key={ticket.id} ticket={ticket} />)}
         </Table.Body>
       </Table>
     : null;
-DealTicketsList.propTypes = { tickets: PropTypes.arrayOf(TicketPropType).isRequired };
+InvestorTicketsList.propTypes = { tickets: PropTypes.arrayOf(TicketPropType).isRequired };
 
-export default DealTicketsList;
+export default InvestorTicketsList;

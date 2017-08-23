@@ -129,6 +129,7 @@ export const investorsQuery = gql`
         url
       }
       fullName
+      email
       status
       ticketsSum {
         count
@@ -300,6 +301,7 @@ export const dealQuery = gql`
       }
       investors {
         id
+        shortId
         fullName
         email
         picture {
@@ -311,6 +313,10 @@ export const dealQuery = gql`
       }
       tickets {
         id
+        deal {
+          id
+          shortId
+        }
         investor {
           id
           fullName
@@ -395,6 +401,65 @@ export const investorQuery = gql`
           lastName
         }
         email
+      }
+      status
+      deals {
+        id
+        shortId
+        name
+        amountAllocatedToOrganization {
+          amount
+          currency
+        }
+        roundSize {
+          amount
+          currency
+        }
+        category {
+          id
+          name
+        }
+        company {
+          id
+          name
+          domain
+        }
+      }
+      ticketsSum {
+        count
+      }
+      tickets {
+        id
+        deal {
+          id
+          name
+          amountAllocatedToOrganization {
+            amount
+            currency
+          }
+          roundSize {
+            amount
+            currency
+          }
+          category {
+            id
+            name
+          }
+          company {
+            id
+            name
+            domain
+          }
+        }
+        investor {
+          id
+          shortId
+        }
+        amount {
+          amount
+          currency
+        }
+        createdAt
       }
     }
   }

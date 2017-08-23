@@ -49,14 +49,14 @@ class TicketsListRow extends Component {
         <TicketsSumCell ticketsSum={{ sum: ticket.amount }} createdAt={ticket.createdAt} />
         {/* admin &&
           <Table.Cell>
-            <strong className={ticket.status}>
-              {ticket.status}
+            <Label color={colors[ticket.status]}>
+              {capitalize(ticket.status)}
             </strong>
             <br />
             {moment(ticket.updatedAt).format('DD/MM/YYYY')}
           </Table.Cell> */}
         {admin &&
-          <Table.Cell>
+          <Table.Cell style={{ textAlign: 'center' }}>
             <Button
               type="button"
               basic
@@ -70,17 +70,6 @@ class TicketsListRow extends Component {
               ticket={ticket}
             />
           </Table.Cell>}
-        <style jsx>{`
-          strong.accepted {
-            color: #21ba45;
-          }
-          strong.pending {
-            color: #f2711c;
-          }
-          strong {
-            text-transform: capitalize;
-          }
-        `}</style>
       </Table.Row>
     );
   }

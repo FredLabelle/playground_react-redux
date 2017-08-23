@@ -9,7 +9,13 @@ import escapeRegExp from 'lodash/escapeRegExp';
 
 import { handleChange, omitDeep, formatAmount } from '../../lib/util';
 import { TicketPropType, DealPropType, InvestorPropType } from '../../lib/prop-types';
-import { dealsQuery, investorsQuery, ticketsQuery } from '../../lib/queries';
+import {
+  dealsQuery,
+  investorsQuery,
+  ticketsQuery,
+  dealQuery,
+  investorQuery,
+} from '../../lib/queries';
 import { upsertTicketMutation } from '../../lib/mutations';
 import AmountField from '../fields/amount-field';
 
@@ -29,17 +35,17 @@ const investorToResult = investor => ({
   image: investor.picture[0].url,
 });
 
-const initialState = ({ ticket, deals, investors }) => ({
+const initialState = ({ ticket, deals, investors, deal, investor }) => ({
   ticket: {
     ...pick(ticket, ['id', 'amount']),
-    dealId: ticket.deal && ticket.deal.id,
-    investorId: ticket.investor && ticket.investor.id,
+    dealId: deal ? deal.id : ticket.deal && ticket.deal.id,
+    investorId: investor ? investor.id : ticket.investor && ticket.investor.id,
   },
   dealsResults: deals.map(dealToResult),
-  deal: ticket.deal && dealTitle(ticket.deal),
+  deal: deal ? '' : ticket.deal && dealTitle(ticket.deal),
   dealSearchOpen: false,
   investorsResults: investors.map(investorToResult),
-  investor: ticket.investor && investorTitle(ticket.investor),
+  investor: investor ? '' : ticket.investor && investorTitle(ticket.investor),
   investorSearchOpen: false,
   dealIdError: false,
   investorIdError: false,
@@ -54,7 +60,10 @@ class UpsertTicketModal extends Component {
     deals: PropTypes.arrayOf(DealPropType).isRequired,
     investors: PropTypes.arrayOf(InvestorPropType).isRequired,
     upsertTicket: PropTypes.func.isRequired,
+    deal: DealPropType,
+    investor: InvestorPropType,
   };
+  static defaultProps = { deal: null, investor: null };
   state = initialState(this.props);
   componentWillReceiveProps(nextProps) {
     this.setState(initialState(nextProps));
@@ -173,32 +182,34 @@ class UpsertTicketModal extends Component {
             error={this.state.dealIdError || this.state.investorIdError}
           >
             <Form.Group>
-              <Form.Field
-                label="Deal"
-                width={8}
-                control={Search}
-                onResultSelect={this.handleDealResultSelect}
-                onSearchChange={this.handleDealSearchChange}
-                results={this.state.dealsResults}
-                value={this.state.deal}
-                required
-                open={this.state.dealSearchOpen}
-                onFocus={this.onDealSearchFocus}
-                onBlur={this.onDealSearchBlur}
-              />
-              <Form.Field
-                label="Investor"
-                width={8}
-                control={Search}
-                onResultSelect={this.handleInvestorResultSelect}
-                onSearchChange={this.handleInvestorSearchChange}
-                results={this.state.investorsResults}
-                value={this.state.investor}
-                required
-                open={this.state.investorSearchOpen}
-                onFocus={this.onInvestorSearchFocus}
-                onBlur={this.onInvestorSearchBlur}
-              />
+              {!this.props.deal &&
+                <Form.Field
+                  label="Deal"
+                  width={this.props.investor ? 16 : 8}
+                  control={Search}
+                  onResultSelect={this.handleDealResultSelect}
+                  onSearchChange={this.handleDealSearchChange}
+                  results={this.state.dealsResults}
+                  value={this.state.deal}
+                  required
+                  open={this.state.dealSearchOpen}
+                  onFocus={this.onDealSearchFocus}
+                  onBlur={this.onDealSearchBlur}
+                />}
+              {!this.props.investor &&
+                <Form.Field
+                  label="Investor"
+                  width={this.props.deal ? 16 : 8}
+                  control={Search}
+                  onResultSelect={this.handleInvestorResultSelect}
+                  onSearchChange={this.handleInvestorSearchChange}
+                  results={this.state.investorsResults}
+                  value={this.state.investor}
+                  required
+                  open={this.state.investorSearchOpen}
+                  onFocus={this.onInvestorSearchFocus}
+                  onBlur={this.onInvestorSearchBlur}
+                />}
             </Form.Group>
             <AmountField
               name="ticket.amount"
@@ -251,6 +262,16 @@ class UpsertTicketModal extends Component {
   }
 }
 
+const refetchQueries = (deal, investor) => {
+  if (deal) {
+    return [{ query: dealQuery, variables: { shortId: deal.shortId } }];
+  }
+  if (investor) {
+    return [{ query: investorQuery, variables: { shortId: investor.shortId } }];
+  }
+  return [{ query: ticketsQuery }];
+};
+
 export default compose(
   connect(({ router }) => ({ router })),
   graphql(dealsQuery, {
@@ -260,11 +281,11 @@ export default compose(
     props: ({ data: { investors } }) => ({ investors: investors || [] }),
   }),
   graphql(upsertTicketMutation, {
-    props: ({ mutate }) => ({
+    props: ({ mutate, ownProps: { deal, investor } }) => ({
       upsertTicket: input =>
         mutate({
           variables: { input },
-          refetchQueries: [{ query: ticketsQuery }],
+          refetchQueries: refetchQueries(deal, investor),
         }),
     }),
   }),

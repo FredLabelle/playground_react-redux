@@ -2,17 +2,18 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
-import { Table, Button } from 'semantic-ui-react';
+import { Table, Button, Label } from 'semantic-ui-react';
 import Link from 'next/link';
 import moment from 'moment';
+import capitalize from 'lodash/capitalize';
 
 import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType, InvestorPropType } from '../../lib/prop-types';
 import { organizationQuery, investorsQuery } from '../../lib/queries';
 import InvestorCell from '../common/investor-cell';
 import TicketsSumCell from '../common/tickets-sum-cell';
-import SendInvitationModal from './send-invitation-modal';
-import UpsertInvestorModal from '../common/upsert-investor-modal';
+import SendInvitationModal from '../common/send-invitation-modal';
+// import UpsertInvestorModal from '../common/upsert-investor-modal';
 
 const InvestorsListHeader = ({ router }) =>
   <Table.Header>
@@ -54,6 +55,11 @@ class InvestorsListRow extends Component {
     const action = investor.status === 'created' ? 'Send' : resend;
     const { shortId } = investor;
     const options = { ...router, shortId };
+    const colors = {
+      created: 'red',
+      invited: 'orange',
+      joined: 'green',
+    };
     return (
       <Link
         prefetch
@@ -64,9 +70,9 @@ class InvestorsListRow extends Component {
           <InvestorCell investor={investor} />
           <TicketsSumCell ticketsSum={investor.ticketsSum} />
           <Table.Cell>
-            <strong className={investor.status}>
-              {investor.status}
-            </strong>
+            <Label color={colors[investor.status]}>
+              {capitalize(investor.status)}
+            </Label>
             <br />
             {moment(investor.createdAt).format('DD/MM/YYYY')}
           </Table.Cell>
@@ -99,26 +105,12 @@ class InvestorsListRow extends Component {
             investor={investor}
             organization={organization}
           />
-          <UpsertInvestorModal
+          {/* <UpsertInvestorModal
             open={this.state.upsertInvestorModalOpen}
             onClose={this.onUpsertInvestorModalClose}
             investor={investor}
             organization={organization}
-          />
-          <style jsx>{`
-            strong.created {
-              color: #db2828;
-            }
-            strong.invited {
-              color: #f2711c;
-            }
-            strong.joined {
-              color: #21ba45;
-            }
-            strong {
-              text-transform: capitalize;
-            }
-          `}</style>
+          /> */}
         </Table.Row>
       </Link>
     );

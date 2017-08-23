@@ -84,6 +84,8 @@ type Investor {
   ticketsSum: TicketsSum!
   company: Company!
   status: String!
+  deals: [Deal]
+  tickets: [Ticket]
   createdAt: Date!
   updatedAt: Date!
 }
@@ -164,6 +166,7 @@ type Deal {
   investorsCommited: Int!
   investors: [Investor]
   tickets: [Ticket]
+  deal: Deal
   createdAt: Date!
 }
 

@@ -28,12 +28,13 @@ const AdminService = {
     }
     return sign({ userId: admin.id, role: admin.role }, process.env.FOREST_ENV_SECRET);
   },
-  adminUser(admin) {
+  async adminUser(admin) {
     try {
       if (!admin) {
         return null;
       }
-      return AdminService.findByEmail(admin.email, admin.organizationId);
+      const result = await AdminService.findByEmail(admin.email, admin.organizationId);
+      return result && result.toJSON();
     } catch (error) {
       console.error(error);
       return null;
