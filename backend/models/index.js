@@ -4,6 +4,7 @@ const DealCategory = require('./deal-category');
 const Deal = require('./deal');
 const Investor = require('./investor');
 const Organization = require('./organization');
+const Report = require('./report');
 const Ticket = require('./ticket');
 
 // adds fk
@@ -56,6 +57,16 @@ Ticket.belongsTo(Investor, { foreignKey: 'investorId' });
 // provides createTicket
 Investor.hasMany(Ticket, { foreignKey: 'investorId' });
 
+// adds fk
+Report.belongsTo(Organization, { foreignKey: 'organizationId' });
+// provides createReport
+Organization.hasMany(Report, { foreignKey: 'organizationId' });
+
+// adds fk
+Report.belongsTo(Deal, { foreignKey: 'dealId' });
+// provides createReport
+Deal.hasMany(Report, { foreignKey: 'dealId' });
+
 module.exports = {
   Admin,
   Company,
@@ -63,5 +74,6 @@ module.exports = {
   Deal,
   Investor,
   Organization,
+  Report,
   Ticket,
 };

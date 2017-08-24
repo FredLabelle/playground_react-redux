@@ -19,6 +19,11 @@ export const AddressPropType = PropTypes.shape({
   state: PropTypes.string.isRequired,
 });
 
+export const EmailPropType = PropTypes.shape({
+  subject: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+});
+
 export const FilePropType = PropTypes.shape({
   name: PropTypes.string,
   url: PropTypes.string.isRequired,
@@ -93,6 +98,17 @@ export const DealPropType = PropTypes.shape({
   updatedAt: PropTypes.string,
 });
 
+export const ReportPropType = PropTypes.shape({
+  id: PropTypes.string,
+  senderName: PropTypes.string,
+  senderEmail: PropTypes.string,
+  replyTo: PropTypes.string,
+  email: EmailPropType,
+  attachments: PropTypes.arrayOf(FilePropType),
+  cc: PropTypes.arrayOf(PropTypes.string),
+  bcc: PropTypes.arrayOf(PropTypes.string),
+});
+
 export const OrganizationPropType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   shortId: PropTypes.string.isRequired,
@@ -107,10 +123,7 @@ export const OrganizationPropType = PropTypes.shape({
       optOutTime: PropTypes.string.isRequired,
       defaultCurrency: PropTypes.string.isRequired,
     }).isRequired,
-    invitationEmail: PropTypes.shape({
-      subject: PropTypes.string.isRequired,
-      body: PropTypes.string.isRequired,
-    }).isRequired,
+    invitationEmail: EmailPropType.isRequired,
   }).isRequired,
   domain: PropTypes.string,
 });

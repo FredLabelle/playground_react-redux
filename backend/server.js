@@ -9,6 +9,21 @@ const authRouter = require('./routes/auth/router');
 const graphqlRouter = require('./graphql/router');
 const forestRouter = require('./routes/forest/router');
 const sequelize = require('./models/sequelize');
+// const { seedDatabase } = require('./routes/forest/organization');
+
+const initSequelize = async () => {
+  try {
+    await sequelize.authenticate();
+    console.info('Postgres: connection has been established successfully.');
+    await sequelize.sync();
+    // seedDatabase(null, { json() {} });
+    console.info('Postgres: database synced successfully.');
+  } catch (error) {
+    console.error(`Postgres error: ${error}`);
+  }
+};
+
+initSequelize();
 
 const app = express();
 // app.use(bodyParser.urlencoded({ extended: true }));

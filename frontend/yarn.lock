@@ -41,7 +41,7 @@ acorn@^5.0.0, acorn@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.1.1.tgz#53fe161111f912ab999ee887a90a0bc52822fd75"
 
-airbnb-prop-types@^2.8.0:
+airbnb-prop-types@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/airbnb-prop-types/-/airbnb-prop-types-2.8.1.tgz#b9e31f08a7ed77b213fefc33b53a8c6e1dd8b885"
   dependencies:
@@ -4094,11 +4094,11 @@ react-country-region-selector@^1.1.0:
     react-dom "^15.5.4"
     reactify "^1.1.1"
 
-react-dates@^12.4.0:
-  version "12.4.0"
-  resolved "https://registry.yarnpkg.com/react-dates/-/react-dates-12.4.0.tgz#d26d36e8a9083a2ccdeddf6b079b4095bcf04a5e"
+react-dates@^12.5.0:
+  version "12.5.0"
+  resolved "https://registry.yarnpkg.com/react-dates/-/react-dates-12.5.0.tgz#59c576e1b8e51677a93e8b30b755de62061912d2"
   dependencies:
-    airbnb-prop-types "^2.8.0"
+    airbnb-prop-types "^2.8.1"
     classnames "^2.2.5"
     consolidated-events "^1.1.0"
     is-touch-device "^1.0.1"

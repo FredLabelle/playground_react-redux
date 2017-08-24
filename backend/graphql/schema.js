@@ -112,14 +112,14 @@ type OrganizationInvestmentMechanisms {
   defaultCurrency: String!
 }
 
-type InvitationEmail {
+type Email {
   subject: String!
   body: String!
 }
 
 type ParametersSettings {
   investmentMechanisms: OrganizationInvestmentMechanisms!
-  invitationEmail: InvitationEmail!
+  invitationEmail: Email!
 }
 
 type DealCategory {
@@ -166,7 +166,7 @@ type Deal {
   investorsCommited: Int!
   investors: [Investor]
   tickets: [Ticket]
-  deal: Deal
+  reports: [Report]
   createdAt: Date!
 }
 
@@ -177,6 +177,17 @@ type Ticket {
   amount: Amount!
   status: String!
   createdAt: Date!
+}
+
+type Report {
+  id: ID!
+  senderName: String!
+  senderEmail: String!
+  replyTo: String!
+  email: Email!
+  attachments: [File]!
+  cc: [String]!
+  bcc: [String]!
 }
 
 type Query {

@@ -1,7 +1,7 @@
 const uniqBy = require('lodash/uniqBy');
 const omit = require('lodash/omit');
 
-const { Deal, Company, DealCategory, Ticket, Investor } = require('../models');
+const { Deal, Company, DealCategory, Ticket, Investor, Report } = require('../models');
 const { handleFilesUpdate } = require('../lib/util');
 
 const DealService = {
@@ -18,6 +18,7 @@ const DealService = {
           model: Ticket,
           include: [{ model: Investor }],
         },
+        { model: Report },
       ],
     });
   },
@@ -107,6 +108,7 @@ const DealService = {
             investor: ticket.Investor.toJSON(),
           }),
         ),
+        reports: deal.Reports.map(report => report.toJSON()),
       });
     } catch (error) {
       console.error(error);

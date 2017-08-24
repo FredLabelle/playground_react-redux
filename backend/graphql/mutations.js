@@ -87,14 +87,14 @@ input OrganizationInvestmentMechanismsInput {
   defaultCurrency: String!
 }
 
-input InvitationEmailInput {
+input EmailInput {
   subject: String!
   body: String!
 }
 
 input ParametersSettingsInput {
   investmentMechanisms: OrganizationInvestmentMechanismsInput!
-  invitationEmail: InvitationEmailInput!
+  invitationEmail: EmailInput!
 }
 
 input UpdateOrganizationInput {
@@ -128,7 +128,7 @@ input InvitationStatusInput {
 
 input InviteInvestorInput {
   investor: InvestorInfoInput!
-  invitationEmail: InvitationEmailInput!
+  invitationEmail: EmailInput!
 }
 
 input UpsertCompanyInput {
@@ -179,6 +179,17 @@ input UpsertTicketInput {
   amount: AmountInput!
 }
 
+input UpsertReportInput {
+  id: ID
+  senderName: String!
+  senderEmail: String!
+  replyTo: String!
+  email: EmailInput!
+  attachments: [FileInput]!
+  cc: [String]!
+  bcc: [String]!
+}
+
 type Mutation {
   investorSignup(input: InvestorSignupInput!): ID
   investorLogin(input: InvestorLoginInput!): ID
@@ -197,6 +208,7 @@ type Mutation {
   upsertDeal(input: UpsertDealInput!): Deal
   sendInvitation(input: InviteInvestorInput!): Boolean!
   upsertTicket(input: UpsertTicketInput!): Ticket
+  upsertReport(input: UpsertReportInput!): Report
 }
 `;
 
@@ -269,6 +281,9 @@ exports.resolvers = {
     },
     upsertTicket(root, { input }, context) {
       return adminMutation(context.Ticket.upsert, null)(context.user, input);
+    },
+    upsertReport(root, { input }, context) {
+      return adminMutation(context.Report.upsert, null)(context.user, input);
     },
   },
 };

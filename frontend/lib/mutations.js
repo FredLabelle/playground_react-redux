@@ -113,3 +113,11 @@ export const sendInvitationMutation = gql`
     sendInvitation(input: $input)
   }
 `;
+
+export const upsertReportMutation = gql`
+  mutation upsertReport($input: UpsertReportInput!) {
+    upsertReport(input: $input) {
+      id
+    }
+  }
+`;

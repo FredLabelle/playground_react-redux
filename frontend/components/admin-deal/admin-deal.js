@@ -11,6 +11,7 @@ import { organizationQuery, dealQuery } from '../../lib/queries';
 import UpsertDealModal from '../common/upsert-deal-modal';
 import DealInvestorsList from './deal-investors-list';
 import DealTickets from './deal-tickets';
+import DealReports from './deal-reports';
 
 class AdminDeal extends Component {
   static propTypes = {
@@ -93,7 +94,7 @@ class AdminDeal extends Component {
         </Menu>
         {active('investors') && <DealInvestorsList investors={deal.investors} />}
         {active('tickets') && <DealTickets deal={deal} />}
-        {active('reports') && <span>REPORTS</span>}
+        {active('reports') && <DealReports deal={deal} />}
         <UpsertDealModal
           open={this.state.upsertDealModalOpen}
           onClose={this.onUpsertDealModalClose}

@@ -8,6 +8,7 @@ const Company = require('../services/company');
 const Deal = require('../services/deal');
 const Investor = require('../services/investor');
 const Organization = require('../services/organization');
+const Report = require('../services/report');
 const Ticket = require('../services/ticket');
 
 const router = express.Router();
@@ -29,6 +30,7 @@ router.use(
         Deal,
         Investor,
         Organization,
+        Report,
         Ticket,
       },
     };

@@ -330,6 +330,12 @@ export const dealQuery = gql`
           currency
         }
       }
+      reports {
+        id
+        email {
+          subject
+        }
+      }
     }
   }
 `;

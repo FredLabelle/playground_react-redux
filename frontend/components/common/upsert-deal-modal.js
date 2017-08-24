@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { Button, Form, Modal, Header, Message } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 import get from 'lodash/get';
@@ -310,21 +310,19 @@ class UpsertDealModal extends Component {
   }
 }
 
-export default compose(
-  graphql(upsertDealMutation, {
-    props: ({ mutate, ownProps: { deal } }) => ({
-      upsertDeal: input =>
-        mutate({
-          variables: { input },
-          refetchQueries: [
-            deal.id
-              ? {
-                  query: dealQuery,
-                  variables: { shortId: deal.shortId },
-                }
-              : { query: dealsQuery },
-          ],
-        }),
-    }),
+export default graphql(upsertDealMutation, {
+  props: ({ mutate, ownProps: { deal } }) => ({
+    upsertDeal: input =>
+      mutate({
+        variables: { input },
+        refetchQueries: [
+          deal.id
+            ? {
+                query: dealQuery,
+                variables: { shortId: deal.shortId },
+              }
+            : { query: dealsQuery },
+        ],
+      }),
   }),
-)(UpsertDealModal);
+})(UpsertDealModal);
