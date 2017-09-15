@@ -1,10 +1,10 @@
 {
-  "name": "investorx-frontend",
+  "name": "invoicex-frontend",
   "private": false,
   "version": "0.0.1",
-  "description": "InvestorX frontend",
+  "description": "InvoiceX frontend",
   "main": "server.js",
-  "repository": "https://github.com/eFounders/investorx",
+  "repository": "https://github.com/eFounders/invoicex",
   "author": "eFounders",
   "license": "UNLICENSED",
   "scripts": {
@@ -13,11 +13,11 @@
     "dev": "NODE_ENV='development' nodemon server.js",
     "build": "next build",
     "start": "node server.js",
-    "deploy-staging": "now -E .env/staging.env && now alias investorx-staging-frontend.efounders.co",
-    "deploy": "now -E .env/production.env && now alias investorx-frontend.efounders.co",
-    "logs-staging": "now logs investorx-staging-frontend.efounders.co",
-    "logs": "now logs investorx-frontend.efounders.co",
-    "cleanup": "now rm investorx-frontend --safe -y"
+    "deploy-staging": "now -E .env/staging.env && now alias invoicex-staging-frontend.efounders.co",
+    "deploy": "now -E .env/production.env && now alias invoicex-frontend.efounders.co",
+    "logs-staging": "now logs invoicex-staging-frontend.efounders.co",
+    "logs": "now logs invoicex-frontend.efounders.co",
+    "cleanup": "now rm invoicex-frontend --safe -y"
   },
   "dependencies": {
     "autoprefixer": "^7.1.2",

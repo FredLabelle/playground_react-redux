@@ -1,6 +1,6 @@
 FROM node:8.4.0-alpine
 MAINTAINER Simon Arvaux <simon@e-founders.com>
-LABEL name="investorx-frontend"
+LABEL name="invoicex-frontend"
 
 RUN mkdir -p /opt/app
 WORKDIR /opt/app

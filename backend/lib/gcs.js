@@ -1,7 +1,7 @@
 const storage = require('@google-cloud/storage');
 const request = require('request');
 
-const credentials = require('./InvestorX-d9fe1a54b936.json');
+const credentials = require('./InvoiceX-d9fe1a54b936.json');
 
 const gcs = storage({ credentials });
 

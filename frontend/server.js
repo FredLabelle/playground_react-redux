@@ -100,6 +100,6 @@ app.prepare().then(() => {
     if (error) {
       throw error;
     }
-    console.info('InvestorX frontend listening on port 3000! ✅');
+    console.info('InvoiceX frontend listening on port 3000! ✅');
   });
 });

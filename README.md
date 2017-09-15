@@ -1,4 +1,4 @@
-# InvestorX
+# InvoiceX
 
 ## dev
 

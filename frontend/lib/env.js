@@ -9,8 +9,8 @@ const getBackendUrl = () => {
     return `${window.location.origin}/api`;
   }
   return process.env.NODE_ENV === 'production'
-    ? 'https://investorx.efounders.co/api'
-    : 'https://investorx-staging.efounders.co/api';
+    ? 'https://invoicex.efounders.co/api'
+    : 'https://invoicex-staging.efounders.co/api';
 };
 
 export const BACKEND_URL = isDevelopment ? developmentBackendUrl : getBackendUrl();
@@ -20,8 +20,8 @@ const getFrontendUrl = () => {
     return window.location.origin;
   }
   return process.env.NODE_ENV === 'production'
-    ? 'https://investorx.efounders.co'
-    : 'https://investorx-staging.efounders.co';
+    ? 'https://invoicex.efounders.co'
+    : 'https://invoicex-staging.efounders.co';
 };
 
 export const FRONTEND_URL = isDevelopment ? 'http://localhost:3000' : getFrontendUrl();

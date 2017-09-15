@@ -112,10 +112,10 @@ const InvestorService = {
       const { shortId } = organization;
       const url = `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`;
       sendEmail({
-        fromEmail: 'investorx@e-founders.com',
-        fromName: 'InvestorX',
+        fromEmail: 'invoicex@e-founders.com',
+        fromName: 'InvoiceX',
         to: email,
-        subject: 'Reset your password on InvestorX',
+        subject: 'Reset your password on InvoiceX',
         templateId: 161024,
         vars: { firstName: investor.name.firstName, link: url },
       });
@@ -153,10 +153,10 @@ const InvestorService = {
       const queryString = stringify({ changeEmailToken });
       const url = `${process.env.BACKEND_URL}/change-email?${queryString}`;
       sendEmail({
-        fromEmail: 'investorx@e-founders.com',
-        fromName: 'InvestorX',
+        fromEmail: 'invoicex@e-founders.com',
+        fromName: 'InvoiceX',
         to: input.email,
-        subject: 'Change your email on InvestorX',
+        subject: 'Change your email on InvoiceX',
         templateId: 173370,
         vars: { firstName: investor.name.firstName, link: url },
       });

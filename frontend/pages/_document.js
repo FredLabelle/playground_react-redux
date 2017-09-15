@@ -1,4 +1,4 @@
-import 'isomorphic-fetch';
+import 'isomorphic-fetch'; //TO CHECK  ???
 import Document, { Main, NextScript } from 'next/document';
 
 import Head from '../components/head';

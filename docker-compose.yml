@@ -1,12 +1,12 @@
 version: '3.1'
 services:
   database:
-    container_name: investorx_database
+    container_name: invoicex_database
     image: postgres:9.6.3-alpine
     ports:
       - 5432:5432
   backend:
-    container_name: investorx_backend
+    container_name: invoicex_backend
     depends_on:
       - database
     build: ./backend
@@ -16,7 +16,7 @@ services:
     ports:
       - 8080:8080
   frontend:
-    container_name: investorx_frontend
+    container_name: invoicex_frontend
     build: ./frontend
     volumes:
       - ./frontend:/opt/app:cached

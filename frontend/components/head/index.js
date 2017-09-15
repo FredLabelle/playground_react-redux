@@ -6,8 +6,8 @@ import { FRONTEND_URL } from '../../lib/env';
 import UploadcareScript from './uploadcare-script';
 import globalStyleSheet from './style.css';
 
-const title = 'InvestorX';
-const description = 'InvestorX description';
+const title = 'InvoiceX';
+const description = 'InvoiceX description';
 // const socialUrl = `${FRONTEND_URL}/img/social.jpg`;
 
 export default () =>

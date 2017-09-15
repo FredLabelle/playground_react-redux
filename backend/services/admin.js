@@ -63,8 +63,8 @@ const AdminService = {
         investorInput.name,
       );
       sendEmail({
-        fromEmail: 'investorx@e-founders.com',
-        fromName: 'InvestorX',
+        fromEmail: 'invoicex@e-founders.com',
+        fromName: 'InvoiceX',
         to: investorInput.email,
         subject,
         templateId: 166944,
@@ -98,8 +98,8 @@ const AdminService = {
         investor.name,
       );
       sendEmail({
-        fromEmail: 'investorx@e-founders.com',
-        fromName: 'InvestorX',
+        fromEmail: 'invoicex@e-founders.com',
+        fromName: 'InvoiceX',
         to: investor.email,
         subject,
         templateId: 166944,

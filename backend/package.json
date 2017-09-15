@@ -1,10 +1,10 @@
 {
-  "name": "investorx-backend",
+  "name": "invoicex-backend",
   "private": false,
   "version": "0.0.1",
-  "description": "InvestorX backend",
+  "description": "InvoiceX backend",
   "main": "server.js",
-  "repository": "https://github.com/eFounders/investorx",
+  "repository": "https://github.com/eFounders/invoicex",
   "author": "eFounders",
   "license": "UNLICENSED",
   "scripts": {
@@ -12,11 +12,11 @@
     "eslint": "eslint .;exit 0",
     "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{forest,graphql,lib,models,routes,services}/**/*.js\"",
     "dev": "NODE_ENV='development' nodemon",
-    "deploy-staging": "now -E .env/staging.env && now alias investorx-staging-backend.efounders.co",
-    "deploy": "now -E .env/production.env && now alias investorx-backend.efounders.co",
-    "logs-staging": "now logs investorx-staging-backend.efounders.co",
-    "logs": "now logs investorx-backend.efounders.co",
-    "cleanup": "now rm investorx-backend --safe -y"
+    "deploy-staging": "now -E .env/staging.env && now alias invoicex-staging-backend.efounders.co",
+    "deploy": "now -E .env/production.env && now alias invoicex-backend.efounders.co",
+    "logs-staging": "now logs invoicex-staging-backend.efounders.co",
+    "logs": "now logs invoicex-backend.efounders.co",
+    "cleanup": "now rm invoicex-backend --safe -y"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.2.1",
