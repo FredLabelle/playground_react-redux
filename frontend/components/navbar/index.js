@@ -5,7 +5,8 @@ import OrganizationNavBar from './organization-navbar';
 // import organization from '../../queries/organization.gql';
 
 const NavBar = ({ router }) =>
-  router.organizationShortId ? <OrganizationNavBar router={router} /> : <div />;
+//TODO 
+  router.organizationShortId ? <OrganizationNavBar router={router} /> : <div> Nav missing</div>;
 NavBar.propTypes = { router: RouterPropType.isRequired };
 
 export default connect(({ router }) => ({ router }))(NavBar);

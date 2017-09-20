@@ -1,8 +1,8 @@
 import AdminMenu from '../common/admin-menu';
-import AdminDeal from './admin-deal';
+import AdminWallets from './admin-wallets';
 
 export default () =>
   <div>
     <AdminMenu />
-    <AdminDeal />
+    <AdminWallets />
   </div>;

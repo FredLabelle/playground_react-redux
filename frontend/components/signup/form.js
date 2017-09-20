@@ -59,7 +59,7 @@ class SignupForm extends Component {
     return (
       <Form onSubmit={this.onSubmit} warning={this.props.warning} success={this.state.success}>
         <Header as="h2" dividing>
-          Create your Investor account
+          Create your account
         </Header>
         <AccountFields
           investor={this.state.investor}

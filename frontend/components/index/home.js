@@ -1,4 +1,7 @@
+import Menu from '../common/menu';
+
 export default () =>
   <div>
-    <h1>InvoiceX Landing Page</h1>
+    <Menu />
+    Welcome
   </div>;

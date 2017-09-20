@@ -20,8 +20,8 @@ const OrganizationNavBar = ({ router, organization, user }) =>
     <Menu.Item className="horizontally fitted">
       <Link
         prefetch
-        href={linkHref('/', { ...router, admin: user ? user.role === 'admin' : router.admin })}
-        as={linkAs('/', { ...router, admin: user ? user.role === 'admin' : router.admin })}
+        href={linkHref('/', router )}
+        as={linkAs('/', router )}
       >
         <a>
           <Image
@@ -34,8 +34,8 @@ const OrganizationNavBar = ({ router, organization, user }) =>
     <Menu.Item className="horizontally fitted">
       <Link
         prefetch
-        href={linkHref('/', { ...router, admin: user ? user.role === 'admin' : router.admin })}
-        as={linkAs('/', { ...router, admin: user ? user.role === 'admin' : router.admin })}
+        href={linkHref('/', router )}
+        as={linkAs('/', router )}
       >
         <a>Home</a>
       </Link>

@@ -5,32 +5,16 @@ import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import Router from 'next/router';
 
-import { RouterPropType } from '../../lib/prop-types';
-import { investorUserQuery, adminUserQuery, dealsQuery } from '../../lib/queries';
 import { adminLoginAckMutation } from '../../lib/mutations';
-import { linkHref, linkAs } from '../../lib/url';
 import AdminMenu from '../common/admin-menu';
-import AdminDeals from './admin-deals';
+import AdminGeneral from './admin-general';
 
 class AdminIndex extends Component {
-  static propTypes = {
-    router: RouterPropType.isRequired,
-    cookies: PropTypes.instanceOf(Cookies).isRequired,
-    adminLoginAck: PropTypes.func.isRequired,
-  };
-  componentDidMount() {
-    const { token } = this.props.router.query;
-    if (token) {
-      this.props.cookies.set('token', token, { path: '/' });
-      this.props.adminLoginAck();
-      Router.replace(linkHref('/', this.props.router), linkAs('/', this.props.router));
-    }
-  }
   render() {
     return (
       <div>
         <AdminMenu />
-        <AdminDeals />
+        <AdminGeneral />
       </div>
     );
   }
@@ -39,22 +23,4 @@ class AdminIndex extends Component {
 export default compose(
   withCookies,
   connect(({ router }) => ({ router })),
-  graphql(adminLoginAckMutation, {
-    props: ({ mutate }) => ({
-      adminLoginAck: () =>
-        mutate({
-          refetchQueries: [
-            {
-              query: investorUserQuery,
-              fetchPolicy: 'network-only',
-            },
-            {
-              query: adminUserQuery,
-              fetchPolicy: 'network-only',
-            },
-            { query: dealsQuery },
-          ],
-        }),
-    }),
-  }),
 )(AdminIndex);

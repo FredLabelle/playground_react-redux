@@ -2,12 +2,12 @@ import { Container } from 'semantic-ui-react';
 
 import withData from '../../../lib/withData';
 import NavBar from '../../../components/navbar';
-import AdminTickets from '../../../components/admin-tickets';
+import AdminUsers from '../../../components/admin-users';
 
 const AdminTicketsPage = () =>
   <Container>
     <NavBar />
-    <AdminTickets />
+    <AdminUsers />
   </Container>;
 
 export default withData(AdminTicketsPage);

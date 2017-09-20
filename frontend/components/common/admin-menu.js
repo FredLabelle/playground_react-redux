@@ -8,18 +8,18 @@ import { linkHref, linkAs } from '../../lib/url';
 const AdminMenu = ({ router }) =>
   <Menu attached="top" tabular widths={3}>
     <Link prefetch href={linkHref('/', router)} as={linkAs('/', router)}>
-      <Menu.Item name="/" active={router.pathname === '/' || router.pathname.startsWith('/deals')}>
-        Deals
+      <Menu.Item name="/" active={router.pathname === '/' || router.pathname.startsWith('/general')}>
+        General
       </Menu.Item>
     </Link>
-    <Link prefetch href={linkHref('/investors', router)} as={linkAs('/investors', router)}>
-      <Menu.Item name="/investors" active={router.pathname.startsWith('/investors')}>
-        Investors
+    <Link prefetch href={linkHref('/users', router)} as={linkAs('/users', router)}>
+      <Menu.Item name="/users" active={router.pathname.startsWith('/users')}>
+        Users
       </Menu.Item>
     </Link>
-    <Link prefetch href={linkHref('/tickets', router)} as={linkAs('/tickets', router)}>
-      <Menu.Item name="/tickets" active={router.pathname.startsWith('/tickets')}>
-        Tickets
+    <Link prefetch href={linkHref('/wallets', router)} as={linkAs('/wallets', router)}>
+      <Menu.Item name="/wallets" active={router.pathname.startsWith('/wallets')}>
+        Wallets
       </Menu.Item>
     </Link>
   </Menu>;

@@ -9,12 +9,27 @@ const InvestorMenu = ({ router }) =>
   <Menu attached="top" tabular widths={2}>
     <Link prefetch href={linkHref('/', router)} as={linkAs('/', router)}>
       <Menu.Item name="/" active={router.pathname === '/'}>
-        Tickets
+        Dashboard
+      </Menu.Item>
+    </Link>
+    <Link prefetch href={linkHref('/', router)} as={linkAs('/', router)}>
+      <Menu.Item name="/" active={router.pathname.startsWith('/')}>
+        Invoices
       </Menu.Item>
     </Link>
     <Link prefetch href={linkHref('/deals', router)} as={linkAs('/deals', router)}>
-      <Menu.Item name="/deals" active={router.pathname.startsWith('/deals')}>
-        Deals
+      <Menu.Item name="/" active={router.pathname.startsWith('/deals')}>
+        Customers
+      </Menu.Item>
+    </Link>
+    <Link prefetch href={linkHref('/deals', router)} as={linkAs('/', router)}>
+      <Menu.Item name="/" active={router.pathname.startsWith('/')}>
+        Templates
+      </Menu.Item>
+    </Link>
+    <Link prefetch href={linkHref('/deals', router)} as={linkAs('/', router)}>
+      <Menu.Item name="/" active={router.pathname.startsWith('/')}>
+        Wallets
       </Menu.Item>
     </Link>
   </Menu>;

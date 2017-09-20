@@ -1,8 +1,8 @@
 import AdminMenu from '../common/admin-menu';
-import AdminReports from './admin-reports';
+import AdminUsers from './admin-users';
 
 export default () =>
   <div>
     <AdminMenu />
-    <AdminReports />
+    <AdminUsers />
   </div>;
