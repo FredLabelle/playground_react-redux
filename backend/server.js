@@ -5,7 +5,6 @@ const cors = require('cors');
 const liana = require('forest-express-sequelize');
 
 const appRouter = require('./routes/router');
-const authRouter = require('./routes/auth/router');
 const graphqlRouter = require('./graphql/router');
 const forestRouter = require('./routes/forest/router');
 const sequelize = require('./models/sequelize');
@@ -32,11 +31,10 @@ app.use(bodyParser.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(cors());
   app.use(appRouter);
-  app.use('/auth', authRouter);
+
   app.use(graphqlRouter);
 } else {
   app.use('/api', appRouter);
-  app.use('/api/auth', authRouter);
   app.use('/api', graphqlRouter);
 }
 

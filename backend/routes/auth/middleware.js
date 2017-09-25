@@ -1,23 +1,9 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
-const { Admin, Investor } = require('../../models');
+const { User } = require('../../models');
 
 const verify = promisify(jwt.verify);
-
-const roleToModel = role => {
-  switch (role) {
-    case 'admin': {
-      return Admin;
-    }
-    case 'investor': {
-      return Investor;
-    }
-    default: {
-      return null;
-    }
-  }
-};
 
 module.exports = async (req, res, next) => {
   const { authorization } = req.headers;
@@ -28,7 +14,7 @@ module.exports = async (req, res, next) => {
   // TODO if token expired, cant access public queries
   try {
     const { userId, role } = await verify(token, process.env.FOREST_ENV_SECRET);
-    req.user = await roleToModel(role).findById(userId);
+    req.user = await User.findById(userId);
   } catch (error) {
     console.error(error);
   }

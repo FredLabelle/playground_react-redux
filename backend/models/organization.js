@@ -27,28 +27,6 @@ const Organization = sequelize.define(
       },
       allowNull: false,
     },
-    parametersSettings: {
-      type: Sequelize.JSONB,
-      defaultValue: {
-        investmentMechanisms: {
-          optOutTime: '5',
-          defaultCurrency: 'usd',
-        },
-        invitationEmail: {
-          subject: "You've been invited to join {{organization}}!",
-          body: [
-            'Dear {{firstname}},',
-            '',
-            'Here is the link to signup to the club:',
-            '',
-            '{{url}}',
-            '',
-            'Best,',
-          ].join('\n'),
-        },
-      },
-      allowNull: false,
-    },
   },
   {
     getterMethods: {

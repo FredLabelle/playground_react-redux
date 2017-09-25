@@ -9,48 +9,37 @@ const get = require('lodash/get');
 const cloneDeep = require('lodash/cloneDeep');
 const uniqBy = require('lodash/uniqBy');
 
-const { Admin, Investor, Organization, Ticket, Deal, DealCategory, Company } = require('../models');
+const { User, Organization } = require('../models');
 const { gravatarPicture, handleFilesUpdate } = require('../lib/util');
 const { sendEmail } = require('../lib/mailjet');
 
 const sign = promisify(jwt.sign);
 const verify = promisify(jwt.verify);
 
-const InvestorService = {
+const UserService = {
   idLoader() {
-    return new DataLoader(ids => Promise.all(ids.map(id => Investor.findById(id))));
+    return new DataLoader(ids => Promise.all(ids.map(id => User.findById(id))));
   },
   /* findById(id) {
     return this.loader.load(id);
   }, */
   findByShortId(shortId) {
-    return Investor.findOne({
+    return User.findOne({
       where: { shortId },
-      include: [
-        {
-          model: Ticket,
-          include: [
-            {
-              model: Deal,
-              include: [{ model: DealCategory }, { model: Company }],
-            },
-          ],
-        },
-      ],
     });
   },
   findByEmail(email, organizationId) {
-    return Investor.findOne({
+    return User.findOne({
       where: { email, organizationId },
     });
   },
   findByResetPasswordToken(resetPasswordToken) {
-    return Investor.findOne({
+    return User.findOne({
       where: { resetPasswordToken },
     });
   },
   findByChangeEmailToken(changeEmailToken) {
-    return Investor.findOne({
+    return User.findOne({
       where: { changeEmailToken },
     });
   },
@@ -63,18 +52,18 @@ const InvestorService = {
       const organization = await Organization.findOne({
         where: { shortId: organizationShortId },
       });
-      const investor = await InvestorService.findByEmail(email, organization.id);
-      if (!investor) {
+      const user = await UserService.findByEmail(email, organization.id);
+      if (!user) {
         return null;
       }
       const password = await bcrypt.hash(input.password, 10);
-      await investor.update(
+      await user.update(
         Object.assign(input, {
           password,
           status: 'joined',
         }),
       );
-      return sign({ userId: investor.id, role: investor.role }, process.env.FOREST_ENV_SECRET);
+      return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
       return null;
@@ -85,15 +74,15 @@ const InvestorService = {
   },
   async login({ email, password, organizationId }) {
     try {
-      const investor = await InvestorService.findByEmail(email, organizationId);
-      if (!investor) {
+      const user = await UserService.findByEmail(email, organizationId);
+      if (!user) {
         return null;
       }
-      const passwordsMatch = await InvestorService.passwordsMatch(password, investor.password);
+      const passwordsMatch = await UserService.passwordsMatch(password, user.password);
       if (!passwordsMatch) {
         return null;
       }
-      return sign({ userId: investor.id, role: investor.role }, process.env.FOREST_ENV_SECRET);
+      return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
       return null;
@@ -102,12 +91,12 @@ const InvestorService = {
   async forgotPassword({ email, organizationId }) {
     try {
       const organization = await Organization.findById(organizationId);
-      const investor = await InvestorService.findByEmail(email, organization.id);
-      if (!investor) {
+      const user = await UserService.findByEmail(email, organization.id);
+      if (!user) {
         return false;
       }
       const resetPasswordToken = uuid();
-      await investor.update({ resetPasswordToken });
+      await user.update({ resetPasswordToken });
       const queryString = stringify({ resetPasswordToken });
       const { shortId } = organization;
       const url = `${process.env.FRONTEND_URL}/organization/${shortId}/login?${queryString}`;
@@ -117,7 +106,7 @@ const InvestorService = {
         to: email,
         subject: 'Reset your password on InvoiceX',
         templateId: 161024,
-        vars: { firstName: investor.name.firstName, link: url },
+        vars: { firstName: user.name.firstName, link: url },
       });
       return true;
     } catch (error) {
@@ -127,29 +116,29 @@ const InvestorService = {
   },
   async resetPassword(input) {
     try {
-      const investor = await InvestorService.findByResetPasswordToken(input.token);
-      if (!investor) {
+      const user = await UserService.findByResetPasswordToken(input.token);
+      if (!user) {
         return null;
       }
       const password = await bcrypt.hash(input.password, 10);
-      await investor.update({ password, status: 'joined', resetPasswordToken: null });
-      return sign({ userId: investor.id, role: investor.role }, process.env.FOREST_ENV_SECRET);
+      await user.update({ password, status: 'joined', resetPasswordToken: null });
+      return sign({ userId: user.id, role: user.role }, process.env.FOREST_ENV_SECRET);
     } catch (error) {
       console.error(error);
       return null;
     }
   },
-  async changeEmail(investor, input) {
+  async changeEmail(user, input) {
     try {
-      const passwordsMatch = await InvestorService.passwordsMatch(
+      const passwordsMatch = await UserService.passwordsMatch(
         input.password,
-        investor.password,
+        user.password,
       );
       if (!passwordsMatch) {
         return false;
       }
       const changeEmailToken = await sign({ email: input.email }, process.env.FOREST_ENV_SECRET);
-      await investor.update({ changeEmailToken });
+      await user.update({ changeEmailToken });
       const queryString = stringify({ changeEmailToken });
       const url = `${process.env.BACKEND_URL}/change-email?${queryString}`;
       sendEmail({
@@ -158,7 +147,7 @@ const InvestorService = {
         to: input.email,
         subject: 'Change your email on InvoiceX',
         templateId: 173370,
-        vars: { firstName: investor.name.firstName, link: url },
+        vars: { firstName: user.name.firstName, link: url },
       });
       return true;
     } catch (error) {
@@ -166,35 +155,35 @@ const InvestorService = {
       return false;
     }
   },
-  async changePassword(investor, input) {
+  async changePassword(user, input) {
     try {
-      const passwordsMatch = await InvestorService.passwordsMatch(
+      const passwordsMatch = await UserService.passwordsMatch(
         input.currentPassword,
-        investor.password,
+        user.password,
       );
       if (!passwordsMatch) {
         return false;
       }
       const password = await bcrypt.hash(input.password, 10);
-      await investor.update({ password });
+      await user.update({ password });
       return true;
     } catch (error) {
       console.error(error);
       return false;
     }
   },
-  async investorUser(investor) {
-    try {
-      if (!investor) {
-        return null;
-      }
-      const result = await InvestorService.findByEmail(investor.email, investor.organizationId);
-      return result && result.toJSON();
-    } catch (error) {
-      console.error(error);
+  async user(user) {
+  try {
+    if (!user) {
       return null;
     }
-  },
+    const result = await UserService.findByEmail(user.email, user.organizationId);
+    return result && result.toJSON();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+},
   async invitationStatus({ email, organizationId }) {
     try {
       const admin = await Admin.findOne({
@@ -203,9 +192,9 @@ const InvestorService = {
       if (admin) {
         return 'error';
       }
-      const investor = await InvestorService.findByEmail(email, organizationId);
-      if (investor) {
-        return investor.status;
+      const user = await UserService.findByEmail(email, organizationId);
+      if (user) {
+        return user.status;
       }
       return 'invitable';
     } catch (error) {
@@ -218,32 +207,25 @@ const InvestorService = {
       if (user.role !== 'admin' && user.id !== input.id) {
         return null;
       }
-      let investor = await Investor.findById(input.id);
-      if (!investor) {
+      let user = await User.findById(input.id);
+      if (!user) {
         const organization = await user.getOrganization();
-        const invitationStatus = await InvestorService.invitationStatus({
+        const invitationStatus = await UserService.invitationStatus({
           email: input.email,
           organizationId: organization.id,
         });
         if (invitationStatus !== 'invitable') {
           return null;
         }
-        const investorFields = cloneDeep(input);
-        investorFields.picture = [];
-        if (investorFields.individualSettings) {
-          investorFields.individualSettings.idDocuments = [];
+        const userFields = cloneDeep(input);
+        userFields.picture = [];
+        if (userFields.individualSettings) {
+          userFields.individualSettings.idDocuments = [];
         }
-        if (investorFields.corporationSettings) {
-          investorFields.corporationSettings.incProof = [];
-        }
-        investor = await organization.createInvestor(investorFields);
+        user = await organization.createUser(userFields);
       }
       const [picture, incProof] = await Promise.all([
-        handleFilesUpdate(get(input, 'picture'), `investors/picture/${user.shortId}`),
-        handleFilesUpdate(
-          get(input, 'corporationSettings.incProof'),
-          `investors/incProof/${user.shortId}`,
-        ),
+        handleFilesUpdate(get(input, 'picture'), `users/picture/${user.shortId}`),
       ]);
       if (picture) {
         if (!picture.length) {
@@ -252,9 +234,9 @@ const InvestorService = {
         Object.assign(input, { picture });
       }
       const idDocuments = cloneDeep(get(input, 'individualSettings.idDocuments'));
-      const { individualSettings, corporationSettings } = investor.toJSON();
+      const { individualSettings } = user.toJSON();
       // input lacks some fields in nested JSONB so we need to default to current values
-      const update = defaultsDeep(input, { individualSettings }, { corporationSettings });
+      const update = defaultsDeep(input, { individualSettings });
       if (idDocuments) {
         const promises = idDocuments.map((inputIdDocument, index) => {
           const idDocument = individualSettings.idDocuments.find(
@@ -265,7 +247,7 @@ const InvestorService = {
           }
           return handleFilesUpdate(
             idDocuments[index].files,
-            `investors/idDocuments/${user.shortId}/${idDocuments[index].number}`,
+            `users/idDocuments/${user.shortId}/${idDocuments[index].number}`,
           );
         });
         const filesList = await Promise.all(promises);
@@ -274,58 +256,7 @@ const InvestorService = {
         });
         Object.assign(update.individualSettings, { idDocuments });
       }
-      if (incProof) {
-        Object.assign(update.corporationSettings, { incProof });
-      }
-      return investor.update(input);
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  async investors(admin) {
-    try {
-      const organization = await admin.getOrganization();
-      const investors = await organization.getInvestors({
-        include: [{ model: Ticket }],
-      });
-      return investors.map(investor =>
-        Object.assign({}, investor.toJSON(), {
-          ticketsSum: { count: investor.Tickets.length },
-        }),
-      );
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-  async investor(admin, shortId) {
-    try {
-      const investor = await InvestorService.findByShortId(shortId);
-      if (admin.organizationId !== investor.organizationId) {
-        return null;
-      }
-      return Object.assign({}, investor.toJSON(), {
-        deals: uniqBy(
-          investor.Tickets.map(ticket =>
-            Object.assign({}, ticket.Deal.toJSON(), {
-              category: ticket.Deal.DealCategory.toJSON(),
-              company: ticket.Deal.Company.toJSON(),
-            }),
-          ),
-          'id',
-        ),
-        ticketsSum: { count: investor.Tickets.length },
-        tickets: investor.Tickets.map(ticket =>
-          Object.assign({}, ticket.toJSON(), {
-            investor: investor.toJSON(),
-            deal: Object.assign({}, ticket.Deal.toJSON(), {
-              category: ticket.Deal.DealCategory.toJSON(),
-              company: ticket.Deal.Company.toJSON(),
-            }),
-          }),
-        ),
-      });
+      return user.update(input);
     } catch (error) {
       console.error(error);
       return null;
@@ -333,4 +264,4 @@ const InvestorService = {
   },
 };
 
-module.exports = InvestorService;
+module.exports = UserService;

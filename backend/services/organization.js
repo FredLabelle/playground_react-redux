@@ -1,7 +1,7 @@
 const DataLoader = require('dataloader');
 const omit = require('lodash/omit');
 
-const { Organization, DealCategory } = require('../models');
+const { Organization } = require('../models');
 
 const OrganizationService = {
   shortIdLoader() {
@@ -21,7 +21,6 @@ const OrganizationService = {
   findByShortId(shortId) {
     return Organization.findOne({
       where: { shortId },
-      include: [{ model: DealCategory }],
     });
   },
   findByEmailDomain(emailDomain) {
@@ -36,10 +35,7 @@ const OrganizationService = {
   async organization(shortId) {
     try {
       const organization = await OrganizationService.findByShortId(shortId);
-      const dealCategories = organization.DealCategories.map(dealCategory => dealCategory.toJSON());
-      const orderSorter = ({ order: orderA }, { order: orderB }) => orderA - orderB;
-      dealCategories.sort(orderSorter);
-      return Object.assign({}, organization.toJSON(), { dealCategories });
+      return organization.toJSON();
     } catch (error) {
       console.error(error);
       return null;
@@ -49,29 +45,6 @@ const OrganizationService = {
     try {
       const organization = await admin.getOrganization();
       await organization.update(input);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  },
-  async updateDealCategories(admin, input) {
-    try {
-      const organization = await admin.getOrganization();
-      const dealCategories = await organization.getDealCategories();
-      const promises = input.map((inputDealCategory, index) => {
-        const dealCategory = dealCategories.find(category => category.id === inputDealCategory.id);
-        const values = Object.assign({ order: index }, omit(inputDealCategory, 'id'));
-        if (dealCategory) {
-          return dealCategory.update(values);
-        }
-        return organization.createDealCategory(values);
-      });
-      const updatedDealCategories = await Promise.all(promises);
-      const dealCategoriesIds = updatedDealCategories.map(dealCategory => dealCategory.id);
-      await DealCategory.destroy({
-        where: { id: { $notIn: dealCategoriesIds } },
-      });
       return true;
     } catch (error) {
       console.error(error);

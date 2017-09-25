@@ -5,7 +5,7 @@ const sequelize = require('./sequelize');
 const { gravatarPicture } = require('../lib/util');
 
 module.exports = sequelize.define(
-  'Investor',
+  'User',
   {
     id: {
       type: Sequelize.UUID,
@@ -19,7 +19,7 @@ module.exports = sequelize.define(
     },
     role: {
       type: Sequelize.STRING,
-      defaultValue: 'investor',
+      defaultValue: 'accountManager',
       allowNull: false,
     },
     name: {
@@ -64,11 +64,6 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       defaultValue: 'individual',
     },
-    investmentSettings: {
-      type: Sequelize.JSONB,
-      defaultValue: {},
-      allowNull: false,
-    },
     individualSettings: {
       type: Sequelize.JSONB,
       defaultValue: {
@@ -85,22 +80,6 @@ module.exports = sequelize.define(
         },
       },
       allowNull: false,
-    },
-    corporationSettings: {
-      type: Sequelize.JSONB,
-      defaultValue: {
-        position: '',
-        companyName: '',
-        companyAddress: {
-          address1: '',
-          address2: '',
-          city: '',
-          zipCode: '',
-          country: '',
-          state: '',
-        },
-        incProof: [],
-      },
     },
     advisor: {
       type: Sequelize.JSONB,
@@ -121,14 +100,14 @@ module.exports = sequelize.define(
       },
     },
     hooks: {
-      beforeCreate(investor) {
-        // generate shortId on investor creation
-        if (!investor.shortId) {
+      beforeCreate(user) {
+        // generate shortId on user creation
+        if (!user.shortId) {
           const shortId = shortid.generate();
-          Object.assign(investor, { shortId });
+          Object.assign(user, { shortId });
         }
         // generate picture
-        Object.assign(investor, { picture: [gravatarPicture(investor.email)] });
+        Object.assign(user, { picture: [gravatarPicture(user.email)] });
       },
     },
   },
@@ -138,7 +117,7 @@ module.exports = sequelize.define(
 
 phone migration
 
-ALTER TABLE "Investors" RENAME COLUMN "phone" TO "phone1";
-ALTER TABLE "Investors" ADD COLUMN "phone2" VARCHAR(255) DEFAULT '';
+ALTER TABLE "Users" RENAME COLUMN "phone" TO "phone1";
+ALTER TABLE "Users" ADD COLUMN "phone2" VARCHAR(255) DEFAULT '';
 
 */

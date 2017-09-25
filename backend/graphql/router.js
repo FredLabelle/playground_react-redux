@@ -1,15 +1,11 @@
 const express = require('express');
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
 
-const authMiddleware = require('../routes/auth/middleware');
 const schema = require('./schema');
-const Admin = require('../services/admin');
-const Company = require('../services/company');
-const Deal = require('../services/deal');
-const Investor = require('../services/investor');
+const authMiddleware = require('../routes/auth/middleware');
+const User = require('../services/user');
 const Organization = require('../services/organization');
-const Report = require('../services/report');
-const Ticket = require('../services/ticket');
+
 
 const router = express.Router();
 
@@ -25,13 +21,8 @@ router.use(
       schema,
       context: {
         user: req.user,
-        Admin,
-        Company,
-        Deal,
-        Investor,
+        User,
         Organization,
-        Report,
-        Ticket,
       },
     };
   }),

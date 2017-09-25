@@ -7,10 +7,9 @@ import { Form, Header, Segment, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
 import { handleChange } from '../../lib/util';
-import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { investorSignupMutation } from '../../lib/mutations';
-import { investorUserQuery, adminUserQuery } from '../../lib/queries';
+import { signupMutation } from '../../lib/mutations';
+import { userQuery } from '../../lib/queries';
 import AccountFields from '../common/account-fields';
 
 class SignupForm extends Component {
@@ -22,14 +21,13 @@ class SignupForm extends Component {
     cookies: PropTypes.instanceOf(Cookies).isRequired,
   };
   state = {
-    investor: {
+    user: {
       name: {
         firstName: this.props.router.query.firstName || '',
         lastName: this.props.router.query.lastName || '',
       },
       email: this.props.router.query.email || '',
       password: '',
-      investmentSettings: {},
     },
     loading: false,
   };
@@ -39,16 +37,13 @@ class SignupForm extends Component {
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ loading: true });
-    const { data: { investorSignup } } = await this.props.signup({
-      ...this.state.investor,
+    const { data: { userSignup } } = await this.props.signup({
+      ...this.state.user,
       token: this.props.router.query.token,
     });
-    if (investorSignup) {
-      this.props.cookies.set('token', investorSignup, { path: '/' });
-      Router.push(
-        linkHref('/settings/administrative', this.props.router),
-        linkAs('/settings/administrative', this.props.router),
-      );
+    if (userSignup) {
+      this.props.cookies.set('token', userSignup, { path: '/' });
+      Router.push('/','/',);
     } else {
       console.error('SIGNUP ERROR');
       this.setState({ loading: false });
@@ -62,7 +57,7 @@ class SignupForm extends Component {
           Create your account
         </Header>
         <AccountFields
-          investor={this.state.investor}
+          user={this.state.user}
           handleChange={this.handleChange}
           signup
           organization={this.props.organization}
@@ -91,18 +86,14 @@ export default compose(
     router,
     warning: form.passwordsMismatch || form.passwordTooWeak,
   })),
-  graphql(investorSignupMutation, {
+  graphql(signupMutation, {
     props: ({ mutate }) => ({
       signup: input =>
         mutate({
           variables: { input },
           refetchQueries: [
             {
-              query: investorUserQuery,
-              fetchPolicy: 'network-only',
-            },
-            {
-              query: adminUserQuery,
+              query: userQuery,
               fetchPolicy: 'network-only',
             },
           ],

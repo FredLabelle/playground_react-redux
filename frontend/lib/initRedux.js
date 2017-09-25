@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import Router from 'next/router';
 import { reducer as toastrReducer } from 'react-redux-toastr';
 
-import reducers from '../reducers'; // TO CHECK import index.js dans le dossier reducers ?
+import reducers from '../reducers';
 import { onRouteChangeStart } from '../actions/router';
 import { setUnsavedChanges } from '../actions/form';
 

@@ -1,40 +1,35 @@
 import PropTypes from 'prop-types';
 import { Header, Form } from 'semantic-ui-react';
 
-import { InvestorPropType, OrganizationPropType } from '../../lib/prop-types';
+import { UserPropType, OrganizationPropType } from '../../lib/prop-types';
 import NameField from '../fields/name-field';
 import PasswordField from '../fields/password-field';
-import InvestmentField from '../fields/investment-field';
 
 const AccountFields = ({
-  investor,
+  user,
   signup,
   handleChange,
-  organization: {
-    dealCategories,
-    parametersSettings: { investmentMechanisms: { defaultCurrency, optOutTime } },
-  },
+  organization,
 }) =>
   <div>
     <Header as="h3" dividing>
-      Investor identity
+      User identity
     </Header>
     <Form.Input
-      name="investor.email"
-      value={investor.email}
+      name="user.email"
+      value={user.email}
       onChange={handleChange}
       label="Email"
       placeholder="Email"
       type="email"
       required
-      disabled={signup}
     />
-    <NameField name="investor.name" value={investor.name} onChange={handleChange} />
+    <NameField name="user.name" value={user.name} onChange={handleChange} />
     {!signup &&
       <Form.Group>
         <Form.Input
-          name="investor.phone1"
-          value={investor.phone1}
+          name="user.phone1"
+          value={user.phone1}
           onChange={handleChange}
           label="Phone 1"
           placeholder="Phone 1"
@@ -42,8 +37,8 @@ const AccountFields = ({
           width={8}
         />
         <Form.Input
-          name="investor.phone2"
-          value={investor.phone2}
+          name="user.phone2"
+          value={user.phone2}
           onChange={handleChange}
           label="Phone 2"
           placeholder="Phone 2"
@@ -54,29 +49,13 @@ const AccountFields = ({
     {signup &&
       <PasswordField
         grouped
-        name="investor.password"
-        value={investor.password}
+        name="user.password"
+        value={user.password}
         onChange={handleChange}
       />}
-    {!signup &&
-      <div>
-        <Header as="h3" dividing>
-          Investment methods & criteria
-        </Header>
-        <p>
-          For <strong>Systematic with opt-out</strong>, the opt-out time is {optOutTime} days.
-        </p>
-        <InvestmentField
-          name="investor.investmentSettings"
-          value={investor.investmentSettings}
-          onChange={handleChange}
-          dealCategories={dealCategories}
-          defaultCurrency={defaultCurrency}
-        />
-      </div>}
   </div>;
 AccountFields.propTypes = {
-  investor: InvestorPropType.isRequired,
+  user: UserPropType.isRequired,
   signup: PropTypes.bool,
   handleChange: PropTypes.func.isRequired,
   organization: OrganizationPropType.isRequired,

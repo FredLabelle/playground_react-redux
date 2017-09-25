@@ -7,7 +7,6 @@ import Router from 'next/router';
 
 import { RouterPropType, FormPropType } from '../../lib/prop-types';
 import { setUnsavedChanges } from '../../actions/form';
-import { linkHref, linkAs } from '../../lib/url';
 
 class SettingsMenu extends Component {
   static propTypes = {
@@ -26,11 +25,11 @@ class SettingsMenu extends Component {
       toastr.confirm('You have unsaved changes! Are you sure you want to leave this page?', {
         onOk: () => {
           this.props.setUnsavedChanges(false);
-          Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
+          Router.push(name, name);
         },
       });
     } else {
-      Router.push(linkHref(name, this.props.router), linkAs(name, this.props.router));
+      Router.push(name, name);
     }
   };
   render() {

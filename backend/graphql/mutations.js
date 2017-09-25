@@ -23,15 +23,14 @@ input IdDocumentInput {
   expirationDate: String!
 }
 
-input InvestorSignupInput {
+input SignupInput {
   name: NameInput!
   email: String!
   password: String!
-  investmentSettings: JSON!
   token: ID!
 }
 
-input InvestorLoginInput {
+input LoginInput {
   email: String!
   password: String!
   organizationId: ID!
@@ -63,103 +62,25 @@ input IndividualSettingsInput {
   fiscalAddress: AddressInput!
 }
 
-input CorporationSettingsInput {
-  position: String!
-  companyName: String!
-  companyAddress: AddressInput!
-  incProof: [FileInput]!
-}
-
-input AdvisorInput {
-  name: NameInput!
-  email: String!
-}
-
-input GeneralSettingsInput {
-  name: String!
-  website: String!
-  description: String!
-  emailDomains: [String]!
-}
-
-input OrganizationInvestmentMechanismsInput {
-  optOutTime: String!
-  defaultCurrency: String!
-}
-
 input EmailInput {
   subject: String!
   body: String!
 }
 
-input ParametersSettingsInput {
-  investmentMechanisms: OrganizationInvestmentMechanismsInput!
-  invitationEmail: EmailInput!
-}
-
-input UpdateOrganizationInput {
-  generalSettings: GeneralSettingsInput
-  parametersSettings: ParametersSettingsInput
-}
-
-input UpsertInvestorInput {
+input UpsertUserInput {
   id: ID
   email: String
   phone1: String
   phone2: String
   name: NameInput
   picture: [FileInput]
-  investmentSettings: JSON
   type: String
   individualSettings: IndividualSettingsInput
-  corporationSettings: CorporationSettingsInput
-  advisor: AdvisorInput
 }
 
-input InvestorInfoInput {
+input UserInfoInput {
   name: NameInput
   email: String!
-}
-
-input InvitationStatusInput {
-  email: String!
-  organizationId: String!
-}
-
-input InviteInvestorInput {
-  investor: InvestorInfoInput!
-  invitationEmail: EmailInput!
-}
-
-input UpsertCompanyInput {
-  id: ID
-  name: String!
-  website: String!
-  description: String!
-}
-
-input UpsertDealInput {
-  id: ID
-  companyId: ID
-  name: String!
-  spvName: String
-  description: String
-  deck: [FileInput]!
-  categoryId: ID
-  roundSize: AmountInput!
-  premoneyValuation: AmountInput!
-  amountAllocatedToOrganization: AmountInput!
-  minTicket: AmountInput!
-  maxTicket: AmountInput!
-  referenceClosingDate: String
-  carried: String!
-  hurdle: String!
-}
-
-input DealCategoryInput {
-  id: ID!
-  name: String!
-  investmentMechanisms: [String]!
 }
 
 input ChangeEmailInput {
@@ -172,43 +93,28 @@ input ChangePasswordInput {
   password: String!
 }
 
-input UpsertTicketInput {
-  id: ID
-  investorId: ID
-  dealId: ID
-  amount: AmountInput!
+input GeneralSettingsInput {
+  name: String!
+  website: String!
+  description: String!
+  emailDomains: [String]!
 }
 
-input UpsertReportInput {
-  id: ID
-  senderName: String!
-  senderEmail: String!
-  replyTo: String!
-  email: EmailInput!
-  attachments: [FileInput]!
-  cc: [String]!
-  bcc: [String]!
+input UpdateOrganizationInput {
+  generalSettings: GeneralSettingsInput
 }
+
 
 type Mutation {
-  investorSignup(input: InvestorSignupInput!): ID
-  investorLogin(input: InvestorLoginInput!): ID
+  signup(input: SignupInput!): ID
+  login(input: LoginInput!): ID
   logout: Boolean!
+  updateOrganization(input: UpdateOrganizationInput!): Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ID
   changeEmail(input: ChangeEmailInput!): Boolean!
   changePassword(input: ChangePasswordInput!): Boolean!
-  adminLoginAck: Boolean!
-  updateOrganization(input: UpdateOrganizationInput!): Boolean!
-  updateDealCategories(input: [DealCategoryInput]!): Boolean!
-  upsertInvestor(input: UpsertInvestorInput!): Investor
-  invitationStatus(input: InvitationStatusInput!): String!
-  inviteInvestor(input: InviteInvestorInput!): String!
-  upsertCompany(input: UpsertCompanyInput!): Company
-  upsertDeal(input: UpsertDealInput!): Deal
-  sendInvitation(input: InviteInvestorInput!): Boolean!
-  upsertTicket(input: UpsertTicketInput!): Ticket
-  upsertReport(input: UpsertReportInput!): Report
+  upsertUser(input: UpsertUserInput!): User
 }
 `;
 
@@ -219,71 +125,34 @@ const authedMutation = (mutation, errorValue) => (user, input) => {
   return mutation(user, input);
 };
 
-const adminMutation = (mutation, errorValue) => (user, input) => {
-  if (!user) {
-    return errorValue;
-  }
-  if (user.role !== 'admin') {
-    return errorValue;
-  }
-  return mutation(user, input);
-};
-
 exports.resolvers = {
   Mutation: {
-    investorSignup(root, { input }, context) {
-      return context.Investor.signup(input);
+    signup(root, { input }, context) {
+      return context.User.signup(input);
     },
-    investorLogin(root, { input }, context) {
-      return context.Investor.login(input);
+    login(root, { input }, context) {
+      return context.User.login(input);
     },
     logout(root, params, context) {
       return authedMutation(() => true, false)(context.user);
     },
     forgotPassword(root, { input }, context) {
-      return context.Investor.forgotPassword(input);
+      return context.User.forgotPassword(input);
     },
     resetPassword(root, { input }, context) {
-      return context.Investor.resetPassword(input);
+      return context.User.resetPassword(input);
     },
     changeEmail(root, { input }, context) {
-      return authedMutation(context.Investor.changeEmail, false)(context.user, input);
+      return authedMutation(context.User.changeEmail, false)(context.user, input);
     },
     changePassword(root, { input }, context) {
-      return authedMutation(context.Investor.changePassword, false)(context.user, input);
-    },
-    adminLoginAck(root, variables, context) {
-      return context.Admin.loginAck(context.user);
+      return authedMutation(context.User.changePassword, false)(context.user, input);
     },
     updateOrganization(root, { input }, context) {
-      return adminMutation(context.Organization.update, false)(context.user, input);
+      return context.Organization.update(input);
     },
-    updateDealCategories(root, { input }, context) {
-      return adminMutation(context.Organization.updateDealCategories, false)(context.user, input);
-    },
-    upsertInvestor(root, { input }, context) {
-      return authedMutation(context.Investor.upsert, null)(context.user, input);
-    },
-    invitationStatus(root, { input }, context) {
-      return context.Investor.invitationStatus(input);
-    },
-    inviteInvestor(root, { input }, context) {
-      return adminMutation(context.Admin.inviteInvestor, false)(context.user, input);
-    },
-    upsertCompany(root, { input }, context) {
-      return adminMutation(context.Company.upsert, null)(context.user, input);
-    },
-    upsertDeal(root, { input }, context) {
-      return adminMutation(context.Deal.upsert, null)(context.user, input);
-    },
-    sendInvitation(root, { input }, context) {
-      return adminMutation(context.Admin.sendInvitation, false)(context.user, input);
-    },
-    upsertTicket(root, { input }, context) {
-      return adminMutation(context.Ticket.upsert, null)(context.user, input);
-    },
-    upsertReport(root, { input }, context) {
-      return adminMutation(context.Report.upsert, null)(context.user, input);
+    upsertUser(root, { input }, context) {
+      return authedMutation(context.User.upsert, null)(context.user, input);
     },
   },
 };

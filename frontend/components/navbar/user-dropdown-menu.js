@@ -6,15 +6,14 @@ import { Dropdown, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import Router from 'next/router';
 
-import { RouterPropType, InvestorPropType, AdminPropType } from '../../lib/prop-types';
+import { RouterPropType, UserPropType } from '../../lib/prop-types';
 import { logoutMutation } from '../../lib/mutations';
-import { investorUserQuery, adminUserQuery } from '../../lib/queries';
-import { linkHref, linkAs } from '../../lib/url';
+import { userQuery } from '../../lib/queries';
 
 class UserDropdownMenu extends Component {
   static propTypes = {
     router: RouterPropType.isRequired,
-    user: PropTypes.oneOfType([InvestorPropType, AdminPropType]).isRequired,
+    user: PropTypes.oneOfType([UserPropType]).isRequired,
     logout: PropTypes.func.isRequired,
     cookies: PropTypes.instanceOf(Cookies).isRequired,
     client: PropTypes.instanceOf(ApolloClient).isRequired,
@@ -28,8 +27,9 @@ class UserDropdownMenu extends Component {
     if (logout) {
       this.props.cookies.remove('token', { path: '/' });
       const { router, user } = this.props;
-      const options = { ...router, admin: user ? user.role === 'admin' : router.admin };
-      Router.push(linkHref('/login', options), linkAs('/login', options));
+      //TODO remove admin for now
+      //const options = { ...router, admin: user ? user.role === 'admin' : router.admin };
+      Router.push('/login', '/login');
     } else {
       console.error('LOGOUT ERROR');
     }
@@ -41,11 +41,11 @@ class UserDropdownMenu extends Component {
       </span>
     );
     const { router, user } = this.props;
-    const options = { ...router, admin: user ? user.role === 'admin' : router.admin };
+    //const options = { ...router, admin: user ? user.role === 'admin' : router.admin };
     return (
       <Dropdown item trigger={trigger}>
         <Dropdown.Menu>
-          <Link prefetch href={linkHref('/settings', options)} as={linkAs('/settings', options)}>
+          <Link prefetch href={'/settings'} as={'/settings'}>
             <Dropdown.Item>
               <a>Settings</a>
             </Dropdown.Item>
@@ -68,11 +68,7 @@ export default compose(
         mutate({
           refetchQueries: [
             {
-              query: investorUserQuery,
-              fetchPolicy: 'network-only',
-            },
-            {
-              query: adminUserQuery,
+              query: userQuery,
               fetchPolicy: 'network-only',
             },
           ],

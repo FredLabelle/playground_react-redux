@@ -7,10 +7,9 @@ import { Button, Form, Modal, Header } from 'semantic-ui-react';
 import { toastr } from 'react-redux-toastr';
 import Router from 'next/router';
 
-import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType } from '../../lib/prop-types';
 import { resetPasswordMutation } from '../../lib/mutations';
-import { investorUserQuery, adminUserQuery } from '../../lib/queries';
+import { userQuery } from '../../lib/queries';
 import PasswordField from '../fields/password-field';
 
 const initialState = { password: '', loading: false };
@@ -37,7 +36,7 @@ class ResetPasswordModal extends Component {
       this.props.cookies.set('token', resetPassword, { path: '/' });
       toastr.success('Success!', 'Your password has been reset.');
       const route = this.props.router.query.invited === 'true' ? '/settings/administrative' : '/';
-      Router.push(linkHref(route, this.props.router), linkAs(route, this.props.router));
+      Router.push(route, route);
     } else {
       toastr.error('Error!', 'Something went wrong.');
     }
@@ -104,11 +103,7 @@ export default compose(
           variables: { input },
           refetchQueries: [
             {
-              query: investorUserQuery,
-              fetchPolicy: 'network-only',
-            },
-            {
-              query: adminUserQuery,
+              query: userQuery,
               fetchPolicy: 'network-only',
             },
           ],

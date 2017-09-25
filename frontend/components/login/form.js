@@ -6,10 +6,9 @@ import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
 import Router from 'next/router';
 
-import { linkHref, linkAs } from '../../lib/url';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
-import { investorLoginMutation } from '../../lib/mutations';
-import { investorUserQuery, adminUserQuery } from '../../lib/queries';
+import { loginMutation } from '../../lib/mutations';
+import { userQuery } from '../../lib/queries';
 
 class LoginForm extends Component {
   static propTypes = {
@@ -32,14 +31,14 @@ class LoginForm extends Component {
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ loading: true });
-    const { data: { investorLogin } } = await this.props.login({
+    const { data: { userLogin } } = await this.props.login({
       email: this.state.email,
       password: this.state.password,
       organizationId: this.props.organization.id,
     });
-    if (investorLogin) {
-      this.props.cookies.set('token', investorLogin, { path: '/' });
-      Router.push(linkHref('/', this.props.router), linkAs('/', this.props.router));
+    if (userLogin) {
+      this.props.cookies.set('token', userLogin, { path: '/' });
+      Router.push('/', '/');
     } else {
       this.setState({ loading: false, error: true });
     }
@@ -95,18 +94,14 @@ class LoginForm extends Component {
 export default compose(
   withCookies,
   connect(({ router }) => ({ router })),
-  graphql(investorLoginMutation, {
+  graphql(loginMutation, {
     props: ({ mutate }) => ({
       login: input =>
         mutate({
           variables: { input },
           refetchQueries: [
             {
-              query: investorUserQuery,
-              fetchPolicy: 'network-only',
-            },
-            {
-              query: adminUserQuery,
+              query: userQuery,
               fetchPolicy: 'network-only',
             },
           ],
