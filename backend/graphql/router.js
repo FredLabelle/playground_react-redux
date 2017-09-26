@@ -6,6 +6,7 @@ const authMiddleware = require('../routes/auth/middleware');
 const User = require('../services/user');
 const Organization = require('../services/organization');
 const Invoice = require('../services/invoice');
+const Payment = require('../services/payment');
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.use(
         User,
         Organization,
         Invoice,
+        Payment,
       },
     };
   }),

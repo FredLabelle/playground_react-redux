@@ -81,6 +81,24 @@ module.exports.seedDatabase = async (req, res) => {
       dueDate: Date.now() + (45 * 24 * 60 * 60 * 1000)
     });
 
+    await organization.createPayment({
+      amount: {
+        amount: '37500',
+        currency: 'eur'
+      },
+      origin: 'aircall.io',
+      description: 'consulting eFounders #12345'
+    });
+
+    await organization.createPayment({
+      amount: {
+        amount: '7800',
+        currency: 'eur'
+      },
+      origin: 'aircall.io',
+      description: 'consulting eFounders #1B396'
+    });
+
     return res.json({ success: 'Done!' });
 
   } catch (error) {

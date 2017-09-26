@@ -85,11 +85,22 @@ type Invoice {
   dueDate: Date!
 }
 
+type Payment {
+  id: ID!
+  shortId: ID!
+  amount: Amount!
+  description: String
+  origin: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
 type Query {
   organization(shortId: ID!): Organization
   invoice(shortId: ID!): Invoice
   invoices: [Invoice]
   user: User
+  payments: [Payment]
 }
 
 schema {
@@ -113,6 +124,9 @@ const resolvers = {
     },
     invoices(root, params, context) {
       return context.Invoice.invoices();
+    },
+    payments(root, params, context) {
+      return context.Payment.payments();
     },
   },
 };

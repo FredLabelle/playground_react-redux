@@ -82,3 +82,9 @@ export const InvoicePropType = PropTypes.shape({
   debtor: PropTypes.string,
   name: PropTypes.string,
 });
+
+export const PaymentPropType = PropTypes.shape({
+  amount: AmountPropType,
+  description: PropTypes.string,
+  origin: PropTypes.string,
+});
