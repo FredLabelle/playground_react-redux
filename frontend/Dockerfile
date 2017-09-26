@@ -1,5 +1,5 @@
 FROM node:8.4.0-alpine
-MAINTAINER Simon Arvaux <simon@e-founders.com>
+MAINTAINER Frederic labelle <frederic@e-founders.com>
 LABEL name="invoicex-frontend"
 
 RUN mkdir -p /opt/app

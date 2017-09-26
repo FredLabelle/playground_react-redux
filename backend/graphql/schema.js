@@ -81,6 +81,8 @@ type Invoice {
   name: String
   createdAt: Date!
   updatedAt: Date!
+  creationDate: Date!
+  dueDate: Date!
 }
 
 type Query {

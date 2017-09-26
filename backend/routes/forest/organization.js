@@ -42,7 +42,9 @@ module.exports.seedDatabase = async (req, res) => {
       },
       purchaseOrder: 'KINDER12345',
       status: 'pending',
-      debtor: 'aircall.io'
+      debtor: 'aircall.io',
+      creationDate: Date.now(),
+      dueDate: Date.now() + (45 * 24 * 60 * 60 * 1000)
     });
 
     await organization.createInvoice({
@@ -57,7 +59,9 @@ module.exports.seedDatabase = async (req, res) => {
       },
       purchaseOrder: 'BUENO12345',
       status: 'pending',
-      debtor: 'aircall.io'
+      debtor: 'aircall.io',
+      creationDate: Date.now(),
+      dueDate: Date.now() + (45 * 24 * 60 * 60 * 1000)
     });
 
     await organization.createInvoice({
@@ -72,7 +76,9 @@ module.exports.seedDatabase = async (req, res) => {
       },
       purchaseOrder: 'COUNTRY12345',
       status: 'paid',
-      debtor: 'aircall.io'
+      debtor: 'aircall.io',
+      creationDate: Date.now(),
+      dueDate: Date.now() + (45 * 24 * 60 * 60 * 1000)
     });
 
     return res.json({ success: 'Done!' });

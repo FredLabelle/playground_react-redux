@@ -48,6 +48,12 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       defaultValue: 'Consulting Fee',
     },
+    creationDate: {
+      type: Sequelize.DATE,
+    },
+    dueDate: {
+      type: Sequelize.DATE,
+    }
   },
   {
     hooks: {

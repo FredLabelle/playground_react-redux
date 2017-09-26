@@ -13,8 +13,8 @@ const InvoiceStatusCell = ({ invoice }) => (
   <Table.Cell>
     <Label color={colors[invoice.status]}>{capitalize(invoice.status)}</Label>
     <br />
-    {invoice.updatedAt &&
-      moment(invoice.updatedAt, 'DD-MM-YYYY').format('DD/MM/YYYY')}
+    {invoice.dueDate &&
+      moment(invoice.dueDate, 'DD-MM-YYYY').format('DD/MM/YYYY')}
   </Table.Cell>
 );
 InvoiceStatusCell.propTypes = { invoice: InvoicePropType.isRequired };

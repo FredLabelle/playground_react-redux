@@ -21,6 +21,8 @@ export default gql`
       createdAt
       updatedAt
       name
+      creationDate
+      dueDate
     }
   }
 `;

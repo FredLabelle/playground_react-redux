@@ -12,8 +12,8 @@
     "eslint": "eslint .;exit 0",
     "prettier": "prettier --print-width 100 --single-quote --trailing-comma all --write \"*.js\" \"{forest,graphql,lib,models,routes,services}/**/*.js\"",
     "dev": "NODE_ENV='development' nodemon",
-    "deploy-staging": "now -E .env/staging.env && now alias invoicex-staging-backend.efounders.co",
-    "deploy": "now -E .env/production.env && now alias invoicex-backend.efounders.co",
+    "deploy-staging": "now -E .env/staging.env",
+    "deploy": "now -E .env/production.env",
     "logs-staging": "now logs invoicex-staging-backend.efounders.co",
     "logs": "now logs invoicex-backend.efounders.co",
     "cleanup": "now rm invoicex-backend --safe -y"
