@@ -5,7 +5,7 @@ const schema = require('./schema');
 const authMiddleware = require('../routes/auth/middleware');
 const User = require('../services/user');
 const Organization = require('../services/organization');
-
+const Invoice = require('../services/invoice');
 
 const router = express.Router();
 
@@ -23,6 +23,7 @@ router.use(
         user: req.user,
         User,
         Organization,
+        Invoice,
       },
     };
   }),

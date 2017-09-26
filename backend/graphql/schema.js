@@ -68,8 +68,25 @@ type Organization {
   domain: String
 }
 
+type Invoice {
+  id: ID!
+  shortId: ID!
+  customId: String!
+  netAmount: Amount!
+  grossAmount: Amount
+  purchaseOrder: String
+  status: String
+  origin: String
+  debtor: String
+  name: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
 type Query {
   organization(shortId: ID!): Organization
+  invoice(shortId: ID!): Invoice
+  invoices: [Invoice]
   user: User
 }
 
@@ -88,6 +105,12 @@ const resolvers = {
     },
     user(root, params, context) {
       return context.User.user(context.user);
+    },
+    invoice(root, { shortId }, context) {
+      return context.Invoice.invoice(shortId);
+    },
+    invoices(root, params, context) {
+      return context.Invoice.invoices();
     },
   },
 };

@@ -22,12 +22,12 @@ module.exports = sequelize.define(
       allowNull: false,
     },
     netAmount: {
-      type: Sequelize.DOUBLE,
+      type: Sequelize.JSONB,
       unique: true,
       allowNull: false,
     },
     grossAmount: {
-      type: Sequelize.DOUBLE,
+      type: Sequelize.JSONB,
     },
     purchaseOrder: {
       type: Sequelize.STRING,
@@ -43,6 +43,10 @@ module.exports = sequelize.define(
     debtor: {
       type: Sequelize.STRING,
       defaultValue: '',
+    },
+    name: {
+      type: Sequelize.STRING,
+      defaultValue: 'Consulting Fee',
     },
   },
   {

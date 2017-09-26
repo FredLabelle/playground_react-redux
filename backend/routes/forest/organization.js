@@ -32,33 +32,51 @@ module.exports.seedDatabase = async (req, res) => {
 
     await organization.createInvoice({
       customId: 'EF12345',
-      netAmount: 2456.21,
-      grossAmount: 2123,
+      netAmount: {
+        amount: '23000',
+        currency: 'eur'
+      },
+      grossAmount: {
+        amount: '19801.23',
+        currency: 'eur'
+      },
       purchaseOrder: 'KINDER12345',
       status: 'pending',
-      debtor: 'Kinder'
+      debtor: 'aircall.io'
     });
 
     await organization.createInvoice({
       customId: 'EF1B4978',
-      netAmount: 36500,
-      grossAmount: 24253.98,
+      netAmount: {
+        amount: '4569.23',
+        currency: 'eur'
+      },
+      grossAmount: {
+        amount: '3214.1',
+        currency: 'eur'
+      },
       purchaseOrder: 'BUENO12345',
       status: 'pending',
-      debtor: 'Bueno'
+      debtor: 'aircall.io'
     });
 
     await organization.createInvoice({
       customId: 'EF1A2341',
-      netAmount: 9999,
-      grossAmount: 8320.10,
+      netAmount: {
+        amount: '37500',
+        currency: 'eur'
+      },
+      grossAmount: {
+        amount: '31000',
+        currency: 'eur'
+      },
       purchaseOrder: 'COUNTRY12345',
       status: 'paid',
-      debtor: 'Country'
+      debtor: 'aircall.io'
     });
 
     return res.json({ success: 'Done!' });
-    
+
   } catch (error) {
     console.error('Seed Database:', error);
     return res.json({ error: 'ERROR' });

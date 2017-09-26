@@ -33,6 +33,15 @@ const InvoiceService = {
       return null;
     }
   },
+  async invoices() {
+    try {
+      const invoices = await Invoice.findAll();
+      return invoices.map(invoice => invoice.toJSON());
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
 };
 
 module.exports = InvoiceService;

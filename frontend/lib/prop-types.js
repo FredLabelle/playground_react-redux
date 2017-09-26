@@ -71,3 +71,14 @@ export const UserPropType = PropTypes.shape({
   role: PropTypes.string,
   picture: PropTypes.arrayOf(FilePropType),
 });
+
+export const InvoicePropType = PropTypes.shape({
+  customId: PropTypes.string,
+  netAmount: AmountPropType,
+  grossAmount: AmountPropType,
+  purchaseOrder: PropTypes.string,
+  status: PropTypes.string,
+  origin: PropTypes.string,
+  debtor: PropTypes.string,
+  name: PropTypes.string,
+});

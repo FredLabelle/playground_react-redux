@@ -11,7 +11,7 @@ const UserMenu = ({ router }) =>
         Dashboard
       </Menu.Item>
     </Link>
-    <Link prefetch href={'/'} as={'/'}>
+    <Link prefetch href={'/invoices'} as={'/invoices'}>
       <Menu.Item name="/" active={router.pathname.startsWith('')}>
         Invoices
       </Menu.Item>
