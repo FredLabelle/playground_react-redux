@@ -42,7 +42,7 @@ module.exports = sequelize.define(
     },
     debtor: {
       type: Sequelize.STRING,
-      defaultValue: '',
+      defaultValue: 'aircall',
     },
     name: {
       type: Sequelize.STRING,

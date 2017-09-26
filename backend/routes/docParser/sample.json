@@ -1,0 +1,20 @@
+{
+  "id": "d4e76f474186e7f3598a1cd5b5b21699",
+  "document_id": "75f0f1016e6445dd94ccfd136a9558e1",
+  "remote_id": "",
+  "file_name": "Invoice_POC - Invoice.pdf",
+  "media_link": "https://api.docparser.com/v1/document/media/EjhMwnlyMOBpmrcle00VfRy61WhfhdpWtMn2tsYYFhGgEFmJTUNf2euCZQsDh0hXXRw9FYarvGmPhCQUEMbFGp4DsplZH1yaUl9wFnve1To",
+  "page_count": 1,
+  "uploaded_at": "2017-09-26T17:47:15+00:00",
+  "processed_at": "2017-09-26T17:57:47+00:00",
+  "invoice_number": "123456",
+  "invoice_creation_date_match": "28/09/2018",
+  "invoice_creation_date_iso8601": "2018-09-28",
+  "totals_net": "5325.00",
+  "totals_tax": null,
+  "totals_total": null,
+  "totals_carriage": null,
+  "totals_confidence": 70,
+  "invoice_due_date_match": "9/16/2016",
+  "invoice_due_date_iso8601": "2016-09-16"
+}
