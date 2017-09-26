@@ -41,9 +41,9 @@ const OrganizationService = {
       return null;
     }
   },
-  async update(admin, input) {
+  async update(input) {
     try {
-      const organization = await admin.getOrganization();
+      //const organization = await admin.getOrganization();
       await organization.update(input);
       return true;
     } catch (error) {
