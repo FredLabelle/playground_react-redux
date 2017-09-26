@@ -15,14 +15,6 @@ input FileInput {
   uploaded: Boolean!
 }
 
-input IdDocumentInput {
-  id: ID!
-  type: String!
-  number: String!
-  files: [FileInput]!
-  expirationDate: String!
-}
-
 input SignupInput {
   name: NameInput!
   email: String!
@@ -55,13 +47,6 @@ input AddressInput {
   state: String!
 }
 
-input IndividualSettingsInput {
-  birthdate: String!
-  nationality: String!
-  idDocuments: [IdDocumentInput]!
-  fiscalAddress: AddressInput!
-}
-
 input EmailInput {
   subject: String!
   body: String!
@@ -75,7 +60,6 @@ input UpsertUserInput {
   name: NameInput
   picture: [FileInput]
   type: String
-  individualSettings: IndividualSettingsInput
 }
 
 input UserInfoInput {

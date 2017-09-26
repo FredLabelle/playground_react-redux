@@ -64,23 +64,6 @@ module.exports = sequelize.define(
       type: Sequelize.STRING,
       defaultValue: 'individual',
     },
-    individualSettings: {
-      type: Sequelize.JSONB,
-      defaultValue: {
-        birthdate: '01-01-1970',
-        nationality: '',
-        idDocuments: [],
-        fiscalAddress: {
-          address1: '',
-          address2: '',
-          city: '',
-          zipCode: '',
-          country: '',
-          state: '',
-        },
-      },
-      allowNull: false,
-    },
   },
   {
     getterMethods: {

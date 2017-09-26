@@ -19,14 +19,6 @@ type File {
   uploaded: Boolean!
 }
 
-type IdDocument {
-  id: ID!
-  type: String!
-  number: String!
-  files: [File]!
-  expirationDate: String!
-}
-
 type Address {
   address1: String!
   address2: String!
@@ -41,14 +33,6 @@ type Amount {
   currency: String!
 }
 
-type IndividualSettings {
-  birthdate: String!
-  nationality: String!
-  idDocuments: [IdDocument]!
-  fiscalAddress: Address!
-}
-
-
 type User {
   id: ID!
   shortId: ID!
@@ -59,9 +43,7 @@ type User {
   phone2: String!
   email: String!
   role: String!
-  picture: [File]
   type: String
-  individualSettings: IndividualSettings
   status: String!
   createdAt: Date!
   updatedAt: Date!

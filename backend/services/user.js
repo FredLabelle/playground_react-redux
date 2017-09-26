@@ -219,9 +219,6 @@ const UserService = {
         }
         const userFields = cloneDeep(input);
         userFields.picture = [];
-        if (userFields.individualSettings) {
-          userFields.individualSettings.idDocuments = [];
-        }
         user = await organization.createUser(userFields);
       }
       const [picture, incProof] = await Promise.all([
@@ -232,29 +229,6 @@ const UserService = {
           picture.push(gravatarPicture(user.email));
         }
         Object.assign(input, { picture });
-      }
-      const idDocuments = cloneDeep(get(input, 'individualSettings.idDocuments'));
-      const { individualSettings } = user.toJSON();
-      // input lacks some fields in nested JSONB so we need to default to current values
-      const update = defaultsDeep(input, { individualSettings });
-      if (idDocuments) {
-        const promises = idDocuments.map((inputIdDocument, index) => {
-          const idDocument = individualSettings.idDocuments.find(
-            ({ id }) => inputIdDocument.id === id,
-          );
-          if (idDocument) {
-            return Promise.resolve(idDocuments[index].files);
-          }
-          return handleFilesUpdate(
-            idDocuments[index].files,
-            `users/idDocuments/${user.shortId}/${idDocuments[index].number}`,
-          );
-        });
-        const filesList = await Promise.all(promises);
-        filesList.forEach((files, index) => {
-          Object.assign(idDocuments[index], { files });
-        });
-        Object.assign(update.individualSettings, { idDocuments });
       }
       return user.update(input);
     } catch (error) {
