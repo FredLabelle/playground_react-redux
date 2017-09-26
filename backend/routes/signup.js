@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 
 const verify = promisify(jwt.verify);
 
+//TODO no need to parse invitation token anymore
+
 module.exports = async (req, res) => {
   const { token } = req.query;
   const { name: { firstName, lastName }, email, organizationShortId: shortId } = await verify(

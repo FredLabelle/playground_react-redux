@@ -31,13 +31,13 @@ class LoginForm extends Component {
   onSubmit = async event => {
     event.preventDefault();
     this.setState({ loading: true });
-    const { data: { userLogin } } = await this.props.login({
+    const { data: { login } } = await this.props.login({
       email: this.state.email,
       password: this.state.password,
       organizationId: this.props.organization.id,
     });
-    if (userLogin) {
-      this.props.cookies.set('token', userLogin, { path: '/' });
+    if (login) {
+      this.props.cookies.set('token', login, { path: '/' });
       Router.push('/', '/');
     } else {
       this.setState({ loading: false, error: true });

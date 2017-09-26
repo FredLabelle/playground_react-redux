@@ -81,17 +81,6 @@ module.exports = sequelize.define(
       },
       allowNull: false,
     },
-    advisor: {
-      type: Sequelize.JSONB,
-      defaultValue: {
-        name: {
-          firstName: '',
-          lastName: '',
-        },
-        email: '',
-      },
-      allowNull: false,
-    },
   },
   {
     getterMethods: {
