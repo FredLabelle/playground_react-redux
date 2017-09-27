@@ -20,4 +20,5 @@ module.exports = {
   User,
   Organization,
   Invoice,
+  Payment,
 };

@@ -11,6 +11,7 @@ export default gql`
       }
       description
       origin
+      status
       createdAt
       updatedAt
     }

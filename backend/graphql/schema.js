@@ -91,6 +91,7 @@ type Payment {
   amount: Amount!
   description: String
   origin: String
+  status: String
   createdAt: Date!
   updatedAt: Date!
 }

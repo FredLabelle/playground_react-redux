@@ -31,24 +31,7 @@ module.exports.seedDatabase = async (req, res) => {
     });
 
     await organization.createInvoice({
-      customId: 'EF12345',
-      netAmount: {
-        amount: '23000',
-        currency: 'eur'
-      },
-      grossAmount: {
-        amount: '19801.23',
-        currency: 'eur'
-      },
-      purchaseOrder: 'KINDER12345',
-      status: 'pending',
-      debtor: 'aircall.io',
-      creationDate: Date.now(),
-      dueDate: Date.now() + (45 * 24 * 60 * 60 * 1000)
-    });
-
-    await organization.createInvoice({
-      customId: 'EF1B4978',
+      customId: 'EF1B396',
       netAmount: {
         amount: '4569.23',
         currency: 'eur'
@@ -58,7 +41,7 @@ module.exports.seedDatabase = async (req, res) => {
         currency: 'eur'
       },
       purchaseOrder: 'BUENO12345',
-      status: 'pending',
+      status: 'paid',
       debtor: 'aircall.io',
       creationDate: Date.now(),
       dueDate: Date.now() + (45 * 24 * 60 * 60 * 1000)
@@ -87,16 +70,18 @@ module.exports.seedDatabase = async (req, res) => {
         currency: 'eur'
       },
       origin: 'aircall.io',
-      description: 'consulting eFounders #12345'
+      description: 'consulting eFounders #EF12345',
+      status: 'matched'
     });
 
     await organization.createPayment({
       amount: {
-        amount: '7800',
+        amount: '4569.23',
         currency: 'eur'
       },
       origin: 'aircall.io',
-      description: 'consulting eFounders #1B396'
+      description: 'consulting eFounders #EF1B396',
+      status: 'matched',
     });
 
     return res.json({ success: 'Done!' });

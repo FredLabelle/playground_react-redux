@@ -87,4 +87,5 @@ export const PaymentPropType = PropTypes.shape({
   amount: AmountPropType,
   description: PropTypes.string,
   origin: PropTypes.string,
+  status: PropTypes.string,
 });

@@ -2,9 +2,8 @@ const Sequelize = require('sequelize');
 const shortid = require('shortid');
 
 const sequelize = require('./sequelize');
-const { gravatarPicture } = require('../lib/util');
 
-module.exports = sequelize.define(
+const Payment = sequelize.define(
   'Payment',
   {
     id: {
@@ -28,6 +27,10 @@ module.exports = sequelize.define(
     origin: {
       type: Sequelize.STRING,
       defaultValue: 'aircall',
+    },
+    status: {
+      type: Sequelize.STRING,
+      defaultValue: 'unmatched',
     }
   },
   {
@@ -42,3 +45,5 @@ module.exports = sequelize.define(
     },
   },
 );
+
+module.exports = Payment;
