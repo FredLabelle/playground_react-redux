@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { RouterPropType } from '../../lib/prop-types';
 
 const UserMenu = ({ router }) =>
-  <Menu attached="top" tabular widths={2}>
+  <Menu attached="top" tabular widths={3}>
     <Link prefetch href={'/'} as={'/'}>
       <Menu.Item name="/" active={router.pathname === '/'}>
         Dashboard

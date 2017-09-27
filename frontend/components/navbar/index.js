@@ -24,7 +24,7 @@ const NavBar = ({ router, organization, user }) =>
       >
         <a>
           <Image
-            src="../../static/img/logo_efounders.png"
+            src="../../static/img/logo.png"
             alt="eFounders logo"
           />
         </a>

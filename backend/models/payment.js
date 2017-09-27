@@ -18,7 +18,6 @@ const Payment = sequelize.define(
     },
     amount: {
       type: Sequelize.JSONB,
-      unique: true,
       allowNull: false,
     },
     description: {

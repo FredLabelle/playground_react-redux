@@ -24,6 +24,13 @@ const InvoiceService = {
       where: { shortId },
     });
   },
+
+  findByCustomId(customId){
+    return Invoice.findOne({
+      where: { customId },
+    });
+  },
+
   async invoice(shortId) {
     try {
       const invoice = await InvoiceService.findByShortId(shortId);
