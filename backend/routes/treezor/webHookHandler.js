@@ -4,7 +4,7 @@ const InvoiceService = require('../../services/invoice');
 module.exports = async (req, res) => {
   //Take first transaction for the POC
   const transac = req.body.object ? req.body.object === 'transaction' : false
-
+  console.log("Body: -------------------- " + req.body.object)
   if( transac ) {
     const transacPayload = req.body["object_pay load"].transactions[0];
     const description = transacPayload.description ? transacPayload.description : 'Unknown';
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
               status: 'matched'
             }).then(() => {})
         }
-        
+
       }
     } catch (error) {
         console.error('Create Payment from Treezor WebHook:', error);

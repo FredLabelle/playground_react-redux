@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { Segment, Search } from 'semantic-ui-react';
 import escapeRegExp from 'lodash/escapeRegExp';
 
 import { PaymentPropType } from '../../lib/prop-types';
@@ -18,12 +17,12 @@ class Payments extends Component {
     const { payments } = this.props;
     const paymentsPlural = payments.length === 1 ? '' : 's';
     return (
-      <Segment attached="bottom" className="tab active">
+      <div>
         <h3 style={{ display: 'inline-block' }}>
           {payments.length} payment{paymentsPlural}
         </h3>
         <PaymentsList payments={this.state.payments} />
-      </Segment>
+      </div>
     );
   }
 }

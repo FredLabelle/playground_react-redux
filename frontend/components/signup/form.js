@@ -5,6 +5,7 @@ import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import { Form, Header, Segment, Button } from 'semantic-ui-react';
 import Router from 'next/router';
+import { linkHref, linkAs } from '../../lib/url';
 
 import { handleChange } from '../../lib/util';
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
@@ -43,7 +44,7 @@ class SignupForm extends Component {
     });
     if (userSignup) {
       this.props.cookies.set('token', userSignup, { path: '/' });
-      Router.push('/','/',);
+      Router.push(linkHref('/', this.props.router), linkAs('/', this.props.router));
     } else {
       console.error('SIGNUP ERROR');
       this.setState({ loading: false });

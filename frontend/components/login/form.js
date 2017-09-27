@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose, graphql } from 'react-apollo';
 import { Cookies, withCookies } from 'react-cookie';
 import { Segment, Form, Message, Button } from 'semantic-ui-react';
+import { linkHref, linkAs } from '../../lib/url';
 import Router from 'next/router';
 
 import { RouterPropType, OrganizationPropType } from '../../lib/prop-types';
@@ -38,7 +39,7 @@ class LoginForm extends Component {
     });
     if (login) {
       this.props.cookies.set('token', login, { path: '/' });
-      Router.push('/', '/');
+      Router.push(linkHref('/invoices', this.props.router), linkAs('/invoices', this.props.router));
     } else {
       this.setState({ loading: false, error: true });
     }
